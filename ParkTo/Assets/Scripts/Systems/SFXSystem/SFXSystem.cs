@@ -2,30 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SFXSystem : MonoBehaviour
+public class SFXSystem : SingleTon
 {
-    #region [ 인스턴스 초기화 ]
-
-    public static SFXSystem instance;
-    private void Awake()
-    {
-        if (instance == null) instance = this;
-        else if (instance != this)
-        {
-            Destroy(gameObject);
-
-            return;
-        }
-
-        DontDestroyOnLoad(gameObject);
-
-        bgm = GetComponent<AudioSource>();
-        foreach (Transform child in transform)
-            sounds.Add(child.GetComponent<AudioSource>());
-    }
-
-    #endregion
-
     #region [ 오브젝트 ]
 
     [SerializeField]
@@ -62,6 +40,14 @@ public class SFXSystem : MonoBehaviour
 
     public float BgmVolume { private set; get; }
     public float SoundVolume { private set; get; }
+    protected override void Awake()
+    {
+        base.Awake();
+
+        bgm = GetComponent<AudioSource>();
+        foreach (Transform child in transform)
+            sounds.Add(child.GetComponent<AudioSource>());
+    }
 
     private void Start()
     {
@@ -69,10 +55,15 @@ public class SFXSystem : MonoBehaviour
         SetSoundVolume(1);
     }
 
-    public void SetBgmVolume(float volume) { BgmVolume = Mathf.Clamp(volume, 0, 1); }
+    public void SetBgmVolume(float volume)
+    {
+        BgmVolume = Mathf.Clamp(volume, 0, 1);
+        bgm.volume = currentBgm.volume * BgmVolume;
+    }
+
     public void SetSoundVolume(float volume) { SoundVolume = Mathf.Clamp(volume, 0, 1); }
 
-    public void PlayBgm(int index = -1, float duration = 0.5f)
+    public void PlayBgm(int index = -1, float duration = 0.5f, bool replay = false)
     {
         if (index < -1 || index >= bgmSources.Count) return;
 
@@ -101,7 +92,7 @@ public class SFXSystem : MonoBehaviour
             progress = 0;
 
             if (index == -1) currentBgm = nullSound;
-            else if (currentBgm == bgmSources[index]) yield break;
+            else if (currentBgm == bgmSources[index] && !replay) yield break;
             else currentBgm = bgmSources[index];
 
             bgm.clip = currentBgm.clip;
@@ -139,8 +130,9 @@ public class SFXSystem : MonoBehaviour
 
         SoundData sound = soundSources[index];
 
-        medium.volume = sound.volume;
+        medium.volume = sound.volume * SoundVolume;
         medium.clip = sound.clip;
+
         medium.SetScheduledStartTime(sound.trim[0]);
         if (sound.trim[1] > sound.trim[0])
             medium.SetScheduledEndTime(sound.trim[1]);
