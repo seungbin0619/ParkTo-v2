@@ -20,6 +20,7 @@ public class SFXSystem : SingleTon
     private class SoundData
     {
         public AudioClip clip;
+        [Range(0f, 1f)]
         public float volume = 1;
         public double[] trim = new double[2] { 0, -1 };
     }

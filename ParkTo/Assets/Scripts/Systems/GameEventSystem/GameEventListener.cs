@@ -5,21 +5,21 @@ using UnityEngine.Events;
 
 public class GameEventListener : MonoBehaviour
 {
-    public GameEvent EventSO;
-    public UnityEvent Response;
+    public GameEvent gameEvent;
+    public UnityEvent response;
 
     private void OnEnable()
     {
-        EventSO.AddListener(this);
+        gameEvent.AddListener(this);
     }
 
     private void OnDisable()
     {
-        EventSO.RemoveListener(this);
+        gameEvent.RemoveListener(this);
     }
 
     public void OnEventRaised()
     {
-        Response.Invoke();
+        response.Invoke();
     }
 }
