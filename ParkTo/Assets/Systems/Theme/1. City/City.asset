@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d37da9af3467374db935b4427453ef3, type: 3}
+  m_Name: City
+  m_EditorClassIdentifier: 
+  id: City
+  index: 0
+  colors:
+  - {r: 0.5254902, g: 0.6509804, b: 0.29803923, a: 1}
+  - {r: 0.3529412, g: 0.46666667, b: 0.23921569, a: 1}
+  cars:
+  - {r: 0.36078432, g: 0.49019608, b: 0.85490197, a: 1}
+  - {r: 0.83137256, g: 0.60784316, b: 0.38431373, a: 1}
+  - {r: 0.9254902, g: 0.2901961, b: 0.34901962, a: 1}
+  grounds:
+  - {fileID: 11400000, guid: 00e0d5bf2de8f8e40b5362a646c823c7, type: 2}
+  - {fileID: 11400000, guid: 803021640e6c237498da88aa6c2847ac, type: 2}
+  - {fileID: 11400000, guid: c3aa070d13a665d479ea9b8bbbebc294, type: 2}
+  decorates: []
+  levels:
+  - {fileID: 11400000, guid: dafc771b3ef0f214abdc628b5c724a7a, type: 2}
