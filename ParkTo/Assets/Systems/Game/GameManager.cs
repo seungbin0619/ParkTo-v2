@@ -16,6 +16,9 @@ public class GameManager : SingleTon<GameManager>
     private Tilemap groundTile;
     private Transform predictTile;
 
+    [SerializeField]
+    private TriggerBar triggerBar;
+
     [SerializeField] 
     private Car carPrefab;
 
@@ -45,6 +48,12 @@ public class GameManager : SingleTon<GameManager>
     public List<Trigger> CurrentTriggers { private set; get; }
     public List<Goal> CurrentGoals { private set; get; }
     public LevelBase CurrentLevel { private set; get; }
+
+    #region [ 트리거 바 관련 ]
+
+    public bool BarHide { private set; get; }
+
+    #endregion
 
     #endregion
 
@@ -103,6 +112,7 @@ public class GameManager : SingleTon<GameManager>
 
     public void test()
     {
+        EraseLevel();
         SetLevel(0, 0);
         DrawLevel();
     }
@@ -230,8 +240,36 @@ public class GameManager : SingleTon<GameManager>
 
     private void EraseLevel()
     {
+        foreach (Transform child in carTile) Destroy(child.gameObject);
+        //foreach (Transform child in predictTile) Destroy(child.gameObject);
 
+        triggerTile.ClearAllTiles();
+        groundTile.ClearAllTiles();
     }
+
+    #endregion
+
+    #region [ Trigger Bar 관련 ]
+
+    private void UpdateTrigger()
+    {
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        if (triggerBar.Position >= mousePosition.y)
+        {
+            if (BarHide) BarHide = triggerBar.Hide = false;
+        }
+        else if (!BarHide)
+        {
+            if (Input.GetMouseButtonDown(0)) // 바깥 부분 클릭하면
+                BarHide = triggerBar.Hide = true;
+        }
+    }
+
+    #endregion
+
+    #region [ 인게임 기능 ]
+
+
 
     #endregion
 
@@ -248,4 +286,9 @@ public class GameManager : SingleTon<GameManager>
     }
 
     #endregion
+
+    private void Update()
+    {
+        UpdateTrigger();
+    }
 }
