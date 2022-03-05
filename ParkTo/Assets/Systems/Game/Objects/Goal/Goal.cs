@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class Goal : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private Car target = null;
+    private Vector2Int position;
+
+    private SpriteRenderer spriteRenderer;
+
+    private void Awake()
     {
-        
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Initialize(Vector2Int position, Car target)
     {
-        
+        this.position = position;
+        this.target = target;
+
+        spriteRenderer.color = target.Color;
     }
 }

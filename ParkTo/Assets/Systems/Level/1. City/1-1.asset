@@ -21,8 +21,8 @@ MonoBehaviour:
       data: 0
     - type: 17
       data: 0
-    - type: 0
-      data: 0
+    - type: 17
+      data: 1
     - type: 17
       data: 0
     - type: 1

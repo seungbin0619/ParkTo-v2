@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Tilemaps;
 
 public class GameManager : SingleTon<GameManager>
@@ -17,6 +18,20 @@ public class GameManager : SingleTon<GameManager>
 
     [SerializeField] 
     private Car carPrefab;
+
+    [SerializeField]
+    private Tile goalTilePrefab;
+
+    [SerializeField]
+    private Trigger triggerPrefab;
+
+    [SerializeField]
+    private Tile triggerTilePrefab;
+
+    [SerializeField]
+    private ScrollRect triggerView;
+
+    public Sprite[] triggerImages;
 
     #endregion
 
@@ -139,10 +154,17 @@ public class GameManager : SingleTon<GameManager>
                     case LevelBase.TileType.Goal:
                         DrawGround(position);
 
+                        triggerTile.SetTile((Vector3Int)position, goalTilePrefab);
+                        Goal goal = triggerTile.GetInstantiatedObject((Vector3Int)position).GetComponent<Goal>();
+                        goal.Initialize(position, CurrentCars[tile.data]);
 
                         break;
                     case LevelBase.TileType.Trigger:
+                        DrawGround(position);
 
+                        triggerTile.SetTile((Vector3Int)position, triggerTilePrefab);
+                        TriggerTile trigger = triggerTile.GetInstantiatedObject((Vector3Int)position).GetComponent<TriggerTile>();
+                        trigger.Initialize(triggerImages[tile.data]);
 
                         break;
                 }
