@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TriggerBar : UpdateCoroutine<TriggerBar>
+public class TriggerBar : MonoBehaviour
 {
     private readonly Vector2[] barPosition = new Vector2[2]
     {
@@ -26,7 +26,7 @@ public class TriggerBar : UpdateCoroutine<TriggerBar>
         targetSizeDelta = rectTransform.sizeDelta;
     }
 
-    protected override void Routine()
+    private void Update()
     {
         rectTransform.sizeDelta = Vector3.Lerp(rectTransform.sizeDelta, targetSizeDelta, Time.deltaTime * 5f);
         rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, targetPosition, Time.deltaTime * 5f);

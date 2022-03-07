@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class UIButtonFocus : UpdateCoroutine<UIButtonFocus>
+public class UIButtonFocus : MonoBehaviour
 {
     private RectTransform rectTransform;
     private Vector3 targetScale = Vector3.one;
@@ -23,7 +23,7 @@ public class UIButtonFocus : UpdateCoroutine<UIButtonFocus>
         targetScale = Vector3.one;
     }
 
-    protected override void Routine()
+    private void Update()
     {
         rectTransform.localScale = Vector3.Lerp(rectTransform.localScale, targetScale, Time.deltaTime * 10f);
     }

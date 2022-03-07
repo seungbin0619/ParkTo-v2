@@ -7,7 +7,31 @@ public class Goal : MonoBehaviour
     private Car target = null;
     private Vector2Int position;
 
+    private Vector3 targetScale = Vector3.zero;
+    private Vector3 beforeScale = Vector3.zero;
+
+    private bool condition = true;
+
+    public bool IsArrived
+    {
+        set
+        {
+            if (condition == value) return;
+            condition = value;
+
+            progress = 0;
+
+            beforeScale = transform.localScale;
+            targetScale = Vector3.one * (condition ? 0 : 1);
+        }
+        get
+        {
+            return condition;
+        }
+    }
+
     private SpriteRenderer spriteRenderer;
+    private float progress = 0;
 
     private void Awake()
     {
@@ -20,5 +44,16 @@ public class Goal : MonoBehaviour
         this.target = target;
 
         spriteRenderer.color = target.Color;
+    }
+    private void Update()
+    {
+        if (target == null) return;
+
+        IsArrived = !target.Collided && target.Position == position;
+
+        float tmpProgress = Mathf.Clamp(progress, 0f, 1f);
+        transform.localScale = LineAnimation.Lerp(beforeScale, targetScale, tmpProgress, 0.5f, 0.5f);
+
+        progress += Time.deltaTime * 2f;
     }
 }

@@ -7,15 +7,27 @@ using UnityEngine.UI;
 public class Trigger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IScrollHandler
 {
     private ScrollRect parentRect;
+    private Image image;
 
-    public void Initialize()
+    public LevelBase.TriggerType Type { private set; get; }
+    public Sprite sprite;
+
+    private void Awake()
     {
+        image = GetComponent<Image>();
+    }
 
+    public void Initialize(LevelBase.TriggerType type, ScrollRect parent)
+    {
+        Type = type;
+        parentRect = parent;
+
+        sprite = image.sprite = GameManager.instance.triggerImages[(int)type];
     }
 
     public void Select()
     {
-        
+        GameManager.instance.SelectTrigger(this);
     }
 
     #region [ 이벤트 전달 ]

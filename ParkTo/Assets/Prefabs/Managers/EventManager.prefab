@@ -44,3 +44,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroy: 1
+  PrevMove: {fileID: 11400000, guid: 7fd05d0eb8e5c794f935dc20c82e962b, type: 2}
+  OnMove: {fileID: 11400000, guid: b6dcd3a9f1739d84baea10f3511ab4a5, type: 2}
+  OnChange: {fileID: 11400000, guid: 1a7324b5454798f4fb5e6c5b5f7ae3bb, type: 2}
+  OnSelectTrigger: {fileID: 11400000, guid: 274635f4ca5d3e147bbd8b8a2e270647, type: 2}
+  OnUnselectTrigger: {fileID: 11400000, guid: fa99d392a9c4d794bb3f8a9d5f9157b3, type: 2}
+  OnSelectedTriggerStateChange: {fileID: 11400000, guid: ec5aac2a107a54c439c449a123863152, type: 2}

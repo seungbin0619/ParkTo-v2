@@ -11,6 +11,9 @@ GameObject:
   - component: {fileID: 1540657741365473243}
   - component: {fileID: 4149162024846979034}
   - component: {fileID: 1540657741365473242}
+  - component: {fileID: 4718387337757023859}
+  - component: {fileID: 4619398994946725056}
+  - component: {fileID: -7756968865063567730}
   m_Layer: 0
   m_Name: TriggerTile
   m_TagString: Untagged
@@ -70,7 +73,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 223352953
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 10
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -95,3 +98,75 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5be2a56cb8acbb4eb7d699859a87d32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4718387337757023859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1540657741365473237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad55ed5ac37c1024e84b3d800ddbeca7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sprites:
+  - {fileID: 4149162024846979034}
+  mode: 1
+  gen: 0
+--- !u!114 &4619398994946725056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1540657741365473237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41c8af3c0a3a32e46a3a28d0ee2f327c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: ec5aac2a107a54c439c449a123863152, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4718387337757023859}
+        m_TargetAssemblyTypeName: TriggerObject, Assembly-CSharp
+        m_MethodName: OnSelectedTriggerStateChanged
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &-7756968865063567730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1540657741365473237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41c8af3c0a3a32e46a3a28d0ee2f327c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: fa99d392a9c4d794bb3f8a9d5f9157b3, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4718387337757023859}
+        m_TargetAssemblyTypeName: TriggerObject, Assembly-CSharp
+        m_MethodName: OnUnselectTrigger
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2

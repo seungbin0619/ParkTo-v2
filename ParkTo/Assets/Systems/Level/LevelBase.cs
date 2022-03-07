@@ -14,9 +14,9 @@ public class LevelBase : ScriptableObject
 
     public enum TriggerType
     {
+        GOAL = -2,
         NORMAL = -1,
         BAN,
-        GOAL,
         TURNLEFT,
         TURNRIGHT,
         STOP,

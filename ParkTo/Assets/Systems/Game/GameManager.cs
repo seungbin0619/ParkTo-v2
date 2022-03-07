@@ -18,6 +18,14 @@ public class GameManager : SingleTon<GameManager>
 
     [SerializeField]
     private TriggerBar triggerBar;
+    private ScrollRect triggerScrollRect;
+    private GameObject noTrigger;
+
+    [SerializeField]
+    private SpriteRenderer previewTrigger;
+
+    [SerializeField]
+    private PlayButton playButton;
 
     [SerializeField] 
     private Car carPrefab;
@@ -49,15 +57,17 @@ public class GameManager : SingleTon<GameManager>
     public List<Goal> CurrentGoals { private set; get; }
     public LevelBase CurrentLevel { private set; get; }
 
-    #region [ 트리거 바 관련 ]
-
     public bool BarHide { private set; get; }
+    public bool IsPlayable { private set; get; }
+    public bool IsPlaying { private set; get; }
+
+    public bool TriggerSelectedMode { private set; get; }
+
+    private Trigger selectedTrigger;
 
     #endregion
 
-    #endregion
-
-    #region [ Undo 관련 ]
+    #region [ Undo ]
 
     public struct Behavior
     {
@@ -75,6 +85,17 @@ public class GameManager : SingleTon<GameManager>
 
     #endregion
 
+    #region [ 레벨 ]
+
+    public void test()
+    {
+        EraseLevel();
+        SetLevel(0, 0);
+        DrawLevel();
+
+        GetNextPath();
+    }
+
     protected override void Awake()
     {
         base.Awake();
@@ -83,6 +104,9 @@ public class GameManager : SingleTon<GameManager>
         triggerTile = levelGrid.GetChild(1).GetComponent<Tilemap>();
         groundTile = levelGrid.GetChild(2).GetComponent<Tilemap>();
         //predictTile = levelGrid.GetChild(3);
+
+        triggerScrollRect = triggerBar.GetComponent<ScrollRect>();
+        noTrigger = triggerScrollRect.content.GetChild(0).gameObject;
     }
 
     private void SetLevel(int theme, int index)
@@ -105,19 +129,13 @@ public class GameManager : SingleTon<GameManager>
             currentTiles[y] = CurrentLevel.tiles[y].tile.Clone() as LevelBase.TileData[];
 
         CurrentCars = new List<Car>();
+        CurrentGoals = new List<Goal>();
         CurrentTriggers = new List<Trigger>();
 
         behaviors = new List<Behavior>();
-    }
 
-    public void test()
-    {
-        EraseLevel();
-        SetLevel(0, 0);
-        DrawLevel();
+        IsGameOver = false;
     }
-
-    #region [ 레벨 Draw ]
 
     private void DrawLevel()
     {
@@ -146,6 +164,10 @@ public class GameManager : SingleTon<GameManager>
             CurrentCars.Add(newCar);
         }
 
+        foreach(LevelBase.TriggerType triggerData in CurrentLevel.triggers)
+            AddTrigger(triggerData);
+
+
         for (int y = 0; y < CurrentLevel.size.y; y++)
         {
             for(int x = 0; x < CurrentLevel.size.x; x++)
@@ -168,6 +190,8 @@ public class GameManager : SingleTon<GameManager>
                         Goal goal = triggerTile.GetInstantiatedObject((Vector3Int)position).GetComponent<Goal>();
                         goal.Initialize(position, CurrentCars[tile.data]);
 
+                        CurrentGoals.Add(goal);
+
                         break;
                     case LevelBase.TileType.Trigger:
                         DrawGround(position);
@@ -182,9 +206,10 @@ public class GameManager : SingleTon<GameManager>
         }
 
         IsDrew = true;
+        EventManager.instance.OnChange.Raise();
     }
 
-    void DrawGround(Vector2Int position)
+    private void DrawGround(Vector2Int position)
     {
         Vector2Int[] d = new Vector2Int[4] { Vector2Int.up, Vector2Int.left, Vector2Int.down, Vector2Int.right };
 
@@ -245,31 +270,272 @@ public class GameManager : SingleTon<GameManager>
 
         triggerTile.ClearAllTiles();
         groundTile.ClearAllTiles();
+
+        if(CurrentTriggers != null) 
+            foreach (Trigger trigger in CurrentTriggers)
+                Destroy(trigger.gameObject);
+
+        IsDrew = false;
     }
 
     #endregion
 
-    #region [ Trigger Bar 관련 ]
+    #region [ UI ]
 
-    private void UpdateTrigger()
+    private void InteractBar()
     {
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         if (triggerBar.Position >= mousePosition.y)
         {
-            if (BarHide) BarHide = triggerBar.Hide = false;
+            if (BarHide)
+            {
+                BarHide = triggerBar.Hide = false;
+                UpdatePlayButton();
+            }
         }
         else if (!BarHide)
         {
             if (Input.GetMouseButtonDown(0)) // 바깥 부분 클릭하면
+            {
                 BarHide = triggerBar.Hide = true;
+                UpdatePlayButton();
+            }
         }
+    }
+
+    #endregion
+
+    #region [ 트리거 ]
+
+    public void AddTrigger(LevelBase.TriggerType trigger, int index = -1)
+    {
+        Trigger newTrigger = Instantiate(triggerPrefab, triggerScrollRect.content);
+        newTrigger.Initialize(trigger, triggerScrollRect);
+
+        if (index == -1 || CurrentTriggers.Count < index)
+            CurrentTriggers.Add(newTrigger);
+        else
+        {
+            CurrentTriggers.Insert(index, newTrigger);
+            newTrigger.transform.SetSiblingIndex(index);
+        }
+
+        UpdateTriggerBar();
+    }
+
+    public void SelectTrigger(Trigger trigger)
+    {
+        if (IsGameOver) return;
+        if (IsPlaying) return;
+
+        previewTrigger.sprite = trigger.sprite;
+        previewTrigger.gameObject.SetActive(true);
+        
+        selectedTrigger = trigger;
+        TriggerSelectedMode = false;
+
+        EventManager.instance.OnSelectTrigger.Raise();
+        EventManager.instance.OnSelectedTriggerStateChange.Raise(false);
+    }
+
+    public void UnselectTrigger()
+    {
+        previewTrigger.gameObject.SetActive(false);
+        selectedTrigger = null;
+
+        EventManager.instance.OnUnselectTrigger.Raise();
+    }
+
+    private void FollowSelectedTrigger()
+    {
+        if (selectedTrigger == null) return;
+
+        bool tileValid = false;
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            TriggerSelectedMode = !TriggerSelectedMode;
+            EventManager.instance.OnSelectedTriggerStateChange.Raise(TriggerSelectedMode);
+        }
+
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition); mousePosition.z = 0;
+        Vector3Int tilePosition = triggerTile.WorldToCell(mousePosition);
+
+        if (!previewTrigger.gameObject.activeSelf) previewTrigger.gameObject.SetActive(true);
+
+        bool mb0Click = Input.GetMouseButtonDown(0);
+
+        if (TriggerSelectedMode)
+        {
+            #region [ 트리거 - 차 ]
+            Car car = null;
+            foreach (Car tmp in CurrentCars)
+            {
+                if (tilePosition != (Vector3Int)tmp.Position) continue;
+
+                car = tmp;
+                break;
+            }
+
+            //foreach (Car tmp in CurrentCars)
+            //    tmp.PreviewTrigger(0.8f);
+
+            if (car == null)
+            {
+                previewTrigger.transform.position = mousePosition;
+                tileValid = false;
+            }
+            else
+            {
+                if (!mb0Click)
+                {
+                    previewTrigger.gameObject.SetActive(false);
+
+                    //car.PreviewTrigger(1f);
+                }
+                else
+                {
+                    // 효과 적용
+
+                    EventManager.instance.OnUnselectTrigger.Raise();
+                }
+            }
+            #endregion
+        }
+        else
+        {
+            #region [ 트리거 - 타일 ]
+            if (!IsValidPosition(tilePosition))
+            {
+                previewTrigger.transform.position = mousePosition;
+                tileValid = false;
+            }
+            else
+            {
+                tileValid = currentTiles[tilePosition.y][tilePosition.x].type == LevelBase.TileType.Normal;
+                if (!mb0Click)
+                {
+                    previewTrigger.transform.localPosition = tilePosition + new Vector3(0.5f, 0.5f, 0);
+                }
+                else if (tileValid)
+                {
+                    // 효과 적용
+
+                    EventManager.instance.OnUnselectTrigger.Raise();
+                }
+                else { }
+            }
+            #endregion
+        }
+
+        previewTrigger.color = tileValid ? Color.white : Color.red * 0.5f;
+    }
+
+    private void UpdateTriggerBar()
+    {
+        int count = CurrentTriggers.Count;
+
+        noTrigger.SetActive(count == 0);
+        triggerBar.Size = count;
+    }
+
+    private void UpdatePlayButton()
+    {
+        playButton.Hide = !BarHide || !IsPlayable || IsPlaying;
     }
 
     #endregion
 
     #region [ 인게임 기능 ]
 
+    public void Move()
+    {
+        IsPlaying = true;
+        UpdatePlayButton();
 
+        StartCoroutine(MoveCoroutine());
+    }
+
+    private IEnumerator MoveCoroutine()
+    {
+        EventManager.instance.PrevMove.Raise();
+
+        float progress = 0;
+        bool complete = false;
+
+        while(!complete)
+        {
+            complete = true;
+
+            for (int i = 0; i < CurrentCars.Count; i++)
+                complete = !CurrentCars[i].MoveTo(progress) && complete;
+
+            yield return YieldDictionary.WaitForEndOfFrame;
+            progress += Time.deltaTime;
+        }
+
+        EventManager.instance.OnMove.Raise();
+        IsPlaying = false;
+    }
+
+    public void OnMove() // 이동 직후
+    {
+        AddBehavior(BehaviorType.MOVE);
+
+        if(CurrentCars.FindAll(p => p.Collided).Count > 0)
+        {
+            IsGameOver = true;
+
+            return;
+        }
+
+        EventManager.instance.OnChange.Raise();
+    }
+
+    public void OnChanged()
+    {
+        if (CurrentGoals.FindAll(p => p.IsArrived).Count == CurrentGoals.Count)
+        {
+            // 클리어
+
+            return;
+        }
+
+        BarHide = false; // 한 번 움직인 후 올라오기
+        UpdatePlayButton();
+    }
+
+    private void GetNextPath()
+    {
+        for (int i = 0; i < CurrentCars.Count; i++)
+            CurrentCars[i].InitPath();
+
+        while (true)
+        {
+            bool pFlag = false;
+            for (int i = 0; i < CurrentCars.Count; i++)
+            {
+                CurrentCars[i].GetNextPath();
+                pFlag = pFlag || !CurrentCars[i].Stopped;
+            }
+
+            if (!pFlag) break;
+        }
+        for (int i = 0; i < CurrentCars.Count; i++) // 차 이동 가능 체크
+            IsPlayable = CurrentCars[i].IsMovable || IsPlayable;
+
+        UpdatePlayButton();
+    }
+
+    public bool IsValidPosition(Vector3Int position)
+    {
+        int x = position.x, y = position.y;
+
+        if (x < 0 || x > CurrentLevel.size.x - 1 || y < 0 || y > CurrentLevel.size.y - 1) return false;
+        if (currentTiles[y][x].type == LevelBase.TileType.Empty) return false;
+
+        return true;
+    }
 
     #endregion
 
@@ -289,6 +555,7 @@ public class GameManager : SingleTon<GameManager>
 
     private void Update()
     {
-        UpdateTrigger();
+        InteractBar();
+        FollowSelectedTrigger();
     }
 }

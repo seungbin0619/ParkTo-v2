@@ -22,12 +22,12 @@ MonoBehaviour:
     - type: 17
       data: 0
     - type: 17
-      data: 1
+      data: 4
     - type: 17
       data: 0
     - type: 1
       data: 0
-  triggers: 
+  triggers: 01000000
   cars:
   - position: {x: 0, y: 0}
     rotation: 3

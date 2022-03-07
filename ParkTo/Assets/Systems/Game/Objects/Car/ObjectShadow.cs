@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectShadow : UpdateCoroutine<ObjectShadow>
+public class ObjectShadow : MonoBehaviour
 {
     private Vector3 shadowDistance;
 
@@ -14,7 +14,7 @@ public class ObjectShadow : UpdateCoroutine<ObjectShadow>
         shadowDistance = new Vector3(0, -distance, 0);
     }
 
-    protected override void Routine()
+    private void Update()
     {
         transform.position = parent.position + shadowDistance;
     }

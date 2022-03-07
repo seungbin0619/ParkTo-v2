@@ -34,7 +34,6 @@ public class SFXManager : SingleTon<SFXManager>
     #endregion
 
     private static readonly SoundData nullSound = new SoundData() { clip = null, volume = 1 };
-    private readonly WaitForEndOfFrame waitFrame = new WaitForEndOfFrame();
 
     private SoundData currentBgm = null;
     private Coroutine bgmCoroutine = null;
@@ -84,7 +83,7 @@ public class SFXManager : SingleTon<SFXManager>
                     currentBgm.volume *
                     BgmVolume;
 
-                yield return waitFrame;
+                yield return YieldDictionary.WaitForEndOfFrame;
                 progress += Time.deltaTime;
             }
             bgm.volume = 0;
@@ -105,7 +104,7 @@ public class SFXManager : SingleTon<SFXManager>
                     currentBgm.volume *
                     BgmVolume;
 
-                yield return waitFrame;
+                yield return YieldDictionary.WaitForEndOfFrame;
                 progress += Time.deltaTime;
             }
 
