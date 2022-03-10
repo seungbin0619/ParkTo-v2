@@ -278,6 +278,11 @@ public class GameManager : SingleTon<GameManager>
         IsDrew = false;
     }
 
+    public void Reload()
+    {
+
+    }
+
     #endregion
 
     #region [ UI ]
@@ -346,6 +351,41 @@ public class GameManager : SingleTon<GameManager>
         EventManager.instance.OnUnselectTrigger.Raise();
     }
 
+    public void UseTrigger()
+    {
+        if (selectedTrigger == null) return;
+
+        previewTrigger.gameObject.SetActive(false);
+        
+        CurrentTriggers.Remove(selectedTrigger);
+        Destroy(selectedTrigger.gameObject);
+
+        selectedTrigger = null;
+
+        UpdateTriggerBar();
+        EventManager.instance.OnChange.Raise();
+    }
+
+    public void SetTrigger(Vector3Int position, LevelBase.TriggerType triggerType)
+    {
+        if (triggerType == LevelBase.TriggerType.NORMAL)
+        {
+            triggerTile.SetTile(position, null);
+
+            currentTiles[position.y][position.x].type = LevelBase.TileType.Normal;
+        }
+        else
+        {
+            triggerTile.SetTile(position, triggerTilePrefab);
+            TriggerTile tile = triggerTile.GetInstantiatedObject(position).GetComponent<TriggerTile>();
+
+            tile.Initialize(triggerImages[(int)triggerType]);
+
+            currentTiles[position.y][position.x].type = LevelBase.TileType.Trigger;
+            currentTiles[position.y][position.x].data = (int)triggerType;
+        }
+    }
+
     private void FollowSelectedTrigger()
     {
         if (selectedTrigger == null) return;
@@ -377,8 +417,8 @@ public class GameManager : SingleTon<GameManager>
                 break;
             }
 
-            //foreach (Car tmp in CurrentCars)
-            //    tmp.PreviewTrigger(0.8f);
+            foreach (Car tmp in CurrentCars)
+                tmp.PreviewTrigger(0.8f);
 
             if (car == null)
             {
@@ -391,11 +431,15 @@ public class GameManager : SingleTon<GameManager>
                 {
                     previewTrigger.gameObject.SetActive(false);
 
-                    //car.PreviewTrigger(1f);
+                    car.PreviewTrigger(1f);
                 }
                 else
                 {
                     // 효과 적용
+                    car.SetTrigger(selectedTrigger.Type);
+
+                    AddBehavior(BehaviorType.TRIGGER, selectedTrigger.Type, selectedTrigger.transform.GetSiblingIndex(), car);
+                    UseTrigger();
 
                     EventManager.instance.OnUnselectTrigger.Raise();
                 }
@@ -419,7 +463,10 @@ public class GameManager : SingleTon<GameManager>
                 }
                 else if (tileValid)
                 {
-                    // 효과 적용
+                    SetTrigger(tilePosition, selectedTrigger.Type);
+
+                    AddBehavior(BehaviorType.TRIGGER, selectedTrigger.Type, selectedTrigger.transform.GetSiblingIndex(), tilePosition);
+                    UseTrigger();
 
                     EventManager.instance.OnUnselectTrigger.Raise();
                 }
@@ -501,7 +548,9 @@ public class GameManager : SingleTon<GameManager>
             return;
         }
 
-        BarHide = false; // 한 번 움직인 후 올라오기
+        GetNextPath();
+
+        BarHide = CurrentTriggers.Count == 0; // 한 번 움직인 후 올라오기
         UpdatePlayButton();
     }
 
@@ -550,6 +599,12 @@ public class GameManager : SingleTon<GameManager>
 
         behaviors.Add(beh);
     }
+
+    public void Undo()
+    {
+
+    }
+
 
     #endregion
 

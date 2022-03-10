@@ -12,4 +12,6 @@ public class EventManager : SingleTon<EventManager>
     public GameEvent OnSelectTrigger;
     public GameEvent OnUnselectTrigger;
     public GameEvent OnSelectedTriggerStateChange;
+
+    public GameEvent OnCameraChange;
 }

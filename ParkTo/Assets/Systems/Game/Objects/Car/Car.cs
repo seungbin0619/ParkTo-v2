@@ -71,6 +71,8 @@ public class Car : MonoBehaviour
 
     #endregion
 
+    private Vector3 targetScale = Vector3.one * 0.8f;
+
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -308,5 +310,52 @@ public class Car : MonoBehaviour
         rotation %= 4;
 
         return rotation;
+    }
+
+    #region [ Æ®¸®°Å ]
+
+    public void SetTrigger(LevelBase.TriggerType triggerType, bool undo = false)
+    {
+        switch (triggerType)
+        {
+            case LevelBase.TriggerType.TURNLEFT:
+                Rotation = Rotate(Rotation, undo ? -1 : 1);
+
+                break;
+            case LevelBase.TriggerType.TURNRIGHT:
+                Rotation = Rotate(Rotation, undo ? 1 : -1);
+
+                break;
+            case LevelBase.TriggerType.STOP:
+                isTriggerStop = !undo;
+
+                break;
+            case LevelBase.TriggerType.BACKWARD:
+                isTriggerBakcward = !undo;
+
+                break;
+            default: break;
+        }
+
+        Rotation %= 4;
+        transform.eulerAngles = angles[Rotation];
+    }
+
+    private void PreviewUpdate()
+    {
+        if (GameManager.instance.IsPlaying) return;
+        transform.localScale = Vector3.Lerp(transform.localScale, targetScale, Time.deltaTime * 10f);
+    }
+
+    public void PreviewTrigger(float size)
+    {
+        targetScale = Vector3.one * size;
+    }
+
+    #endregion
+
+    private  void Update()
+    {
+        PreviewUpdate();
     }
 }
