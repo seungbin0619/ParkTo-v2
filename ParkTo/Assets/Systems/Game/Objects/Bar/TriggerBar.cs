@@ -26,9 +26,9 @@ public class TriggerBar : MonoBehaviour
         targetSizeDelta = rectTransform.sizeDelta;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        rectTransform.sizeDelta = Vector3.Lerp(rectTransform.sizeDelta, targetSizeDelta, Time.deltaTime * 5f);
-        rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, targetPosition, Time.deltaTime * 5f);
+        rectTransform.sizeDelta = Vector3.Lerp(rectTransform.sizeDelta, targetSizeDelta, Time.fixedDeltaTime * 5f);
+        rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, targetPosition, Time.fixedDeltaTime * 5f);
     }
 }

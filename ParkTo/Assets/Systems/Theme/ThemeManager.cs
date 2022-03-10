@@ -9,11 +9,6 @@ public class ThemeManager : SingleTon<ThemeManager>
     public static int index = -1;
     public static ThemeBase currentTheme = null;
 
-    private void Start()
-    {
-        
-    }
-
     public void SetTheme(int index)
     {
         if (index < 0 || index >= themes.Count) return;

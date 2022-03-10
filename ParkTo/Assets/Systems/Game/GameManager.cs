@@ -50,12 +50,14 @@ public class GameManager : SingleTon<GameManager>
 
     public bool IsGameOver { private set; get; } // 게임 오버 상태인가?
     public bool IsDrew { private set; get; }    // 맵이 그려져 있는 상태인가?
+    private bool IsAnimate { set; get; }
 
     public LevelBase.TileData[][] currentTiles { private set; get; }
     public List<Car> CurrentCars { private set; get; }
     public List<Trigger> CurrentTriggers { private set; get; }
     public List<Goal> CurrentGoals { private set; get; }
     public LevelBase CurrentLevel { private set; get; }
+    private int LevelIndex { set; get; }
 
     public bool BarHide { private set; get; }
     public bool IsPlayable { private set; get; }
@@ -87,15 +89,6 @@ public class GameManager : SingleTon<GameManager>
 
     #region [ 레벨 ]
 
-    public void test()
-    {
-        EraseLevel();
-        SetLevel(0, 0);
-        DrawLevel();
-
-        GetNextPath();
-    }
-
     protected override void Awake()
     {
         base.Awake();
@@ -109,23 +102,34 @@ public class GameManager : SingleTon<GameManager>
         noTrigger = triggerScrollRect.content.GetChild(0).gameObject;
     }
 
+    private void Start()
+    {
+        StartCoroutine(PrevSetLevel(0, 0, false));
+    }
+
     private void SetLevel(int theme, int index)
     {
         if (theme < 0 || theme >= ThemeManager.instance.themes.Count) return;
         if (index < 0 || index >= ThemeManager.instance.themes[theme].levels.Count) return;
 
-        if(ThemeManager.index != theme) // 씬이 바뀌는 경우
-        {
-            ThemeManager.instance.SetTheme(theme);
-            // 다시 로드하기.
+        //if(ThemeManager.index != theme) // 씬이 바뀌는 경우
+        //{
+        //    ThemeManager.instance.SetTheme(theme);
+        //    // 다시 로드하기.
 
-            //return;
-        }
+        //    //return;
+        //}
 
         CurrentLevel = ThemeManager.currentTheme.levels[index];
+        LevelIndex = index;
+    }
+
+    private void InitializeLevel()
+    {
+        if (CurrentLevel == null) return;
 
         currentTiles = new LevelBase.TileData[CurrentLevel.size.y][];
-        for(int y = 0; y < CurrentLevel.tiles.Length; y++)
+        for (int y = 0; y < CurrentLevel.tiles.Length; y++)
             currentTiles[y] = CurrentLevel.tiles[y].tile.Clone() as LevelBase.TileData[];
 
         CurrentCars = new List<Car>();
@@ -133,7 +137,6 @@ public class GameManager : SingleTon<GameManager>
         CurrentTriggers = new List<Trigger>();
 
         behaviors = new List<Behavior>();
-
         IsGameOver = false;
     }
 
@@ -206,7 +209,6 @@ public class GameManager : SingleTon<GameManager>
         }
 
         IsDrew = true;
-        EventManager.instance.OnChange.Raise();
     }
 
     private void DrawGround(Vector2Int position)
@@ -278,17 +280,76 @@ public class GameManager : SingleTon<GameManager>
         IsDrew = false;
     }
 
-    public void Reload()
+    IEnumerator PrevSetLevel(int theme, int index, bool animate = true)
     {
+        WaitWhile waitAnimate = new WaitWhile(() => IsAnimate);
+        if (CurrentLevel != null)
+        {
+            StartCoroutine(LevelAppearEffect(0));
+            yield return waitAnimate;
 
+            EraseLevel();
+        }
+
+        if(ThemeManager.index != index)
+        {
+            ThemeManager.instance.SetTheme(theme);
+        }
+
+        SetLevel(theme, index);
+        InitializeLevel();
+        DrawLevel();
+
+        if(animate)
+        {
+            StartCoroutine(LevelAppearEffect(1));
+            yield return waitAnimate;
+        }
+
+        EventManager.instance.OnChange.Raise();
+    }
+
+
+    private IEnumerator LevelAppearEffect(int delta)
+    {
+        IsAnimate = true;
+
+        Vector3 currentPosition = levelGrid.transform.position, targetPosition;
+        currentPosition.x += 20f * delta;
+
+        targetPosition = currentPosition;
+        targetPosition.x -= 20f;
+
+        float duration = 1f, progress = 0;
+        while (true)
+        {
+            progress += Time.deltaTime;
+            float clamp = Mathf.Clamp(progress / duration, 0, 1);
+
+            levelGrid.transform.position = LineAnimation.Lerp(currentPosition, targetPosition, clamp, (delta + 1) % 2, delta);
+
+            yield return YieldDictionary.WaitForEndOfFrame;
+            if (progress > duration) break;
+        }
+
+        IsAnimate = false;
     }
 
     #endregion
 
     #region [ UI ]
 
+    public void Reload()
+    {
+        StartCoroutine(PrevSetLevel(ThemeManager.index, LevelIndex));
+    }
+
     private void InteractBar()
     {
+        if (!IsDrew) return;
+        if (IsAnimate) return;
+        if (IsPlaying) return;
+
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         if (triggerBar.Position >= mousePosition.y)
         {
@@ -488,7 +549,10 @@ public class GameManager : SingleTon<GameManager>
 
     private void UpdatePlayButton()
     {
-        playButton.Hide = !BarHide || !IsPlayable || IsPlaying;
+        bool flag = !BarHide || !IsPlayable || IsPlaying || IsAnimate;
+        playButton.Hide = flag;
+
+        if (!BarHide && !flag) BarHide = true; 
     }
 
     #endregion
@@ -539,7 +603,7 @@ public class GameManager : SingleTon<GameManager>
         EventManager.instance.OnChange.Raise();
     }
 
-    public void OnChanged()
+    public void OnChange()
     {
         if (CurrentGoals.FindAll(p => p.IsArrived).Count == CurrentGoals.Count)
         {
@@ -550,7 +614,7 @@ public class GameManager : SingleTon<GameManager>
 
         GetNextPath();
 
-        BarHide = CurrentTriggers.Count == 0; // 한 번 움직인 후 올라오기
+        BarHide = triggerBar.Hide = CurrentTriggers.Count == 0; // 한 번 움직인 후 올라오기
         UpdatePlayButton();
     }
 

@@ -466,7 +466,11 @@ PrefabInstance:
     - target: {fileID: 7682775957797913839, guid: 495329015b7974240be721e37cb4f7f5, type: 3}
       propertyPath: targetManager
       value: 
-      objectReference: {fileID: 782248926}
+      objectReference: {fileID: 560559521}
+    - target: {fileID: 8659649215968996015, guid: 495329015b7974240be721e37cb4f7f5, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8659649216182511850, guid: 495329015b7974240be721e37cb4f7f5, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -565,157 +569,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 495329015b7974240be721e37cb4f7f5, type: 3}
---- !u!223 &560559519 stripped
-Canvas:
-  m_CorrespondingSourceObject: {fileID: 8659649216182511851, guid: 495329015b7974240be721e37cb4f7f5, type: 3}
+--- !u!114 &560559521 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 246808319780904092, guid: 495329015b7974240be721e37cb4f7f5, type: 3}
   m_PrefabInstance: {fileID: 560559518}
   m_PrefabAsset: {fileID: 0}
---- !u!111 &560559520 stripped
-Animation:
-  m_CorrespondingSourceObject: {fileID: 311440691592487369, guid: 495329015b7974240be721e37cb4f7f5, type: 3}
-  m_PrefabInstance: {fileID: 560559518}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &737329011
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 737329012}
-  - component: {fileID: 737329013}
-  m_Layer: 0
-  m_Name: SceneManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &737329012
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 737329011}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1407723656}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &737329013
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 737329011}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ff66b878541d9448bff2adde7c490eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  actions:
-  - id: Move
-    argCount: 1
-    behaviors:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 737329013}
-          m_TargetAssemblyTypeName: SceneManager, Assembly-CSharp
-          m_MethodName: MoveScene
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
---- !u!1 &782248925
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 782248927}
-  - component: {fileID: 782248926}
-  m_Layer: 0
-  m_Name: FadeManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &782248926
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 782248925}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5a2458b887b99a44bf2c7ebd54521ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actions:
-  - id: FadeIn
-    argCount: 1
-    behaviors:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 782248926}
-          m_TargetAssemblyTypeName: FadeManager, Assembly-CSharp
-          m_MethodName: Fade
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - id: FadeOut
-    argCount: 1
-    behaviors:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 782248926}
-          m_TargetAssemblyTypeName: FadeManager, Assembly-CSharp
-          m_MethodName: Fade
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  canvas: {fileID: 560559519}
-  animations: {fileID: 560559520}
---- !u!4 &782248927
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 782248925}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1407723656}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &854496830
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -830,11 +694,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 73e683bf507181043bfb3a99f9eb5f84, type: 3}
---- !u!4 &1407723656 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7720938358955943460, guid: 73e683bf507181043bfb3a99f9eb5f84, type: 3}
-  m_PrefabInstance: {fileID: 1407723655}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1556266877
 PrefabInstance:
   m_ObjectHideFlags: 0

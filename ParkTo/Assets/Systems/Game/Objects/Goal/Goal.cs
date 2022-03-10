@@ -10,7 +10,7 @@ public class Goal : MonoBehaviour
     private Vector3 targetScale = Vector3.zero;
     private Vector3 beforeScale = Vector3.zero;
 
-    private bool condition = true;
+    private bool condition = false;
 
     public bool IsArrived
     {
@@ -44,6 +44,7 @@ public class Goal : MonoBehaviour
         this.target = target;
 
         spriteRenderer.color = target.Color;
+        beforeScale = targetScale = Vector3.one;
     }
     private void Update()
     {

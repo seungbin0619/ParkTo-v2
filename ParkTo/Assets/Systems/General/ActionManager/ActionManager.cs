@@ -39,7 +39,7 @@ public class ActionManager : SingleTon<ActionManager>
         Next();
     }
 
-    public static void Next()
+    private static void Next()
     {
         if (IsCompleted)
         {

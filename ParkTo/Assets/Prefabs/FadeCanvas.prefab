@@ -121,6 +121,8 @@ GameObject:
   - component: {fileID: 8659649216182511849}
   - component: {fileID: 8659649216182511845}
   - component: {fileID: 8477171692721691957}
+  - component: {fileID: 246808319780904092}
+  - component: {fileID: 3961831581818800740}
   m_Layer: 5
   m_Name: FadeCanvas
   m_TagString: Untagged
@@ -249,3 +251,65 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &246808319780904092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8659649216182511854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a2458b887b99a44bf2c7ebd54521ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dontDestroy: 1
+  canvas: {fileID: 8659649216182511851}
+  animations: {fileID: 311440691592487369}
+--- !u!114 &3961831581818800740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8659649216182511854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 119d26de3f485d941a7ba8f5e11447a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actions:
+  - id: FadeIn
+    argCount: 1
+    behaviors:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 246808319780904092}
+          m_TargetAssemblyTypeName: FadeManager, Assembly-CSharp
+          m_MethodName: Fade
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - id: FadeOut
+    argCount: 1
+    behaviors:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 246808319780904092}
+          m_TargetAssemblyTypeName: FadeManager, Assembly-CSharp
+          m_MethodName: Fade
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2

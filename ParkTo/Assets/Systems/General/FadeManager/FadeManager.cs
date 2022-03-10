@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class FadeManager : ActionBase
+public class FadeManager : SingleTon<FadeManager>
 {
     [SerializeField]
     private Canvas canvas;
@@ -15,10 +15,12 @@ public class FadeManager : ActionBase
     private Dictionary<string, AnimationClip> clips;
     public static UnityEvent fadeEvent;
 
-    private void Awake()
-    {
-        DontDestroyOnLoad(canvas.gameObject);
+    [System.NonSerialized]
+    public Action currentAction;
 
+    protected override void Awake()
+    {
+        base.Awake();
         clips = new Dictionary<string, AnimationClip>();
 
         clips.Add("FadeIn", animations.GetClip("FadeIn"));

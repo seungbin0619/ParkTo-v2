@@ -27,7 +27,7 @@ MonoBehaviour:
       data: 0
     - type: 1
       data: 0
-  triggers: 01000000
+  triggers: 
   cars:
   - position: {x: 0, y: 0}
     rotation: 3
