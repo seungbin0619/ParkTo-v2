@@ -171,6 +171,22 @@ public class Car : MonoBehaviour
 
     #region [ ¿Ãµø ]
 
+    public void PrevMove()
+    {
+        trace.Add(new PathData((Vector3Int)Position, Rotation, isTriggerBakcward));
+
+        isTriggerStop = false;
+        isTriggerBakcward = false;
+    }
+
+    public void OnMove()
+    {
+        if (Collided) return;
+
+        transform.localPosition = (Vector3Int)Position;
+        transform.eulerAngles = angles[Rotate(Rotation)];
+    }
+
     public bool MoveTo(float progress)
     {
         if (Collided) return false;
@@ -353,6 +369,28 @@ public class Car : MonoBehaviour
     }
 
     #endregion
+
+
+    public void Undo()
+    {
+        if (trace.Count == 0) return;
+        PathData pathData = trace[trace.Count - 1];
+
+        Position = (Vector2Int)pathData.position;
+        Rotation = pathData.rotation;
+
+        transform.localPosition = pathData.position;
+        transform.eulerAngles = angles[Rotate(Rotation)];
+
+        if(Collided)
+        {
+            Collided = false;
+
+            //
+        }
+
+        trace.RemoveAt(trace.Count - 1);
+    }
 
     private  void Update()
     {

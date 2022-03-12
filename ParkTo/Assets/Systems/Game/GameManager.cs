@@ -79,8 +79,7 @@ public class GameManager : SingleTon<GameManager>
     public enum BehaviorType
     {
         MOVE,    // 차의 이동
-        TRIGGER, // 트리거 배치
-        STATE    // 트리거에 의한 상태 변경
+        TRIGGER, // 트리거
     }
 
     private List<Behavior> behaviors;
@@ -104,21 +103,29 @@ public class GameManager : SingleTon<GameManager>
 
     private void Start()
     {
-        StartCoroutine(PrevSetLevel(0, 0, false));
+#if UNITY_EDITOR
+        if(ThemeManager.index == -1)
+        {
+            StartCoroutine(PrevSetLevel(0, false));
+            return;
+        }
+#endif
+
+        StartCoroutine(PrevSetLevel(0, false));
     }
 
-    private void SetLevel(int theme, int index)
+    private void SetLevel(int index)
     {
-        if (theme < 0 || theme >= ThemeManager.instance.themes.Count) return;
-        if (index < 0 || index >= ThemeManager.instance.themes[theme].levels.Count) return;
+        if (ThemeManager.currentTheme == null) return;
+        if (index < 0 || index >= ThemeManager.currentTheme.levels.Count)
+        {
+            int theme = ThemeManager.currentTheme.index;
+            theme += (int)Mathf.Sign(index - ThemeManager.currentTheme.levels.Count);
 
-        //if(ThemeManager.index != theme) // 씬이 바뀌는 경우
-        //{
-        //    ThemeManager.instance.SetTheme(theme);
-        //    // 다시 로드하기.
+            ThemeManager.instance.SetTheme(theme);
 
-        //    //return;
-        //}
+            return;
+        }
 
         CurrentLevel = ThemeManager.currentTheme.levels[index];
         LevelIndex = index;
@@ -159,16 +166,18 @@ public class GameManager : SingleTon<GameManager>
 
         #endregion
 
-        foreach (LevelBase.CarData carData in CurrentLevel.cars)
+        for (int i =0; i < CurrentLevel.cars.Length;i++)
         {
+            LevelBase.CarData carData = CurrentLevel.cars[i];
+
             Car newCar = Instantiate(carPrefab, carTile);
             newCar.Initialize(carData.position, carData.rotation, shuffledColor[CurrentCars.Count]);
 
             CurrentCars.Add(newCar);
         }
 
-        foreach(LevelBase.TriggerType triggerData in CurrentLevel.triggers)
-            AddTrigger(triggerData);
+        for (int i = 0; i < CurrentLevel.triggers.Length; i++)
+            AddTrigger(CurrentLevel.triggers[i]);
 
 
         for (int y = 0; y < CurrentLevel.size.y; y++)
@@ -280,36 +289,23 @@ public class GameManager : SingleTon<GameManager>
         IsDrew = false;
     }
 
-    IEnumerator PrevSetLevel(int theme, int index, bool animate = true)
+    private IEnumerator PrevSetLevel(int index, bool animate = true, float delay = 0f)
     {
-        WaitWhile waitAnimate = new WaitWhile(() => IsAnimate);
+        if (delay > 0) yield return YieldDictionary.WaitForSeconds(delay);
         if (CurrentLevel != null)
         {
-            StartCoroutine(LevelAppearEffect(0));
-            yield return waitAnimate;
+            yield return LevelAppearEffect(0);
 
             EraseLevel();
         }
 
-        if(ThemeManager.index != index)
-        {
-            ThemeManager.instance.SetTheme(theme);
-        }
-
-        SetLevel(theme, index);
+        SetLevel(index);
         InitializeLevel();
         DrawLevel();
 
-        if(animate)
-        {
-            StartCoroutine(LevelAppearEffect(1));
-            yield return waitAnimate;
-        }
-
+        if(animate) yield return LevelAppearEffect(1);
         EventManager.instance.OnChange.Raise();
     }
-
-
     private IEnumerator LevelAppearEffect(int delta)
     {
         IsAnimate = true;
@@ -333,6 +329,7 @@ public class GameManager : SingleTon<GameManager>
         }
 
         IsAnimate = false;
+        yield break;
     }
 
     #endregion
@@ -341,7 +338,8 @@ public class GameManager : SingleTon<GameManager>
 
     public void Reload()
     {
-        StartCoroutine(PrevSetLevel(ThemeManager.index, LevelIndex));
+        if (IsAnimate) return;
+        StartCoroutine(PrevSetLevel(LevelIndex));
     }
 
     private void InteractBar()
@@ -432,7 +430,6 @@ public class GameManager : SingleTon<GameManager>
         if (triggerType == LevelBase.TriggerType.NORMAL)
         {
             triggerTile.SetTile(position, null);
-
             currentTiles[position.y][position.x].type = LevelBase.TileType.Normal;
         }
         else
@@ -496,7 +493,6 @@ public class GameManager : SingleTon<GameManager>
                 }
                 else
                 {
-                    // 효과 적용
                     car.SetTrigger(selectedTrigger.Type);
 
                     AddBehavior(BehaviorType.TRIGGER, selectedTrigger.Type, selectedTrigger.transform.GetSiblingIndex(), car);
@@ -607,8 +603,7 @@ public class GameManager : SingleTon<GameManager>
     {
         if (CurrentGoals.FindAll(p => p.IsArrived).Count == CurrentGoals.Count)
         {
-            // 클리어
-
+            StartCoroutine(PrevSetLevel(LevelIndex + 1, delay: 1f));
             return;
         }
 
@@ -666,7 +661,40 @@ public class GameManager : SingleTon<GameManager>
 
     public void Undo()
     {
+        if (IsAnimate || !IsDrew || IsPlaying) return;
+        if (behaviors.Count == 0) return;
 
+        Behavior behavior = behaviors[behaviors.Count - 1];
+        switch (behavior.type)
+        {
+            case BehaviorType.MOVE:
+                for (int i = 0; i < CurrentCars.Count; i++)
+                    CurrentCars[i].Undo();
+                if (IsGameOver) IsGameOver = false;
+
+                break;
+            case BehaviorType.TRIGGER:
+                LevelBase.TriggerType trigger = (LevelBase.TriggerType)behavior.args[0];
+                int index = int.Parse(behavior.args[1].ToString());
+
+                if(behavior.args[2].GetType() == typeof(Car)) // 차에 사용했다면.
+                {
+                    Car car = behavior.args[2] as Car;
+                    car.SetTrigger(trigger, true);
+                }
+                else
+                {
+                    Vector3Int position = (Vector3Int)behavior.args[2];
+                    SetTrigger(position, LevelBase.TriggerType.NORMAL);
+                }
+
+                AddTrigger(trigger, index);
+
+                break;
+        }
+
+        behaviors.RemoveAt(behaviors.Count - 1);
+        EventManager.instance.OnChange.Raise();
     }
 
 

@@ -45,6 +45,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dontDestroy: 1
   parts:
-  - test
+  - Game
   crypto: 1
-  password: test
+  password: ParkTo
