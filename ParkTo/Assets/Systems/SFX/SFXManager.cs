@@ -33,6 +33,10 @@ public class SFXManager : SingleTon<SFXManager>
 
     #endregion
 
+    public delegate void SFXEventHandler(float value);
+    //public event SFXEventHandler OnMusicVolumeChanged = delegate { };
+    public event SFXEventHandler OnSoundVolumeChanged = delegate { };
+
     private static readonly SoundData nullSound = new SoundData() { clip = null, volume = 1 };
 
     private SoundData currentBgm = null;
@@ -49,20 +53,20 @@ public class SFXManager : SingleTon<SFXManager>
             sounds.Add(child.GetComponent<AudioSource>());
     }
 
-    private void Start()
-    {
-
-    }
-
     public void SetBgmVolume(float volume)
     {
         BgmVolume = Mathf.Clamp(volume, 0, 1);
 
         if(currentBgm != null)
             bgm.volume = currentBgm.volume * BgmVolume;
+        //OnMusicVolumeChanged?.Invoke(BgmVolume);
     }
 
-    public void SetSoundVolume(float volume) { SoundVolume = Mathf.Clamp(volume, 0, 1); }
+    public void SetSoundVolume(float volume)
+    {
+        SoundVolume = Mathf.Clamp(volume, 0, 1);
+        OnSoundVolumeChanged?.Invoke(SoundVolume);
+    }
 
     public void PlayBgm(int index = -1, float duration = 0.5f, bool replay = false)
     {
