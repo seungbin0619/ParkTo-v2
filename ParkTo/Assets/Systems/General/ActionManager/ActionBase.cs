@@ -16,7 +16,7 @@ public class ActionBase : MonoBehaviour
 
     protected virtual void OnDisable()
     {
-        foreach (Action action in actions)
-            ActionManager.DeleteAction(action);
+        //foreach (Action action in actions)
+        //    ActionManager.DeleteAction(action);
     }
 }

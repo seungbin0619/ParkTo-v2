@@ -29,6 +29,7 @@ public class ActionManager : SingleTon<ActionManager>
         if (actions[id].argCount != args.Length) return;
 
         playLists.Add(new ActionData(actions[id], args));
+        print(id);
     }
 
     public static void Play()

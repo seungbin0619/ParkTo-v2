@@ -12,7 +12,9 @@ public class ThemeManager : SingleTon<ThemeManager>
     protected override void Awake()
     {
         base.Awake();
-        SetTheme(DataManager.GetData("Game", "CurrentTheme", 0));
+
+        if(index == -1)
+            SetTheme(DataManager.GetData("Game", "CurrentTheme", 0));
     }
 
     public void SetTheme(int index)

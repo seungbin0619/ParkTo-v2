@@ -85,8 +85,15 @@ public class Car : MonoBehaviour
         Rotation = rotation;
         Color = color;
 
+        transform.localPosition = (Vector3Int)position;
         transform.eulerAngles = new Vector3(0, 0, rotation * 90f);
         spriteRenderer.color = color;
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Collided = true;
+        Vector2 hitPoint = collision.contacts[0].point;
+        //MapSystem.instance.AddCollision(hitPoint);
     }
 
     #region [ 경로 ]
@@ -228,49 +235,59 @@ public class Car : MonoBehaviour
             {
                 position += (clamp - 0.5f * Mathf.Pow(clamp, 2)) * (Vector3)direction[Rotate(bef.rotation, back: bef.backward)];
 
-                switch ((LevelBase.TriggerType)tile.data) // 바닥에 따라 방향이 달라질 수 있음
+                if (tile.type == LevelBase.TileType.Trigger)
                 {
-                    case LevelBase.TriggerType.TURNLEFT:
-                    case LevelBase.TriggerType.TURNRIGHT:
-                        Rotation = cur.rotation;
+                    switch ((LevelBase.TriggerType)tile.data) // 바닥에 따라 방향이 달라질 수 있음
+                    {
+                        case LevelBase.TriggerType.TURNLEFT:
+                        case LevelBase.TriggerType.TURNRIGHT:
+                            Rotation = cur.rotation;
 
-                        if (bef.rotation == 3 && cur.rotation == 0) cur.rotation = 4;
-                        if (bef.rotation == 0 && cur.rotation == 3) bef.rotation = 4;
+                            if (bef.rotation == 3 && cur.rotation == 0) cur.rotation = 4;
+                            if (bef.rotation == 0 && cur.rotation == 3) bef.rotation = 4;
 
-                        transform.eulerAngles = LineAnimation.Lerp(angles[bef.rotation], angles[cur.rotation], clamp, 0, 0.5f);
+                            transform.eulerAngles = LineAnimation.Lerp(angles[bef.rotation], angles[cur.rotation], clamp, 0, 0.5f);
 
-                        break;
-                    default: // 직진
-                        transform.eulerAngles = angles[bef.rotation];
+                            break;
+                        default: // 직진
+                            transform.eulerAngles = angles[bef.rotation];
 
-                        break;
-                }
+                            break;
+                    }
+                }else transform.eulerAngles = angles[bef.rotation];
             }
             else
             {
-                switch ((LevelBase.TriggerType)tile.data) // 바닥에 따라 방향이 달라질 수 있음
+                if (tile.type == LevelBase.TileType.Trigger)
                 {
-                    case LevelBase.TriggerType.TURNLEFT:
-                        position = GetTurnPosition(bef, cur, position, clamp, !bef.backward ? 1 : -1);
+                    switch ((LevelBase.TriggerType)tile.data) // 바닥에 따라 방향이 달라질 수 있음
+                    {
+                        case LevelBase.TriggerType.TURNLEFT:
+                            position = GetTurnPosition(bef, cur, position, clamp, !bef.backward ? 1 : -1);
 
-                        break;
-                    case LevelBase.TriggerType.TURNRIGHT:
-                        position = GetTurnPosition(bef, cur, position, clamp, !bef.backward ? -1 : 1);
+                            break;
+                        case LevelBase.TriggerType.TURNRIGHT:
+                            position = GetTurnPosition(bef, cur, position, clamp, !bef.backward ? -1 : 1);
 
-                        break;
-                    case LevelBase.TriggerType.BACKWARD:
-                        if (bef.backward != cur.backward)
-                            position += (clamp - Mathf.Pow(clamp, 2)) * (Vector3)direction[bef.rotation];
-                        else position += clamp * (Vector3)direction[Rotate(bef.rotation, back: bef.backward)];
+                            break;
+                        case LevelBase.TriggerType.BACKWARD:
+                            if (bef.backward != cur.backward)
+                                position += (clamp - Mathf.Pow(clamp, 2)) * (Vector3)direction[bef.rotation];
+                            else position += clamp * (Vector3)direction[Rotate(bef.rotation, back: bef.backward)];
 
-                        transform.eulerAngles = angles[bef.rotation];
+                            transform.eulerAngles = angles[bef.rotation];
 
-                        break;
-                    default: // 직진
-                        position += clamp * (Vector3)direction[Rotate(bef.rotation, back: bef.backward)];
-                        transform.eulerAngles = angles[bef.rotation];
+                            break;
+                        default: // 직진
+                            position += clamp * (Vector3)direction[Rotate(bef.rotation, back: bef.backward)];
+                            transform.eulerAngles = angles[bef.rotation];
 
-                        break;
+                            break;
+                    }
+                }else
+                {
+                    position += clamp * (Vector3)direction[Rotate(bef.rotation, back: bef.backward)];
+                    transform.eulerAngles = angles[bef.rotation];
                 }
             }
         }

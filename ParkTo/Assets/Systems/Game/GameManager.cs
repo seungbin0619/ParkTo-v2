@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Tilemaps;
 
-public class GameManager : SingleTon<GameManager>
+// 선언부
+partial class GameManager : SingleTon<GameManager>
 {
     #region [ 오브젝트 ]
 
@@ -69,25 +70,6 @@ public class GameManager : SingleTon<GameManager>
 
     #endregion
 
-    #region [ Undo ]
-
-    public struct Behavior
-    {
-        public BehaviorType type;
-        public List<object> args;
-    }
-    public enum BehaviorType
-    {
-        MOVE,    // 차의 이동
-        TRIGGER, // 트리거
-    }
-
-    private List<Behavior> behaviors;
-
-    #endregion
-
-    #region [ 레벨 ]
-
     protected override void Awake()
     {
         base.Awake();
@@ -101,34 +83,50 @@ public class GameManager : SingleTon<GameManager>
         noTrigger = triggerScrollRect.content.GetChild(0).gameObject;
     }
 
+    private void Update()
+    {
+        InteractBar();
+        FollowSelectedTrigger();
+    }
+}
+
+partial class GameManager // LeveDraw
+{
     private void Start()
     {
 #if UNITY_EDITOR
-        if(ThemeManager.index == -1)
+        if (ThemeManager.index == -1)
         {
             StartCoroutine(PrevSetLevel(0, false));
             return;
         }
 #endif
 
-        StartCoroutine(PrevSetLevel(0, false));
+        StartCoroutine(PrevSetLevel(0, true));
     }
 
-    private void SetLevel(int index)
+    private bool SetLevel(int index)
     {
-        if (ThemeManager.currentTheme == null) return;
+        if (ThemeManager.currentTheme == null) return false;
         if (index < 0 || index >= ThemeManager.currentTheme.levels.Count)
         {
-            int theme = ThemeManager.currentTheme.index;
+            int theme = ThemeManager.index;
             theme += (int)Mathf.Sign(index - ThemeManager.currentTheme.levels.Count);
 
             ThemeManager.instance.SetTheme(theme);
 
-            return;
+            ActionManager.AddAction("FadeIn", 0.5f);
+            ActionManager.AddAction("Move", "Game");
+            ActionManager.AddAction("FadeOut", 0.5f);
+
+            ActionManager.Play();
+
+            return false;
         }
 
         CurrentLevel = ThemeManager.currentTheme.levels[index];
         LevelIndex = index;
+        return true;
     }
 
     private void InitializeLevel()
@@ -166,7 +164,7 @@ public class GameManager : SingleTon<GameManager>
 
         #endregion
 
-        for (int i =0; i < CurrentLevel.cars.Length;i++)
+        for (int i = 0; i < CurrentLevel.cars.Length; i++)
         {
             LevelBase.CarData carData = CurrentLevel.cars[i];
 
@@ -182,7 +180,7 @@ public class GameManager : SingleTon<GameManager>
 
         for (int y = 0; y < CurrentLevel.size.y; y++)
         {
-            for(int x = 0; x < CurrentLevel.size.x; x++)
+            for (int x = 0; x < CurrentLevel.size.x; x++)
             {
                 Vector2Int position = new Vector2Int(x, y);
 
@@ -224,8 +222,8 @@ public class GameManager : SingleTon<GameManager>
     {
         Vector2Int[] d = new Vector2Int[4] { Vector2Int.up, Vector2Int.left, Vector2Int.down, Vector2Int.right };
 
-        int count = 0;
-        int data = 0x0000;
+        uint count = 0;
+        uint data = 0x0000;
 
         for (int i = 0; i < d.Length; i++)
         {
@@ -236,7 +234,7 @@ public class GameManager : SingleTon<GameManager>
             if (currentTiles[near.y][near.x].type == LevelBase.TileType.Empty) continue;
 
             count++;
-            data |= 1 << i;
+            data |= (uint)(1 << i);
         }
 
         int index = -1, rotation = 0;
@@ -253,7 +251,7 @@ public class GameManager : SingleTon<GameManager>
                 if (data % 5 == 0)
                 {
                     index = 0;
-                    rotation = data / 5 % 2;
+                    rotation = (int)data / 5 % 2;
                 }
                 else
                 {
@@ -264,7 +262,7 @@ public class GameManager : SingleTon<GameManager>
                 break;
             case 3:
                 index = 0;
-                rotation = data < 0x1100 ? 0 : 1;
+                rotation = (data & 1) == 0 || (data & 4) == 0 ? 0 : 1;
 
                 break;
             case 4: index = 0; break;
@@ -282,7 +280,7 @@ public class GameManager : SingleTon<GameManager>
         triggerTile.ClearAllTiles();
         groundTile.ClearAllTiles();
 
-        if(CurrentTriggers != null) 
+        if (CurrentTriggers != null)
             foreach (Trigger trigger in CurrentTriggers)
                 Destroy(trigger.gameObject);
 
@@ -295,15 +293,14 @@ public class GameManager : SingleTon<GameManager>
         if (CurrentLevel != null)
         {
             yield return LevelAppearEffect(0);
-
             EraseLevel();
         }
 
-        SetLevel(index);
+        if (!SetLevel(index)) yield break;
         InitializeLevel();
         DrawLevel();
 
-        if(animate) yield return LevelAppearEffect(1);
+        if (animate) yield return LevelAppearEffect(1);
         EventManager.instance.OnChange.Raise();
     }
     private IEnumerator LevelAppearEffect(int delta)
@@ -331,46 +328,74 @@ public class GameManager : SingleTon<GameManager>
         IsAnimate = false;
         yield break;
     }
+}
 
-    #endregion
-
-    #region [ UI ]
-
-    public void Reload()
+partial class GameManager // Undo
+{
+    public struct Behavior
     {
-        if (IsAnimate) return;
-        StartCoroutine(PrevSetLevel(LevelIndex));
+        public BehaviorType type;
+        public List<object> args;
+    }
+    public enum BehaviorType
+    {
+        MOVE,    // 차의 이동
+        TRIGGER, // 트리거
     }
 
-    private void InteractBar()
-    {
-        if (!IsDrew) return;
-        if (IsAnimate) return;
-        if (IsPlaying) return;
+    private List<Behavior> behaviors;
 
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        if (triggerBar.Position >= mousePosition.y)
-        {
-            if (BarHide)
-            {
-                BarHide = triggerBar.Hide = false;
-                UpdatePlayButton();
-            }
-        }
-        else if (!BarHide)
-        {
-            if (Input.GetMouseButtonDown(0)) // 바깥 부분 클릭하면
-            {
-                BarHide = triggerBar.Hide = true;
-                UpdatePlayButton();
-            }
-        }
+    public void AddBehavior(BehaviorType type, params object[] args)
+    {
+        Behavior beh = new Behavior();
+        beh.type = type;
+        beh.args = new List<object>();
+        beh.args.AddRange(args);
+
+        behaviors.Add(beh);
     }
 
-    #endregion
+    public void Undo()
+    {
+        if (IsAnimate || !IsDrew || IsPlaying) return;
+        if (behaviors.Count == 0) return;
 
-    #region [ 트리거 ]
+        Behavior behavior = behaviors[behaviors.Count - 1];
+        switch (behavior.type)
+        {
+            case BehaviorType.MOVE:
+                for (int i = 0; i < CurrentCars.Count; i++)
+                    CurrentCars[i].Undo();
+                if (IsGameOver) IsGameOver = false;
 
+                break;
+            case BehaviorType.TRIGGER:
+                LevelBase.TriggerType trigger = (LevelBase.TriggerType)behavior.args[0];
+                int index = int.Parse(behavior.args[1].ToString());
+
+                if (behavior.args[2].GetType() == typeof(Car)) // 차에 사용했다면.
+                {
+                    Car car = behavior.args[2] as Car;
+                    car.SetTrigger(trigger, true);
+                }
+                else
+                {
+                    Vector3Int position = (Vector3Int)behavior.args[2];
+                    SetTrigger(position, LevelBase.TriggerType.NORMAL);
+                }
+
+                AddTrigger(trigger, index);
+
+                break;
+        }
+
+        behaviors.RemoveAt(behaviors.Count - 1);
+        EventManager.instance.OnChange.Raise();
+    }
+}
+
+partial class GameManager // Trigger
+{
     public void AddTrigger(LevelBase.TriggerType trigger, int index = -1)
     {
         Trigger newTrigger = Instantiate(triggerPrefab, triggerScrollRect.content);
@@ -394,7 +419,7 @@ public class GameManager : SingleTon<GameManager>
 
         previewTrigger.sprite = trigger.sprite;
         previewTrigger.gameObject.SetActive(true);
-        
+
         selectedTrigger = trigger;
         TriggerSelectedMode = false;
 
@@ -415,7 +440,7 @@ public class GameManager : SingleTon<GameManager>
         if (selectedTrigger == null) return;
 
         previewTrigger.gameObject.SetActive(false);
-        
+
         CurrentTriggers.Remove(selectedTrigger);
         Destroy(selectedTrigger.gameObject);
 
@@ -465,7 +490,6 @@ public class GameManager : SingleTon<GameManager>
 
         if (TriggerSelectedMode)
         {
-            #region [ 트리거 - 차 ]
             Car car = null;
             foreach (Car tmp in CurrentCars)
             {
@@ -501,11 +525,9 @@ public class GameManager : SingleTon<GameManager>
                     EventManager.instance.OnUnselectTrigger.Raise();
                 }
             }
-            #endregion
         }
         else
         {
-            #region [ 트리거 - 타일 ]
             if (!IsValidPosition(tilePosition))
             {
                 previewTrigger.transform.position = mousePosition;
@@ -529,7 +551,6 @@ public class GameManager : SingleTon<GameManager>
                 }
                 else { }
             }
-            #endregion
         }
 
         previewTrigger.color = tileValid ? Color.white : Color.red * 0.5f;
@@ -545,16 +566,15 @@ public class GameManager : SingleTon<GameManager>
 
     private void UpdatePlayButton()
     {
-        bool flag = !BarHide || !IsPlayable || IsPlaying || IsAnimate;
+        bool flag = !BarHide || !IsPlayable || IsPlaying || IsAnimate || IsGameOver;
         playButton.Hide = flag;
 
-        if (!BarHide && !flag) BarHide = true; 
+        if (!BarHide && !flag) BarHide = true;
     }
+}
 
-    #endregion
-
-    #region [ 인게임 기능 ]
-
+partial class GameManager // 이동 및 기타 UI 기능
+{
     public void Move()
     {
         IsPlaying = true;
@@ -570,7 +590,7 @@ public class GameManager : SingleTon<GameManager>
         float progress = 0;
         bool complete = false;
 
-        while(!complete)
+        while (!complete)
         {
             complete = true;
 
@@ -589,7 +609,7 @@ public class GameManager : SingleTon<GameManager>
     {
         AddBehavior(BehaviorType.MOVE);
 
-        if(CurrentCars.FindAll(p => p.Collided).Count > 0)
+        if (CurrentCars.FindAll(p => p.Collided).Count > 0)
         {
             IsGameOver = true;
 
@@ -645,64 +665,32 @@ public class GameManager : SingleTon<GameManager>
         return true;
     }
 
-    #endregion
-
-    #region [ Undo 기능 ] 
-
-    public void AddBehavior(BehaviorType type, params object[] args)
+    public void Reload()
     {
-        Behavior beh = new Behavior();
-        beh.type = type;
-        beh.args = new List<object>();
-        beh.args.AddRange(args);
-
-        behaviors.Add(beh);
+        if (IsAnimate) return;
+        StartCoroutine(PrevSetLevel(LevelIndex));
     }
 
-    public void Undo()
+    private void InteractBar()
     {
-        if (IsAnimate || !IsDrew || IsPlaying) return;
-        if (behaviors.Count == 0) return;
+        if (!IsDrew || IsAnimate || IsPlaying) return;
 
-        Behavior behavior = behaviors[behaviors.Count - 1];
-        switch (behavior.type)
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        if (triggerBar.Position >= mousePosition.y)
         {
-            case BehaviorType.MOVE:
-                for (int i = 0; i < CurrentCars.Count; i++)
-                    CurrentCars[i].Undo();
-                if (IsGameOver) IsGameOver = false;
-
-                break;
-            case BehaviorType.TRIGGER:
-                LevelBase.TriggerType trigger = (LevelBase.TriggerType)behavior.args[0];
-                int index = int.Parse(behavior.args[1].ToString());
-
-                if(behavior.args[2].GetType() == typeof(Car)) // 차에 사용했다면.
-                {
-                    Car car = behavior.args[2] as Car;
-                    car.SetTrigger(trigger, true);
-                }
-                else
-                {
-                    Vector3Int position = (Vector3Int)behavior.args[2];
-                    SetTrigger(position, LevelBase.TriggerType.NORMAL);
-                }
-
-                AddTrigger(trigger, index);
-
-                break;
+            if (BarHide)
+            {
+                BarHide = triggerBar.Hide = false;
+                UpdatePlayButton();
+            }
         }
-
-        behaviors.RemoveAt(behaviors.Count - 1);
-        EventManager.instance.OnChange.Raise();
-    }
-
-
-    #endregion
-
-    private void Update()
-    {
-        InteractBar();
-        FollowSelectedTrigger();
+        else if (!BarHide)
+        {
+            if (Input.GetMouseButtonDown(0)) // 바깥 부분 클릭하면
+            {
+                BarHide = triggerBar.Hide = true;
+                UpdatePlayButton();
+            }
+        }
     }
 }

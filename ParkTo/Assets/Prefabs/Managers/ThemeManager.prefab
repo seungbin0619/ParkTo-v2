@@ -46,3 +46,5 @@ MonoBehaviour:
   dontDestroy: 1
   themes:
   - {fileID: 11400000, guid: 8be90babbdf6bbe47a168799a76e4662, type: 2}
+  - {fileID: 11400000, guid: 529a2f07ad02b104c9417769610618af, type: 2}
+  - {fileID: 11400000, guid: 452a306a73f4dbc44a832baa2976c3bb, type: 2}
