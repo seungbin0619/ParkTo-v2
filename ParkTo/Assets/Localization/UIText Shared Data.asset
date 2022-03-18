@@ -47,6 +47,18 @@ MonoBehaviour:
     m_Key: title_button_quit
     m_Metadata:
       m_Items: []
+  - m_Id: 1403934130036736
+    m_Key: setting_window_maximized
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1404048168968192
+    m_Key: setting_window_windowed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1404052656873472
+    m_Key: setting_window_exclusive
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

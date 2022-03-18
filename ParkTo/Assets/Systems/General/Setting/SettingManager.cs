@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class SettingManager : SingleTon<SettingManager>
 {
     public bool IsAnimate { set; get; }
+    public bool IsOpen { private set; get; }
 
     [SerializeField]
     private Animation hidePanel;
@@ -19,16 +20,17 @@ public class SettingManager : SingleTon<SettingManager>
 
         SetMusicVolume(DataManager.GetData("Game", "Music", 50) * 0.01f);
         SetSoundVolume(DataManager.GetData("Game", "Sound", 50) * 0.01f);
-
         SetLanguage(DataManager.GetData("Game", "Language", 0));
+        //SetResolution(DataManager.GetData("Game", "Screen", 0));
     }
 
     public void OpenSetting()
     {
         if (IsAnimate) return;
         IsAnimate = true;
+        IsOpen = true;
 
-        if(!hidePanel.gameObject.activeSelf)
+        if (!hidePanel.gameObject.activeSelf)
             hidePanel.gameObject.SetActive(true);
 
         hidePanel.Play("FadeIn");
@@ -39,6 +41,7 @@ public class SettingManager : SingleTon<SettingManager>
     {
         if (IsAnimate) return;
         IsAnimate = true;
+        IsOpen = false;
 
         hidePanel.Play("FadeOut");
         Border.Play("BorderHide");
@@ -73,5 +76,12 @@ public class SettingManager : SingleTon<SettingManager>
         ActionManager.AddAction("FadeOut", 1f);
 
         ActionManager.Play();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+            if (!IsOpen) OpenSetting();
+            else CloseSetting();
     }
 }

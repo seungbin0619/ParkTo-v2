@@ -22,13 +22,16 @@ MonoBehaviour:
     - type: 17
       data: 0
     - type: 17
-      data: 4
+      data: 3
     - type: 17
       data: 0
     - type: 1
       data: 0
   triggers: 
+  decorates:
+  - decorate: {fileID: 5205182621859066405, guid: e7461a33dad86af428ab6b540614c641, type: 3}
+    position: {x: 0, y: 0}
   cars:
   - position: {x: 0, y: 0}
     rotation: 3
-  seed: 1234
+  seed: 123456

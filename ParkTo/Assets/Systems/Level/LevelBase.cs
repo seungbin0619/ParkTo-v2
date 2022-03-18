@@ -37,6 +37,13 @@ public class LevelBase : ScriptableObject
     }
 
     [System.Serializable]
+    public struct DecorateData
+    {
+        public GameObject decorate;
+        public Vector2Int position;
+    }
+
+    [System.Serializable]
     public struct CarData
     {
         public Vector2Int position;
@@ -50,6 +57,8 @@ public class LevelBase : ScriptableObject
     public TileList[] tiles; // 레벨 데이터
 
     public TriggerType[] triggers;
+    public DecorateData[] decorates;
+
     public CarData[] cars;
 
     public int seed;

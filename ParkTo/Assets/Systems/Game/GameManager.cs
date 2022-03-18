@@ -16,6 +16,7 @@ partial class GameManager : SingleTon<GameManager>
     private Tilemap triggerTile;
     private Tilemap groundTile;
     private Transform predictTile;
+    private Transform decorateTile;
 
     [SerializeField]
     private TriggerBar triggerBar;
@@ -77,7 +78,8 @@ partial class GameManager : SingleTon<GameManager>
         carTile = levelGrid.GetChild(0);
         triggerTile = levelGrid.GetChild(1).GetComponent<Tilemap>();
         groundTile = levelGrid.GetChild(2).GetComponent<Tilemap>();
-        //predictTile = levelGrid.GetChild(3);
+        predictTile = levelGrid.GetChild(3);
+        decorateTile = levelGrid.GetChild(4);
 
         triggerScrollRect = triggerBar.GetComponent<ScrollRect>();
         noTrigger = triggerScrollRect.content.GetChild(0).gameObject;
@@ -272,6 +274,20 @@ partial class GameManager // LeveDraw
         groundTile.GetInstantiatedObject((Vector3Int)position).transform.eulerAngles = new Vector3(0, 0, 90 * rotation);
     }
 
+    private void DrawDecorates()
+    {
+        for (int i = 0; i < CurrentLevel.decorates.Length; i++)
+        {
+            LevelBase.DecorateData decorateData = CurrentLevel.decorates[i];
+            if (decorateData.decorate == null) return;
+
+            _ = Instantiate(decorateData.decorate,
+                            (Vector3Int)decorateData.position,
+                            Quaternion.Euler(0, 0, 0),
+                            decorateTile);
+        }
+    }
+
     private void EraseLevel()
     {
         foreach (Transform child in carTile) Destroy(child.gameObject);
@@ -283,6 +299,8 @@ partial class GameManager // LeveDraw
         if (CurrentTriggers != null)
             foreach (Trigger trigger in CurrentTriggers)
                 Destroy(trigger.gameObject);
+
+        foreach (Transform child in decorateTile) Destroy(child.gameObject);
 
         IsDrew = false;
     }
@@ -301,6 +319,8 @@ partial class GameManager // LeveDraw
         DrawLevel();
 
         if (animate) yield return LevelAppearEffect(1);
+        DrawDecorates();
+
         EventManager.instance.OnChange.Raise();
     }
     private IEnumerator LevelAppearEffect(int delta)
@@ -673,7 +693,7 @@ partial class GameManager // 이동 및 기타 UI 기능
 
     private void InteractBar()
     {
-        if (!IsDrew || IsAnimate || IsPlaying) return;
+        if (!IsDrew || IsAnimate || IsPlaying || HelpManager.IsInitialize) return;
 
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         if (triggerBar.Position >= mousePosition.y)

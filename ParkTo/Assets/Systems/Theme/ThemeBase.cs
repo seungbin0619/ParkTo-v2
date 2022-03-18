@@ -13,7 +13,5 @@ public class ThemeBase : ScriptableObject
     public Color[] cars;
 
     public Tile[] grounds;
-    public Tile[] decorates;
-
     public List<LevelBase> levels;
 }

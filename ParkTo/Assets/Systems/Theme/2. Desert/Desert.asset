@@ -28,5 +28,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d02670324a779ad4fac9344e87eeb708, type: 2}
   - {fileID: 11400000, guid: e3438bd1c655e5143a70ea5c3d773b5f, type: 2}
   decorates: []
-  levels:
-  - {fileID: 11400000, guid: 42f912e14df23014fa8960b7ad7ba41c, type: 2}
+  levels: []
