@@ -108,20 +108,30 @@ public class HelpManager : SingleTon<HelpManager>
         return WorldObject_ScreenPosition;
     }
 
+    private Vector2 lastDelta;
     public IEnumerator SetText(string text, Vector2 delta)
     {
         int progress = 0;
         content.text = "";
         Descript.anchoredPosition = Focus.rectTransform.anchoredPosition + delta;
+        lastDelta = delta;
 
-        while(progress < text.Length)
+        while (progress < text.Length)
         {
             content.text += text[progress];
-            yield return YieldDictionary.WaitForSeconds(0.1f);
+            yield return YieldDictionary.WaitForSeconds(0.075f);
 
             progress++;
         }
 
         content.text = text;
+    }
+
+    public IEnumerator PrevDispose()
+    {
+        yield return SetText("", lastDelta);
+        yield return SetFocus(Vector3.zero, Vector2.zero, true);
+
+        Dispose();
     }
 }

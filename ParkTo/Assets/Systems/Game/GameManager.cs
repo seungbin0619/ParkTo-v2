@@ -26,8 +26,7 @@ partial class GameManager : SingleTon<GameManager>
     [SerializeField]
     private SpriteRenderer previewTrigger;
 
-    [SerializeField]
-    private PlayButton playButton;
+    public PlayButton playButton;
 
     [SerializeField] 
     private Car carPrefab;
@@ -52,7 +51,7 @@ partial class GameManager : SingleTon<GameManager>
 
     public bool IsGameOver { private set; get; } // 게임 오버 상태인가?
     public bool IsDrew { private set; get; }    // 맵이 그려져 있는 상태인가?
-    private bool IsAnimate { set; get; }
+    public bool IsAnimate { set; get; }
 
     public LevelBase.TileData[][] currentTiles { private set; get; }
     public List<Car> CurrentCars { private set; get; }

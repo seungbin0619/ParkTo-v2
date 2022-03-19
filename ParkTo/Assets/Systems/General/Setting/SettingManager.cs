@@ -27,6 +27,8 @@ public class SettingManager : SingleTon<SettingManager>
     public void OpenSetting()
     {
         if (IsAnimate) return;
+        if ((bool)GameManager.instance?.IsAnimate) return;
+
         IsAnimate = true;
         IsOpen = true;
 
@@ -40,13 +42,14 @@ public class SettingManager : SingleTon<SettingManager>
     public void CloseSetting()
     {
         if (IsAnimate) return;
+
         IsAnimate = true;
         IsOpen = false;
 
         hidePanel.Play("FadeOut");
         Border.Play("BorderHide");
 
-        //DataManager.SaveData();
+        DataManager.SaveData();
     }
 
     public void SetLanguage(int index)

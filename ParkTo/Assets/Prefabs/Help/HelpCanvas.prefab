@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 5775169983275384946}
   - component: {fileID: 4567737818518032681}
   - component: {fileID: 2107669884693338637}
+  - component: {fileID: 8926805958056875643}
+  - component: {fileID: 1358126847959501868}
   - component: {fileID: 2577468268845540136}
   m_Layer: 5
   m_Name: Screen
@@ -94,6 +96,31 @@ MonoBehaviour:
   m_OnlyForChildren: 0
   m_ShowUnmaskGraphic: 1
   m_EdgeSmoothing: 0
+--- !u!114 &8926805958056875643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1692535318624062357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e18ab2f059fd29c449787f67987bd969, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TargetUnmask: {fileID: 1106205871787874025}
+--- !u!114 &1358126847959501868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1692535318624062357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7489d66eedda4874abb82cac2ae1d421, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!111 &2577468268845540136
 Animation:
   m_ObjectHideFlags: 0
@@ -511,7 +538,7 @@ RectTransform:
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0.5}
+  m_Pivot: {x: 0, y: 0}
 --- !u!222 &2724973433771145275
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -578,7 +605,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetFit: {fileID: 51194234956213380}
-  padding: {x: 20, y: 20}
 --- !u!114 &5971736891750197301
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -692,7 +718,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 2
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
