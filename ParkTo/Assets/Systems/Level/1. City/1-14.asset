@@ -53,6 +53,7 @@ MonoBehaviour:
     - type: 17
       data: 0
   triggers: 01000000010000000100000002000000
+  decorates: []
   cars:
   - position: {x: 1, y: 0}
     rotation: 3

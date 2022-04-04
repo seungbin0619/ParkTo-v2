@@ -24,7 +24,11 @@ public class LevelEditor : Editor
         {
             level.tiles = new LevelBase.TileList[level.size.y];
             for (int y = 0; y < level.size.y; y++)
+            {
                 level.tiles[y].tile = new LevelBase.TileData[level.size.x];
+                for (int x = 0; x < level.size.x; x++)
+                    level.tiles[y].tile[x] = new LevelBase.TileData() { type = LevelBase.TileType.Normal };
+            }
         }
         
         EditorGUILayout.BeginVertical();

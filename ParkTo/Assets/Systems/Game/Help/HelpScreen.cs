@@ -6,6 +6,6 @@ public class HelpScreen : MonoBehaviour
 {
     public void OnAnimationExit()
     {
-        gameObject.SetActive(false);
+        transform.parent.gameObject.SetActive(false);
     }
 }

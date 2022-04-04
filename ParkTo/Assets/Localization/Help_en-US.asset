@@ -38,9 +38,34 @@ MonoBehaviour:
     m_Metadata:
       m_Items:
       - id: 0
+  - m_Id: 580712417452032
+    m_Localized: 
+    m_Metadata:
+      m_Items:
+      - id: 0
+  - m_Id: 490763408105472
+    m_Localized: 
+    m_Metadata:
+      m_Items:
+      - id: 0
+  - m_Id: 582404626178048
+    m_Localized: 
+    m_Metadata:
+      m_Items:
+      - id: 0
+  - m_Id: 5860185018720256
+    m_Localized: 
+    m_Metadata:
+      m_Items:
+      - id: 0
+  - m_Id: 5860264454643712
+    m_Localized: 
+    m_Metadata:
+      m_Items:
+      - id: 0
   references:
     version: 1
     00000000:
       type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
-        m_Entries: 00e09b3ef706000000e09bc2ba03000000e05b8bf2000000
+        m_Entries: 00e09b3ef706000000e09bc2ba03000000e05b8bf200000000e05ba52710020000e09bc258be010000e0dba4b111020000e05ba6ced1140000e01b25e1d11400

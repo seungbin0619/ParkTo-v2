@@ -38,6 +38,9 @@ MonoBehaviour:
     - type: 17
       data: 0
   triggers: 02000000
+  decorates:
+  - decorate: {fileID: 7511009269128581954, guid: 200a71a35e169d548aa8896b4475a2a5, type: 3}
+    position: {x: 0, y: 0}
   cars:
   - position: {x: 0, y: 2}
     rotation: 3

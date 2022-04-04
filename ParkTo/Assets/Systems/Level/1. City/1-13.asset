@@ -17,46 +17,47 @@ MonoBehaviour:
   size: {x: 4, y: 4}
   tiles:
   - tile:
-    - type: 17
-      data: 0
-    - type: 17
-      data: 0
-    - type: 17
-      data: 0
-    - type: 17
-      data: 0
-  - tile:
-    - type: 1
-      data: 2
-    - type: 17
-      data: 0
-    - type: 17
-      data: 0
-    - type: 17
-      data: 0
-  - tile:
-    - type: 16
-      data: 0
-    - type: 17
-      data: 0
-    - type: 17
-      data: 0
-    - type: 1
-      data: 0
-  - tile:
     - type: 0
       data: 0
     - type: 17
       data: 0
     - type: 17
       data: 0
+    - type: 0
+      data: 0
+  - tile:
+    - type: 1
+      data: 2
+    - type: 1
+      data: 1
     - type: 17
       data: 0
-  triggers: 01000000010000000200000002000000
+    - type: 0
+      data: 0
+  - tile:
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+  - tile:
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+  triggers: 010000000100000002000000
+  decorates: []
   cars:
-  - position: {x: 3, y: 0}
-    rotation: 1
-  - position: {x: 1, y: 1}
+  - position: {x: 0, y: 2}
+    rotation: 3
+  - position: {x: 0, y: 3}
     rotation: 2
   - position: {x: 3, y: 3}
     rotation: 1

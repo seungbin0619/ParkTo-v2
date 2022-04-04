@@ -127,7 +127,7 @@ public class Car : MonoBehaviour
             return;
         }
 
-        LevelBase.TileData tile = GameManager.instance.currentTiles[tmp.position.y][tmp.position.x];
+        LevelBase.TileData tile = GameManager.instance.CurrentTiles[tmp.position.y][tmp.position.x];
 
         if (tile.type == LevelBase.TileType.Trigger) {
             switch ((LevelBase.TriggerType)tile.data)
@@ -218,7 +218,7 @@ public class Car : MonoBehaviour
         clamp = progress - currentProgress;
 
         cur = path[pathIndex];
-        tile = GameManager.instance.currentTiles[cur.position.y][cur.position.x];
+        tile = GameManager.instance.CurrentTiles[cur.position.y][cur.position.x];
 
         if (pathIndex == 0)
         {

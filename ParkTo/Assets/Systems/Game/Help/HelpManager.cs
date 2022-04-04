@@ -7,6 +7,7 @@ public class HelpManager : SingleTon<HelpManager>
 {
     [SerializeField]
     Animation screen;
+    public Coffee.UIExtensions.UnmaskRaycastFilter screenImage { get; private set; }
     public Image Focus;
 
     List<AnimationClip> fadeClips;
@@ -24,6 +25,7 @@ public class HelpManager : SingleTon<HelpManager>
     {
         base.Awake();
 
+        screenImage = screen.GetComponent<Coffee.UIExtensions.UnmaskRaycastFilter>();
         fadeClips = new List<AnimationClip>();
 
         fadeClips.Add(screen["FadeIn80"].clip);
@@ -37,6 +39,7 @@ public class HelpManager : SingleTon<HelpManager>
 
         Mask.gameObject.SetActive(true);
         Descript.gameObject.SetActive(true);
+
         content.text = "";
 
         screen.clip = fadeClips[0];
@@ -51,8 +54,7 @@ public class HelpManager : SingleTon<HelpManager>
         if (!IsInitialize) return;
         IsInitialize = false;
 
-        Mask.gameObject.SetActive(true);
-        Descript.gameObject.SetActive(true);
+        Descript.gameObject.SetActive(false);
 
         content.text = "";
 

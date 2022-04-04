@@ -18,8 +18,7 @@ partial class GameManager : SingleTon<GameManager>
     private Transform predictTile;
     private Transform decorateTile;
 
-    [SerializeField]
-    private TriggerBar triggerBar;
+    public TriggerBar triggerBar;
     private ScrollRect triggerScrollRect;
     private GameObject noTrigger;
 
@@ -45,6 +44,9 @@ partial class GameManager : SingleTon<GameManager>
 
     public Sprite[] triggerImages;
 
+    [SerializeField]
+    private Image triggerUnselectButton;
+
     #endregion
 
     #region [ 게임 데이터 ]
@@ -53,20 +55,20 @@ partial class GameManager : SingleTon<GameManager>
     public bool IsDrew { private set; get; }    // 맵이 그려져 있는 상태인가?
     public bool IsAnimate { set; get; }
 
-    public LevelBase.TileData[][] currentTiles { private set; get; }
+    public LevelBase.TileData[][] CurrentTiles { private set; get; }
     public List<Car> CurrentCars { private set; get; }
     public List<Trigger> CurrentTriggers { private set; get; }
     public List<Goal> CurrentGoals { private set; get; }
     public LevelBase CurrentLevel { private set; get; }
     private int LevelIndex { set; get; }
 
-    public bool BarHide { private set; get; }
+    public bool BarHide { set; get; }
     public bool IsPlayable { private set; get; }
     public bool IsPlaying { private set; get; }
 
     public bool TriggerSelectedMode { private set; get; }
 
-    private Trigger selectedTrigger;
+    public Trigger SelectedTrigger { private set; get; }
 
     #endregion
 
@@ -91,7 +93,7 @@ partial class GameManager : SingleTon<GameManager>
     }
 }
 
-partial class GameManager // LeveDraw
+partial class GameManager // LevelDraw
 {
     private void Start()
     {
@@ -134,9 +136,9 @@ partial class GameManager // LeveDraw
     {
         if (CurrentLevel == null) return;
 
-        currentTiles = new LevelBase.TileData[CurrentLevel.size.y][];
+        CurrentTiles = new LevelBase.TileData[CurrentLevel.size.y][];
         for (int y = 0; y < CurrentLevel.tiles.Length; y++)
-            currentTiles[y] = CurrentLevel.tiles[y].tile.Clone() as LevelBase.TileData[];
+            CurrentTiles[y] = CurrentLevel.tiles[y].tile.Clone() as LevelBase.TileData[];
 
         CurrentCars = new List<Car>();
         CurrentGoals = new List<Goal>();
@@ -185,7 +187,7 @@ partial class GameManager // LeveDraw
             {
                 Vector2Int position = new Vector2Int(x, y);
 
-                LevelBase.TileData tile = currentTiles[y][x];
+                LevelBase.TileData tile = CurrentTiles[y][x];
                 switch (tile.type)
                 {
                     case LevelBase.TileType.Empty:
@@ -232,7 +234,7 @@ partial class GameManager // LeveDraw
 
             if (near.x < 0 || near.x >= CurrentLevel.size.x) continue;
             if (near.y < 0 || near.y >= CurrentLevel.size.y) continue;
-            if (currentTiles[near.y][near.x].type == LevelBase.TileType.Empty) continue;
+            if (CurrentTiles[near.y][near.x].type == LevelBase.TileType.Empty) continue;
 
             count++;
             data |= (uint)(1 << i);
@@ -437,10 +439,13 @@ partial class GameManager // Trigger
         if (IsPlaying) return;
 
         previewTrigger.sprite = trigger.sprite;
-        previewTrigger.gameObject.SetActive(true);
+        //previewTrigger.gameObject.SetActive(true);
 
-        selectedTrigger = trigger;
+        SelectedTrigger = trigger;
         TriggerSelectedMode = false;
+
+        triggerUnselectButton.enabled = true;
+        triggerUnselectButton.transform.GetChild(0).gameObject.SetActive(true);
 
         EventManager.instance.OnSelectTrigger.Raise();
         EventManager.instance.OnSelectedTriggerStateChange.Raise(false);
@@ -449,21 +454,22 @@ partial class GameManager // Trigger
     public void UnselectTrigger()
     {
         previewTrigger.gameObject.SetActive(false);
-        selectedTrigger = null;
+        triggerUnselectButton.enabled = false;
+        triggerUnselectButton.transform.GetChild(0).gameObject.SetActive(false);
+
+        SelectedTrigger = null;
 
         EventManager.instance.OnUnselectTrigger.Raise();
     }
 
     public void UseTrigger()
     {
-        if (selectedTrigger == null) return;
+        if (SelectedTrigger == null) return;
 
-        previewTrigger.gameObject.SetActive(false);
+        CurrentTriggers.Remove(SelectedTrigger);
+        Destroy(SelectedTrigger.gameObject);
 
-        CurrentTriggers.Remove(selectedTrigger);
-        Destroy(selectedTrigger.gameObject);
-
-        selectedTrigger = null;
+        UnselectTrigger();
 
         UpdateTriggerBar();
         EventManager.instance.OnChange.Raise();
@@ -474,7 +480,7 @@ partial class GameManager // Trigger
         if (triggerType == LevelBase.TriggerType.NORMAL)
         {
             triggerTile.SetTile(position, null);
-            currentTiles[position.y][position.x].type = LevelBase.TileType.Normal;
+            CurrentTiles[position.y][position.x].type = LevelBase.TileType.Normal;
         }
         else
         {
@@ -483,14 +489,14 @@ partial class GameManager // Trigger
 
             tile.Initialize(triggerImages[(int)triggerType]);
 
-            currentTiles[position.y][position.x].type = LevelBase.TileType.Trigger;
-            currentTiles[position.y][position.x].data = (int)triggerType;
+            CurrentTiles[position.y][position.x].type = LevelBase.TileType.Trigger;
+            CurrentTiles[position.y][position.x].data = (int)triggerType;
         }
     }
 
     private void FollowSelectedTrigger()
     {
-        if (selectedTrigger == null) return;
+        if (SelectedTrigger == null) return;
 
         bool tileValid = false;
 
@@ -536,9 +542,9 @@ partial class GameManager // Trigger
                 }
                 else
                 {
-                    car.SetTrigger(selectedTrigger.Type);
+                    car.SetTrigger(SelectedTrigger.Type);
 
-                    AddBehavior(BehaviorType.TRIGGER, selectedTrigger.Type, selectedTrigger.transform.GetSiblingIndex(), car);
+                    AddBehavior(BehaviorType.TRIGGER, SelectedTrigger.Type, SelectedTrigger.transform.GetSiblingIndex(), car);
                     UseTrigger();
 
                     EventManager.instance.OnUnselectTrigger.Raise();
@@ -554,16 +560,16 @@ partial class GameManager // Trigger
             }
             else
             {
-                tileValid = currentTiles[tilePosition.y][tilePosition.x].type == LevelBase.TileType.Normal;
+                tileValid = CurrentTiles[tilePosition.y][tilePosition.x].type == LevelBase.TileType.Normal;
                 if (!mb0Click)
                 {
                     previewTrigger.transform.localPosition = tilePosition + new Vector3(0.5f, 0.5f, 0);
                 }
                 else if (tileValid)
                 {
-                    SetTrigger(tilePosition, selectedTrigger.Type);
+                    SetTrigger(tilePosition, SelectedTrigger.Type);
 
-                    AddBehavior(BehaviorType.TRIGGER, selectedTrigger.Type, selectedTrigger.transform.GetSiblingIndex(), tilePosition);
+                    AddBehavior(BehaviorType.TRIGGER, SelectedTrigger.Type, SelectedTrigger.transform.GetSiblingIndex(), tilePosition);
                     UseTrigger();
 
                     EventManager.instance.OnUnselectTrigger.Raise();
@@ -679,7 +685,7 @@ partial class GameManager // 이동 및 기타 UI 기능
         int x = position.x, y = position.y;
 
         if (x < 0 || x > CurrentLevel.size.x - 1 || y < 0 || y > CurrentLevel.size.y - 1) return false;
-        if (currentTiles[y][x].type == LevelBase.TileType.Empty) return false;
+        if (CurrentTiles[y][x].type == LevelBase.TileType.Empty) return false;
 
         return true;
     }

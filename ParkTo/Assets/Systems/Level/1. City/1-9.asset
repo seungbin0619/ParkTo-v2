@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 
   description: 
-  size: {x: 4, y: 3}
+  size: {x: 4, y: 4}
   tiles:
   - tile:
     - type: 17
@@ -26,27 +26,37 @@ MonoBehaviour:
     - type: 17
       data: 0
   - tile:
-    - type: 1
-      data: 1
     - type: 17
       data: 0
     - type: 17
       data: 0
-    - type: 16
+    - type: 17
+      data: 0
+    - type: 17
       data: 0
   - tile:
+    - type: 0
+      data: 0
+    - type: 17
+      data: 0
+    - type: 1
+      data: 1
+    - type: 0
+      data: 0
+  - tile:
+    - type: 0
+      data: 0
     - type: 17
       data: 0
     - type: 1
       data: 0
-    - type: 17
+    - type: 0
       data: 0
-    - type: 17
-      data: 0
-  triggers: 010000000100000002000000
+  triggers: 010000000200000002000000
+  decorates: []
   cars:
-  - position: {x: 2, y: 0}
-    rotation: 1
-  - position: {x: 3, y: 0}
+  - position: {x: 1, y: 0}
     rotation: 0
-  seed: 0
+  - position: {x: 3, y: 0}
+    rotation: 1
+  seed: 235234

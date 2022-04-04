@@ -10,22 +10,27 @@ public class HelpBase : MonoBehaviour
     protected static bool InputFlag { private set; get; }
     protected WaitWhile Wait = new WaitWhile(() => !InputFlag);
 
+    [SerializeField]
+    protected string id;
+
     private void Awake()
     {
-        if (CheckCondition()) return;
+        if (!CheckCondition()) return;
         HelpManager.instance.Initialize();
         current = StartCoroutine(Content());
     }
 
     private void OnDestroy()
     {
-        HelpManager.instance.Dispose();
-
         if (current == null) return;
         StopCoroutine(current);
     }
 
-    protected virtual bool CheckCondition() { return false; }
+    protected bool CheckCondition()
+    {
+        return DataManager.GetData("Game", id, 0) == 0;
+    }
+
     protected virtual IEnumerator Content()
     {
         yield return null;
@@ -35,15 +40,29 @@ public class HelpBase : MonoBehaviour
     protected IEnumerator SetText(string text, Vector2 delta) => HelpManager.instance.SetText(text, delta);
     protected string LocaleText(string data) => LocalizationSettings.StringDatabase.GetLocalizedString("Help", data);
 
-    protected IEnumerator Focusing(Vector3 position, Vector2 size, string data, Vector3 delta)
+    protected IEnumerator Focusing(Vector3 position, Vector2 size, string data, Vector3 delta, bool wait = true)
     {
+        HelpManager.instance.screenImage.enabled = false;
+
         yield return SetFocus(position, size);
         yield return SetText(LocaleText(data), delta);
-        yield return Wait;
-        yield return SetText("", new Vector2(100f, 50f));
+
+        HelpManager.instance.screenImage.enabled = true;
+
+        if (wait)
+        {
+            yield return Wait;
+            yield return SetText("", delta);
+        }
     }
 
-    protected IEnumerator PrevDispose() => HelpManager.instance.PrevDispose();
+    protected IEnumerator PrevDispose()
+    {
+        DataManager.SetData("Game", id, 1);
+        DataManager.SaveData();
+
+        yield return HelpManager.instance.PrevDispose();
+    }
 
     private void Update()
     {

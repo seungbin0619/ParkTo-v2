@@ -28,6 +28,7 @@ public class SettingManager : SingleTon<SettingManager>
     {
         if (IsAnimate) return;
         if ((bool)GameManager.instance?.IsAnimate) return;
+        if (HelpManager.IsInitialize) return;
 
         IsAnimate = true;
         IsOpen = true;

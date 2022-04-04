@@ -31,20 +31,11 @@ public class DataManager : SingleTon<DataManager>
         data = LoadData();
     }
 
-    public static void Load(bool flag = false)
-    {
-        instance.data = LoadData(flag);
-    }
+    public static void Load(bool flag = false) => instance.data = LoadData(flag);
 
-    public static void SetData(string part, string key, int value)
-    {
-        instance.data[part][key] = value;
-    }
+    public static void SetData(string part, string key, int value) => instance.data[part][key] = value;
 
-    public static bool HasData(string part, string key)
-    {
-        return instance.data[part].ContainsKey(key);
-    }
+    public static bool HasData(string part, string key) => instance.data[part].ContainsKey(key);
 
     public static int GetData(string part, string key, int def = -1)
     {
@@ -54,8 +45,13 @@ public class DataManager : SingleTon<DataManager>
 
     public static void SaveData()
     {
-        foreach (string part in instance.parts)
+#if UNITY_EDITOR
+        //return;
+#endif
+
+        for (int i = 0; i < instance.parts.Length; i++)
         {
+            string part = instance.parts[i];
             XElement el = new XElement("root", instance.data[part].Select(kv => new XElement(kv.Key, kv.Value)));
             //el.Save(path + part + ".xml");
 
@@ -69,8 +65,9 @@ public class DataManager : SingleTon<DataManager>
     private static Dictionary<string, Dictionary<string, int>> LoadData(bool flag = false)
     {
         var data = new Dictionary<string, Dictionary<string, int>>();
-        foreach (string part in instance.parts)
+        for (int i = 0; i < instance.parts.Length; i++)
         {
+            string part = instance.parts[i];
             string partPath = path + part + ".xml";
             data[part] = new Dictionary<string, int>();
 
