@@ -61,7 +61,7 @@ public class Car : MonoBehaviour
     private bool isTriggerBakcward = false;
 
     private List<PathData> trace = new List<PathData>();
-    private List<PathData> path = new List<PathData>();
+    public List<PathData> path = new List<PathData>();
 
     private int pathIndex;          // 현재 path상 위치
     private float currentProgress;  // 현재 진행 상태
@@ -408,6 +408,10 @@ public class Car : MonoBehaviour
 
         trace.RemoveAt(trace.Count - 1);
     }
+
+    private void OnMouseEnter() => GameManager.instance.predictCar = this;
+
+    private void OnMouseExit() => GameManager.instance.predictCar = null;
 
     private  void Update()
     {

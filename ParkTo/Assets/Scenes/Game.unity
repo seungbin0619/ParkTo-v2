@@ -1996,6 +1996,7 @@ MonoBehaviour:
   - {fileID: 2231523694726650456, guid: 34d678dd876e4c5429673cf048de5a14, type: 3}
   - {fileID: 6123535640773779268, guid: 34d678dd876e4c5429673cf048de5a14, type: 3}
   triggerUnselectButton: {fileID: 1391626106}
+  predictor: {fileID: 6573759436235306969, guid: 8ef44e823442f024fa768bb76ee23c53, type: 3}
 --- !u!114 &1240613729
 MonoBehaviour:
   m_ObjectHideFlags: 0

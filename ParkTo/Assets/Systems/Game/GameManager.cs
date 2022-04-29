@@ -55,6 +55,8 @@ partial class GameManager : SingleTon<GameManager>
     public bool IsDrew { private set; get; }    // 맵이 그려져 있는 상태인가?
     public bool IsAnimate { set; get; }
 
+    private float lastDrawTime;
+
     public LevelBase.TileData[][] CurrentTiles { private set; get; }
     public List<Car> CurrentCars { private set; get; }
     public List<Trigger> CurrentTriggers { private set; get; }
@@ -292,7 +294,7 @@ partial class GameManager // LevelDraw
     private void EraseLevel()
     {
         foreach (Transform child in carTile) Destroy(child.gameObject);
-        //foreach (Transform child in predictTile) Destroy(child.gameObject);
+        foreach (Transform child in predictTile) Destroy(child.gameObject);
 
         triggerTile.ClearAllTiles();
         groundTile.ClearAllTiles();
@@ -320,6 +322,8 @@ partial class GameManager // LevelDraw
         DrawLevel();
 
         if (animate) yield return LevelAppearEffect(1);
+
+        lastDrawTime = Time.time;
         DrawDecorates();
 
         EventManager.instance.OnChange.Raise();
@@ -600,6 +604,10 @@ partial class GameManager // Trigger
 
 partial class GameManager // 이동 및 기타 UI 기능
 {
+    [SerializeField]
+    private Predictor predictor;
+    public Car predictCar { set; get; }
+
     public void Move()
     {
         IsPlaying = true;
@@ -636,6 +644,7 @@ partial class GameManager // 이동 및 기타 UI 기능
 
         if (CurrentCars.FindAll(p => p.Collided).Count > 0)
         {
+            IsPlayable = false;
             IsGameOver = true;
 
             return;
@@ -648,11 +657,14 @@ partial class GameManager // 이동 및 기타 UI 기능
     {
         if (CurrentGoals.FindAll(p => p.IsArrived).Count == CurrentGoals.Count)
         {
+            IsPlayable = false;
+
             StartCoroutine(PrevSetLevel(LevelIndex + 1, delay: 1f));
             return;
         }
 
         GetNextPath();
+        DrawPredictors();
 
         BarHide = triggerBar.Hide = CurrentTriggers.Count == 0; // 한 번 움직인 후 올라오기
         UpdatePlayButton();
@@ -674,10 +686,32 @@ partial class GameManager // 이동 및 기타 UI 기능
 
             if (!pFlag) break;
         }
+
         for (int i = 0; i < CurrentCars.Count; i++) // 차 이동 가능 체크
             IsPlayable = CurrentCars[i].IsMovable || IsPlayable;
 
         UpdatePlayButton();
+    }
+
+    private void DrawPredictors()
+    {
+        foreach (Transform child in predictTile.transform)
+            Destroy(child.gameObject);
+
+        int maxPathCount = 0;
+        for (int i = 0; i < CurrentCars.Count; i++)
+            maxPathCount = Mathf.Max(CurrentCars[i].path.Count, maxPathCount);
+
+        for (int i = 0; i < CurrentCars.Count; i++)
+            for (int j = 1; j < CurrentCars[i].path.Count; j++)
+            {
+                Vector3Int targetPosition = CurrentCars[i].path[j].position;
+                Predictor tmpPredictor = Instantiate(predictor, predictTile.transform).gameObject.GetComponent<Predictor>();
+                tmpPredictor.Initialize(CurrentCars[i], j - 0.5f, targetPosition, lastDrawTime, maxPathCount);
+
+                tmpPredictor = Instantiate(predictor, predictTile.transform).gameObject.GetComponent<Predictor>();
+                tmpPredictor.Initialize(CurrentCars[i], j - 1, (Vector3)(CurrentCars[i].path[j - 1].position + targetPosition) * 0.5f, lastDrawTime, maxPathCount, true);
+            }
     }
 
     public bool IsValidPosition(Vector3Int position)

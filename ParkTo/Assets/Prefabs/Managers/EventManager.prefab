@@ -51,3 +51,4 @@ MonoBehaviour:
   OnUnselectTrigger: {fileID: 11400000, guid: fa99d392a9c4d794bb3f8a9d5f9157b3, type: 2}
   OnSelectedTriggerStateChange: {fileID: 11400000, guid: ec5aac2a107a54c439c449a123863152, type: 2}
   OnCameraChange: {fileID: 11400000, guid: ad0452ef650d47e45ad5740a81cd1838, type: 2}
+  OnPredictChange: {fileID: 11400000, guid: 0485aa7ab1efe4a43abd401e9ad250b1, type: 2}
