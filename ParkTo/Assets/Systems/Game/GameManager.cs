@@ -4,16 +4,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Tilemaps;
 
-// ¼±¾ðºÎ
+// ï¿½ï¿½ï¿½ï¿½ï¿½
 partial class GameManager : SingleTon<GameManager>
 {
-    #region [ ¿ÀºêÁ§Æ® ]
+    #region [ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ]
 
     [SerializeField] 
     private Transform levelGrid;
 
     private Transform carTile;
-    private Tilemap triggerTile;
+
+    [System.NonSerialized]
+    public Tilemap triggerTile;
     private Tilemap groundTile;
     private Transform predictTile;
     private Transform decorateTile;
@@ -49,10 +51,10 @@ partial class GameManager : SingleTon<GameManager>
 
     #endregion
 
-    #region [ °ÔÀÓ µ¥ÀÌÅÍ ]
+    #region [ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ]
 
-    public bool IsGameOver { private set; get; } // °ÔÀÓ ¿À¹ö »óÅÂÀÎ°¡?
-    public bool IsDrew { private set; get; }    // ¸ÊÀÌ ±×·ÁÁ® ÀÖ´Â »óÅÂÀÎ°¡?
+    public bool IsGameOver { private set; get; } // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î°ï¿½?
+    public bool IsDrew { private set; get; }    // ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î°ï¿½?
     public bool IsAnimate { set; get; }
 
     private float lastDrawTime;
@@ -155,7 +157,7 @@ partial class GameManager // LevelDraw
         Random.InitState(CurrentLevel.seed);
         levelGrid.transform.position = new Vector3(-CurrentLevel.size.x * 0.5f, -CurrentLevel.size.y * 0.5f);
 
-        #region [ ÄÃ·¯ ¼ÅÇÃ ]
+        #region [ ï¿½Ã·ï¿½ ï¿½ï¿½ï¿½ï¿½ ]
 
         Color[] shuffledColor = ThemeManager.currentTheme.cars.Clone() as Color[];
         for (int i = 0; i < 10; i++)
@@ -331,7 +333,8 @@ partial class GameManager // LevelDraw
     private IEnumerator LevelAppearEffect(int delta)
     {
         IsAnimate = true;
-
+        UpdatePlayButton();
+        
         Vector3 currentPosition = levelGrid.transform.position, targetPosition;
         currentPosition.x += 20f * delta;
 
@@ -351,6 +354,8 @@ partial class GameManager // LevelDraw
         }
 
         IsAnimate = false;
+        UpdatePlayButton();
+
         yield break;
     }
 }
@@ -364,8 +369,8 @@ partial class GameManager // Undo
     }
     public enum BehaviorType
     {
-        MOVE,    // Â÷ÀÇ ÀÌµ¿
-        TRIGGER, // Æ®¸®°Å
+        MOVE,    // ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
+        TRIGGER, // Æ®ï¿½ï¿½ï¿½ï¿½
     }
 
     private List<Behavior> behaviors;
@@ -398,7 +403,7 @@ partial class GameManager // Undo
                 LevelBase.TriggerType trigger = (LevelBase.TriggerType)behavior.args[0];
                 int index = int.Parse(behavior.args[1].ToString());
 
-                if (behavior.args[2].GetType() == typeof(Car)) // Â÷¿¡ »ç¿ëÇß´Ù¸é.
+                if (behavior.args[2].GetType() == typeof(Car)) // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ß´Ù¸ï¿½.
                 {
                     Car car = behavior.args[2] as Car;
                     car.SetTrigger(trigger, true);
@@ -515,7 +520,7 @@ partial class GameManager // Trigger
 
         if (!previewTrigger.gameObject.activeSelf) previewTrigger.gameObject.SetActive(true);
 
-        bool mb0Click = Input.GetMouseButtonDown(0);
+        bool mb0Click = Input.GetMouseButtonDown(0) && !HelpManager.instance.Focusing;
 
         if (TriggerSelectedMode)
         {
@@ -602,7 +607,7 @@ partial class GameManager // Trigger
     }
 }
 
-partial class GameManager // ÀÌµ¿ ¹× ±âÅ¸ UI ±â´É
+partial class GameManager // ï¿½Ìµï¿½ ï¿½ï¿½ ï¿½ï¿½Å¸ UI ï¿½ï¿½ï¿½
 {
     [SerializeField]
     private Predictor predictor;
@@ -634,11 +639,11 @@ partial class GameManager // ÀÌµ¿ ¹× ±âÅ¸ UI ±â´É
             progress += Time.deltaTime;
         }
 
-        EventManager.instance.OnMove.Raise();
         IsPlaying = false;
+        EventManager.instance.OnMove.Raise();
     }
 
-    public void OnMove() // ÀÌµ¿ Á÷ÈÄ
+    public void OnMove() // ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½
     {
         AddBehavior(BehaviorType.MOVE);
 
@@ -666,7 +671,7 @@ partial class GameManager // ÀÌµ¿ ¹× ±âÅ¸ UI ±â´É
         GetNextPath();
         DrawPredictors();
 
-        BarHide = triggerBar.Hide = CurrentTriggers.Count == 0; // ÇÑ ¹ø ¿òÁ÷ÀÎ ÈÄ ¿Ã¶ó¿À±â
+        BarHide = triggerBar.Hide = CurrentTriggers.Count == 0; // ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½
         UpdatePlayButton();
     }
 
@@ -675,11 +680,15 @@ partial class GameManager // ÀÌµ¿ ¹× ±âÅ¸ UI ±â´É
         for (int i = 0; i < CurrentCars.Count; i++)
             CurrentCars[i].InitPath();
 
+        //int time = 0;
         while (true)
         {
+            //time++;
+
             bool pFlag = false;
             for (int i = 0; i < CurrentCars.Count; i++)
             {
+                //_ = CurrentCars[i].GetPath(time);
                 CurrentCars[i].GetNextPath();
                 pFlag = pFlag || !CurrentCars[i].Stopped;
             }
@@ -687,10 +696,10 @@ partial class GameManager // ÀÌµ¿ ¹× ±âÅ¸ UI ±â´É
             if (!pFlag) break;
         }
 
-        for (int i = 0; i < CurrentCars.Count; i++) // Â÷ ÀÌµ¿ °¡´É Ã¼Å©
+        for (int i = 0; i < CurrentCars.Count; i++) // ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼Å©
             IsPlayable = CurrentCars[i].IsMovable || IsPlayable;
 
-        UpdatePlayButton();
+        //UpdatePlayButton();
     }
 
     private void DrawPredictors()
@@ -726,8 +735,15 @@ partial class GameManager // ÀÌµ¿ ¹× ±âÅ¸ UI ±â´É
 
     public void Reload()
     {
-        if (IsAnimate) return;
+        if (IsAnimate || IsPlaying) return;
         StartCoroutine(PrevSetLevel(LevelIndex));
+    }
+
+    public void ReHelp() {
+        if (IsAnimate || IsPlaying) return;
+
+        CurrentLevel.decorates[0].decorate.GetComponent<HelpBase>().Reset();
+        Reload();
     }
 
     private void InteractBar()
@@ -745,7 +761,7 @@ partial class GameManager // ÀÌµ¿ ¹× ±âÅ¸ UI ±â´É
         }
         else if (!BarHide)
         {
-            if (Input.GetMouseButtonDown(0)) // ¹Ù±ù ºÎºÐ Å¬¸¯ÇÏ¸é
+            if (Input.GetMouseButtonDown(0)) // ï¿½Ù±ï¿½ ï¿½Îºï¿½ Å¬ï¿½ï¿½ï¿½Ï¸ï¿½
             {
                 BarHide = triggerBar.Hide = true;
                 UpdatePlayButton();

@@ -5,8 +5,8 @@ using UnityEngine.EventSystems;
 
 public class UIButtonFocus : MonoBehaviour
 {
-    private RectTransform rectTransform;
-    private Vector3 targetScale = Vector3.one;
+    protected RectTransform rectTransform;
+    protected Vector3 targetScale = Vector3.one;
 
     private void Awake()
     {
@@ -23,7 +23,7 @@ public class UIButtonFocus : MonoBehaviour
         targetScale = Vector3.one;
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         rectTransform.localScale = Vector3.Lerp(rectTransform.localScale, targetScale, Time.deltaTime * 10f);
     }

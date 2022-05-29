@@ -15,22 +15,21 @@ public class Help2 : HelpBase
         yield return SetText("", new Vector2(100f, 50f));
 
         yield return Focusing(Vector3.zero, Vector2.zero, "2.1", Vector2.zero, wait: false);
+        HelpManager.instance.Focusing = true;
         yield return new WaitWhile(() => !GameManager.instance.TriggerSelectedMode && GameManager.instance.SelectedTrigger != null);
         yield return SetText("", Vector2.zero);
 
-        if(GameManager.instance.SelectedTrigger == null)
-        {
-            yield return Focusing(Vector3.zero, Vector3.zero, "1.2", Vector3.zero);
-            yield return PrevDispose();
-
-            DataManager.SetData("Game", id, 0);
-            DataManager.SaveData();
-
-            yield break;
-        }
-
         yield return Focusing(GameManager.instance.CurrentCars[0].transform.position, Auto, "2.2", new Vector2(100f, 50f), wait:false);
-        yield return new WaitWhile(() => GameManager.instance.SelectedTrigger != null);
+        yield return new WaitWhile(() => {
+                Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition); mousePosition.z = 0;
+                Vector3Int tilePosition = GameManager.instance.triggerTile.WorldToCell(mousePosition);
+
+                HelpManager.instance.Focusing = 
+                    !GameManager.instance.TriggerSelectedMode || 
+                    tilePosition != new Vector3Int(0, 2, 0);
+                    
+                return GameManager.instance.SelectedTrigger != null;
+            });
         yield return SetText("", new Vector2(100f, 50f));
 
         if (GameManager.instance.CurrentCars[0].Rotation != 2)

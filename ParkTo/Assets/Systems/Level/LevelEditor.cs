@@ -54,6 +54,7 @@ public class LevelEditor : Editor
         EditorGUILayout.PropertyField(serializedObject.FindProperty("triggers"), true);
         EditorGUILayout.PropertyField(serializedObject.FindProperty("cars"), true);
         EditorGUILayout.PropertyField(serializedObject.FindProperty("decorates"), true);
+
         level.seed = EditorGUILayout.IntField("Seed", level.seed);
 
         EditorGUILayout.Space();

@@ -18,6 +18,7 @@ public class HelpManager : SingleTon<HelpManager>
     public RectTransform Descript;
 
     private bool Focused { get; set; }
+    public bool Focusing { get; set; }
 
     private bool appQuit = false;
 

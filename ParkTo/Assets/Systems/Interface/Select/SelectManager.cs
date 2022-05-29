@@ -39,6 +39,8 @@ public class SelectManager : MonoBehaviour
     private void DrawLevels(int page = 0)
     {
         if (ThemeManager.currentTheme == null) return;
+        Page = page;
+
         if(page < 0 || ThemeManager.currentTheme.levels.Count < page * MAX_COUNT + 1)
         {
             int sign = (int)Mathf.Sign(page);

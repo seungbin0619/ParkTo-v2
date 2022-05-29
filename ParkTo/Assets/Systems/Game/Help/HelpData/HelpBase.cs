@@ -26,10 +26,8 @@ public class HelpBase : MonoBehaviour
         StopCoroutine(current);
     }
 
-    protected bool CheckCondition()
-    {
-        return DataManager.GetData("Game", id, 0) == 0;
-    }
+    protected bool CheckCondition() =>DataManager.GetData("Game", id, 0) == 0;
+    public void Reset() => DataManager.SetData("Game", id, 0);
 
     protected virtual IEnumerator Content()
     {
@@ -42,10 +40,12 @@ public class HelpBase : MonoBehaviour
 
     protected IEnumerator Focusing(Vector3 position, Vector2 size, string data, Vector3 delta, bool wait = true)
     {
+        HelpManager.instance.Focusing = true;
         HelpManager.instance.screenImage.enabled = false;
 
         yield return SetFocus(position, size);
         yield return SetText(LocaleText(data), delta);
+        HelpManager.instance.Focusing = false;
 
         HelpManager.instance.screenImage.enabled = true;
 

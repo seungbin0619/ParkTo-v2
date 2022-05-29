@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Car : MonoBehaviour
 {
-    #region [ ±âÅ¸ ¼³Á¤ ]
+    #region [ ï¿½ï¿½Å¸ ï¿½ï¿½ï¿½ï¿½ ]
 
     private const int MAX_COUNT = 100;
     private const float fixedDuration = 0.3f;
@@ -31,31 +31,36 @@ public class Car : MonoBehaviour
         public Vector3Int position;
         public int rotation;
         public bool backward;
-        public PathData(Vector3Int position, int rotation, bool backward)
+        public bool stopped;
+        public int ispeed; // ì†ë„ì˜ ì—­ìˆ˜
+        
+        public PathData(Vector3Int position, int rotation, bool backward = false, bool stopped = false, int ispeed = 1)
         {
             this.position = position;
             this.rotation = rotation;
             this.backward = backward;
+            this.stopped = stopped;
+            this.ispeed = ispeed;
         }
     }
-
 
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rigidBody;
 
     #endregion
 
-    #region [ Â÷ »óÅÂ ]
+    #region [ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ]
 
     public Vector2Int Position { private set; get; }
     public int Rotation { private set; get; }
     public Color32 Color { private set; get; }
     public bool Collided { private set; get; }
-    public bool Stopped { private set; get; }
+    //public bool Stopped => path[path.Count - 1].stopped; // ì •ì§€í–ˆëŠ”ë° ë‹¤ì‹œ ê°€ëŠ” ê²½ìš°ëŠ” ì—†ìœ¼ë‹ˆ?
+    public bool Stopped {private set; get; }
 
     #endregion
 
-    #region [ °æ·Î °ü·Ã ]
+    #region [ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ]
 
     private bool isTriggerStop = false;
     private bool isTriggerBakcward = false;
@@ -63,11 +68,11 @@ public class Car : MonoBehaviour
     private List<PathData> trace = new List<PathData>();
     public List<PathData> path = new List<PathData>();
 
-    private int pathIndex;          // ÇöÀç path»ó À§Ä¡
-    private float currentProgress;  // ÇöÀç ÁøÇà »óÅÂ
-    private float targetProgress;   // ´ÙÀ½ °æ·Î±îÁöÀÇ ½Ã°£
+    private int pathIndex;          // ï¿½ï¿½ï¿½ï¿½ pathï¿½ï¿½ ï¿½ï¿½Ä¡
+    private float currentProgress;  // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    private float targetProgress;   // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½
 
-    public bool IsMovable { get { return path.Count > 1; } } // ´ÙÀ½¿¡ ¿òÁ÷ÀÏ ¼ö ÀÖ´ÂÁö
+    public bool IsMovable { get { return path.Count > 1; } } // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½
 
     #endregion
 
@@ -96,7 +101,7 @@ public class Car : MonoBehaviour
         //MapSystem.instance.AddCollision(hitPoint);
     }
 
-    #region [ °æ·Î ]
+    #region [ ï¿½ï¿½ï¿½ ]
 
     public void InitPath()
     {
@@ -105,13 +110,17 @@ public class Car : MonoBehaviour
         currentProgress = 0;
         targetProgress = 1;
 
-        path = new List<PathData>();
-        path.Add(new PathData((Vector3Int)Position, Rotation, isTriggerBakcward));
+        //
+        //isTriggerBakcward = false;
+        //isTriggerStop = false;
+        //
 
         Stopped = false;
+        path = new List<PathData>();
+        path.Add(new PathData((Vector3Int)Position, Rotation, isTriggerBakcward, isTriggerStop));
     }
 
-    public void GetNextPath()
+    public void GetNextPath() // ë¬¸ì œì : stoppedì— ì–¸ì œ ë©ˆì·„ëŠ”ì§€ì— ëŒ€í•œ ì •ë³´ê°€ ì—†ë‹¤.
     {
         if (isTriggerStop)
         {
@@ -132,24 +141,11 @@ public class Car : MonoBehaviour
         if (tile.type == LevelBase.TileType.Trigger) {
             switch ((LevelBase.TriggerType)tile.data)
             {
-                case LevelBase.TriggerType.TURNLEFT:
-                    tmp.rotation = Rotate(tmp.rotation, !tmp.backward ? 1 : -1);
-
-                    break;
-                case LevelBase.TriggerType.TURNRIGHT:
-                    tmp.rotation = Rotate(tmp.rotation, !tmp.backward ? -1 : 1);
-
-                    break;
-                case LevelBase.TriggerType.STOP:
-                    Stopped = true;
-
-                    break;
-                case LevelBase.TriggerType.BACKWARD:
-                    tmp.backward = true;
-
-                    break;
-                default:
-                    break;
+                case LevelBase.TriggerType.TURNLEFT: tmp.rotation = Rotate(tmp.rotation, !tmp.backward ? 1 : -1); break;
+                case LevelBase.TriggerType.TURNRIGHT: tmp.rotation = Rotate(tmp.rotation, !tmp.backward ? -1 : 1); break;
+                case LevelBase.TriggerType.STOP: Stopped = true; break;
+                case LevelBase.TriggerType.BACKWARD: tmp.backward = true; break;
+                default: break;
             }
         }
 
@@ -169,18 +165,20 @@ public class Car : MonoBehaviour
         path.Add(tmp);
         if (path.Count > MAX_COUNT) Stopped = true;
     }
-    private PathData GetFront(PathData bef)
-    {
-        return new PathData(bef.position + direction[Rotate(bef.rotation, back: bef.backward)], bef.rotation, bef.backward);
-    }
+
+    private PathData GetFront(PathData bef) => 
+        new PathData(bef.position + direction[Rotate(bef.rotation, back: bef.backward)],
+                     bef.rotation,
+                     bef.backward,
+                     bef.stopped);
 
     #endregion
 
-    #region [ ÀÌµ¿ ]
+    #region [ ï¿½Ìµï¿½ ]
 
     public void PrevMove()
     {
-        trace.Add(new PathData((Vector3Int)Position, Rotation, isTriggerBakcward));
+        trace.Add(new PathData((Vector3Int)Position, Rotation, isTriggerBakcward, isTriggerStop));
 
         isTriggerStop = false;
         isTriggerBakcward = false;
@@ -215,7 +213,7 @@ public class Car : MonoBehaviour
             targetProgress += 1f;
         }
 
-        clamp = progress - currentProgress;
+        clamp = (progress - currentProgress) / (targetProgress - currentProgress);
 
         cur = path[pathIndex];
         tile = GameManager.instance.CurrentTiles[cur.position.y][cur.position.x];
@@ -231,13 +229,13 @@ public class Car : MonoBehaviour
             position = bef.position + cur.position;
             position *= 0.5f;
 
-            if (pathIndex == path.Count - 1) // °¨¼Ó
+            if (pathIndex == path.Count - 1) // ì •ì§€ ì§ì „
             {
                 position += (clamp - 0.5f * Mathf.Pow(clamp, 2)) * (Vector3)direction[Rotate(bef.rotation, back: bef.backward)];
 
                 if (tile.type == LevelBase.TileType.Trigger)
                 {
-                    switch ((LevelBase.TriggerType)tile.data) // ¹Ù´Ú¿¡ µû¶ó ¹æÇâÀÌ ´Ş¶óÁú ¼ö ÀÖÀ½
+                    switch ((LevelBase.TriggerType)tile.data)
                     {
                         case LevelBase.TriggerType.TURNLEFT:
                         case LevelBase.TriggerType.TURNRIGHT:
@@ -247,20 +245,20 @@ public class Car : MonoBehaviour
                             if (bef.rotation == 0 && cur.rotation == 3) bef.rotation = 4;
 
                             transform.eulerAngles = LineAnimation.Lerp(angles[bef.rotation], angles[cur.rotation], clamp, 0, 0.5f);
-
                             break;
-                        default: // Á÷Áø
+                        case LevelBase.TriggerType.SLOW:
+                        default:
                             transform.eulerAngles = angles[bef.rotation];
 
                             break;
                     }
                 }else transform.eulerAngles = angles[bef.rotation];
             }
-            else
+            else // í‰ì†Œ ì›€ì§ì¼ ë•Œ
             {
                 if (tile.type == LevelBase.TileType.Trigger)
                 {
-                    switch ((LevelBase.TriggerType)tile.data) // ¹Ù´Ú¿¡ µû¶ó ¹æÇâÀÌ ´Ş¶óÁú ¼ö ÀÖÀ½
+                    switch ((LevelBase.TriggerType)tile.data)
                     {
                         case LevelBase.TriggerType.TURNLEFT:
                             position = GetTurnPosition(bef, cur, position, clamp, !bef.backward ? 1 : -1);
@@ -276,9 +274,9 @@ public class Car : MonoBehaviour
                             else position += clamp * (Vector3)direction[Rotate(bef.rotation, back: bef.backward)];
 
                             transform.eulerAngles = angles[bef.rotation];
-
                             break;
-                        default: // Á÷Áø
+                        case LevelBase.TriggerType.SLOW:
+                        default:
                             position += clamp * (Vector3)direction[Rotate(bef.rotation, back: bef.backward)];
                             transform.eulerAngles = angles[bef.rotation];
 
@@ -345,7 +343,7 @@ public class Car : MonoBehaviour
         return rotation;
     }
 
-    #region [ Æ®¸®°Å ]
+    #region [ Æ®ï¿½ï¿½ï¿½ï¿½ ]
 
     public void SetTrigger(LevelBase.TriggerType triggerType, bool undo = false)
     {

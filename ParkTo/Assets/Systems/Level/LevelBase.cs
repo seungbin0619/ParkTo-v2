@@ -16,11 +16,12 @@ public class LevelBase : ScriptableObject
     {
         GOAL = -2,
         NORMAL = -1,
-        BAN,
-        TURNLEFT,
-        TURNRIGHT,
-        STOP,
-        BACKWARD,
+        BAN, // 트리거 설치 금지
+        TURNLEFT, // 좌회전
+        TURNRIGHT, // 우회전
+        STOP, // 정지
+        BACKWARD, // 후진
+        SLOW, // 천천히
     }
 
     [System.Serializable]
@@ -60,6 +61,5 @@ public class LevelBase : ScriptableObject
     public DecorateData[] decorates;
 
     public CarData[] cars;
-
     public int seed;
 }

@@ -14,7 +14,16 @@ public class Help1 : HelpBase
         yield return SetText("", new Vector2(100f, 50f));
 
         yield return Focusing(new Vector3(0.5f, 0.5f, 0), Auto, "1.1", new Vector2(80f, 40f), wait:false);
-        yield return new WaitWhile(() => GameManager.instance.SelectedTrigger != null);
+        yield return new WaitWhile(() => {
+                Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition); mousePosition.z = 0;
+                Vector3Int tilePosition = GameManager.instance.triggerTile.WorldToCell(mousePosition);
+
+                HelpManager.instance.Focusing = 
+                    GameManager.instance.TriggerSelectedMode || 
+                    tilePosition != new Vector3Int(1, 1, 0);
+
+                return GameManager.instance.SelectedTrigger != null; 
+            });
         yield return SetText("", new Vector2(100f, 50f));
 
         if (GameManager.instance.CurrentTiles[1][1].type == LevelBase.TileType.Normal)

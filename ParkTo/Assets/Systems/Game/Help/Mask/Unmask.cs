@@ -145,8 +145,9 @@ namespace Coffee.UIExtensions
         /// <param name="target">Target transform.</param>
         public void FitTo(RectTransform target)
         {
+#if UNITY_EDITOR
             if (UnityEditor.Experimental.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage()) return;
-
+#endif
             var rt = transform as RectTransform;
 
             rt.pivot = target.pivot;
