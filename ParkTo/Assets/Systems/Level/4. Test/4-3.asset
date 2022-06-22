@@ -10,55 +10,74 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4eed06a8138e63449604bb66b169823, type: 3}
-  m_Name: 3-8
+  m_Name: 4-3
   m_EditorClassIdentifier: 
-  id: 3-8
+  id: 
   description: 
-  size: {x: 4, y: 4}
+  size: {x: 5, y: 5}
   tiles:
   - tile:
-    - type: 17
-      data: 0
-    - type: 17
-      data: 0
-    - type: 17
-      data: 0
-    - type: 17
-      data: 0
-  - tile:
-    - type: 17
-      data: 0
-    - type: 17
-      data: 0
-    - type: 17
-      data: 0
-    - type: 17
-      data: 0
-  - tile:
-    - type: 17
-      data: 0
     - type: 1
-      data: 1
+      data: 0
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+  - tile:
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+  - tile:
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
     - type: 17
       data: 0
     - type: 16
-      data: 0
+      data: 5
   - tile:
     - type: 17
       data: 0
     - type: 17
       data: 0
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+  - tile:
+    - type: 17
+      data: 0
     - type: 16
-      data: 4
-    - type: 1
-      data: 2
-  triggers: 0100000001000000020000000200000003000000
+      data: 5
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+  triggers: 05000000
   decorates: []
   cars:
-  - position: {x: 1, y: 0}
-    rotation: 3
-  - position: {x: 2, y: 1}
+  - position: {x: 4, y: 0}
     rotation: 0
-  - position: {x: 0, y: 2}
+  - position: {x: 1, y: 1}
+    rotation: 1
+  - position: {x: 0, y: 0}
     rotation: 0
   seed: 0

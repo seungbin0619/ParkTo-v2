@@ -33,5 +33,4 @@ MonoBehaviour:
   cars:
   - position: {x: 1, y: 0}
     rotation: 0
-  hasHelp: 1
   seed: 134134

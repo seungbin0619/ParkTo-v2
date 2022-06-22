@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class Car : MonoBehaviour
 {
-    #region [ ��Ÿ ���� ]
-
+    #region [ 변수들 ]
     private const int MAX_COUNT = 100;
-    private const float fixedDuration = 0.3f;
+    private const float fixedSpeed = 0.3f;
 
-    private static readonly Vector3Int[] direction = new Vector3Int[4]
+    private static readonly Vector3Int[] carDirection = new Vector3Int[4]
     {
         Vector3Int.up,
         Vector3Int.left,
@@ -17,7 +16,7 @@ public class Car : MonoBehaviour
         Vector3Int.right
     };
 
-    private static readonly Vector3[] angles = new Vector3[]
+    private static readonly Vector3[] carAngles = new Vector3[]
     {
         new Vector3(0, 0, 0),
         new Vector3(0, 0, 90f),
@@ -26,57 +25,57 @@ public class Car : MonoBehaviour
         new Vector3(0, 0, 360f)
     };
 
-    public struct PathData
+    public class PathData
     {
-        public Vector3Int position;
-        public int rotation;
-        public bool backward;
-        public bool stopped;
-        public int ispeed; // 속도의 역수
+        public Vector3Int Position { get; set; }
+        public int Rotation { get; set; }
+        public bool IsBackward { get; set; }
+        public bool IsStopped { get; set; }
+        public int ISpeed { get; set; } // 속도의 역수
+
+        public bool IsCollided { get; set; }
         
-        public PathData(Vector3Int position, int rotation, bool backward = false, bool stopped = false, int ispeed = 1)
+        public PathData(Vector3Int Position, int Rotation, bool Backward = false, bool Stopped = false, int ISpeed = 1, bool Collided = false)
         {
-            this.position = position;
-            this.rotation = rotation;
-            this.backward = backward;
-            this.stopped = stopped;
-            this.ispeed = ispeed;
+            this.Position = Position;
+            this.Rotation = Rotation;
+            this.IsBackward = Backward;
+            this.IsStopped = Stopped;
+            this.ISpeed = ISpeed;
+            this.IsCollided = Collided;
         }
     }
 
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rigidBody;
 
-    #endregion
-
-    #region [ �� ���� ]
-
     public Vector2Int Position { private set; get; }
     public int Rotation { private set; get; }
+    public int ISpeed { private set; get; }
+
     public Color32 Color { private set; get; }
     public bool Collided { private set; get; }
-    //public bool Stopped => path[path.Count - 1].stopped; // 정지했는데 다시 가는 경우는 없으니?
+
     public bool Stopped {private set; get; }
-
-    #endregion
-
-    #region [ ��� ���� ]
+    public bool Stopped2 => path[pathCount - 1].IsStopped;
 
     private bool isTriggerStop = false;
     private bool isTriggerBakcward = false;
 
     private List<PathData> trace = new List<PathData>();
     public List<PathData> path = new List<PathData>();
+    public List<float> timePath = new List<float>();
+    public int pathCount { get; set; }
 
-    private int pathIndex;          // ���� path�� ��ġ
-    private float currentProgress;  // ���� ���� ����
-    private float targetProgress;   // ���� ��α����� �ð�
+    private int pathIndex;
+    private float currentProgress;
+    private float targetProgress;
 
-    public bool IsMovable { get { return path.Count > 1; } } // ������ ������ �� �ִ���
-
-    #endregion
+    public bool IsMovable { get { return pathCount > 1; } }
 
     private Vector3 targetScale = Vector3.one * 0.8f;
+
+    #endregion
 
     private void Awake()
     {
@@ -88,11 +87,130 @@ public class Car : MonoBehaviour
     {
         Position = position;
         Rotation = rotation;
+        ISpeed = 1;
+
         Color = color;
 
         transform.localPosition = (Vector3Int)position;
         transform.eulerAngles = new Vector3(0, 0, rotation * 90f);
         spriteRenderer.color = color;
+    }
+
+    public void InitPath()
+    {
+        pathIndex = 0;
+        currentProgress = 0;
+        targetProgress = ISpeed;
+
+        Stopped = false;
+        
+        // 초기 경로 (다른 차들의 경로는 무시.) - 사실상 움직일 수 있는 가장 긴 거리
+        path = new List<PathData>();
+        path.Add(new PathData((Vector3Int)Position, Rotation, isTriggerBakcward, isTriggerStop, ISpeed));
+
+        timePath = new List<float>();
+        timePath.Add(path[0].ISpeed);
+        
+        // 무한 루프에 대한 처리는 여기서 하기.
+        PathData tmp = path[0];
+        while(!tmp.IsStopped) {
+            tmp = GetFront(tmp);
+            if(!GameManager.instance.IsValidPosition(tmp.Position)) {
+                path[path.Count - 1].IsStopped = true;
+                break;
+            }
+
+            switch (GetTriggerType(tmp))
+            {
+                case LevelBase.TriggerType.TURNLEFT: tmp.Rotation = Rotate(tmp.Rotation, !tmp.IsBackward ? 1 : -1); break;
+                case LevelBase.TriggerType.TURNRIGHT: tmp.Rotation = Rotate(tmp.Rotation, !tmp.IsBackward ? -1 : 1); break;
+                case LevelBase.TriggerType.STOP: tmp.IsStopped = true; break;
+                case LevelBase.TriggerType.BACKWARD: tmp.IsBackward = true; break;
+                case LevelBase.TriggerType.SLOW: tmp.ISpeed = 2; break;
+                default: break;
+            }
+            
+            // 가져올때 계산하는게 문제라면 처음부터 다 계산해서 구해버리면 되지 않을까.
+            timePath.Add(path[path.Count - 1].ISpeed != tmp.ISpeed ? 1.5f : tmp.ISpeed);
+            path.Add(tmp);
+
+            if(path.Count >= MAX_COUNT) {
+                tmp.IsStopped = true;
+                break;
+            }
+        }
+
+        pathCount = path.Count;
+    }
+
+    // 다른 차와의 관계로 Path 갱신
+    public bool GetRelativePath() {
+        bool changed = false;
+        bool d = Color == ThemeManager.currentTheme.cars[1];
+
+        float progress = 0;
+        for(int i = 1; i < path.Count; i++) {
+            progress += timePath[i - 1]; // progress = 다음 위치에 도달하는 시간
+            PathData current = path[i - 1], next = path[i]; // 현재 위치, 다음 위치
+
+            foreach(Car car in GameManager.instance.CurrentCars) {
+                if(car == this) continue;
+                PathData p = car.GetPath(progress); // 다음 위치에 도달하는 시간대의 다른 차의 위치 정보
+
+                // 다음 위치에 도달하기 전, 이미 도달해 있는 차가 있는 경우 정지
+                if(p.Position != next.Position) continue; // 이미 도달해 있는가?
+                if(!p.IsStopped) continue; // 그리고 정지해 있는가?
+
+                current.IsStopped = true;
+                changed = pathCount != i;
+                pathCount = i;
+
+                break;
+            }
+
+            if(current.IsStopped) break;
+        }
+
+        return changed;
+    }
+
+    // progress만큼 진행했을 때 차의 path index
+    public PathData GetPath(float progress) => path[TimeToIndex(progress)];
+
+    public int TimeToIndex(float time) {
+        int index = 0;
+        for(; index < path.Count; index++) {
+            if(path[index].IsStopped) break;
+
+            if((time -= timePath[index]) > 0) continue;
+            break;
+        }
+        return index;
+    }
+
+    private PathData GetFront(PathData bef) => 
+        new PathData(bef.Position + carDirection[Rotate(bef.Rotation, back: bef.IsBackward)],
+                     bef.Rotation,
+                     bef.IsBackward,
+                     bef.IsStopped,
+                     bef.ISpeed);
+
+    public void PrevMove()
+    {
+        path.RemoveRange(pathCount, path.Count - pathCount);
+        trace.Add(new PathData((Vector3Int)Position, Rotation, isTriggerBakcward, isTriggerStop, ISpeed));
+
+        isTriggerStop = false;
+        isTriggerBakcward = false;
+        ISpeed = 1;
+    }
+
+    public void OnMove()
+    {
+        if (Collided) return;
+
+        transform.localPosition = (Vector3Int)Position;
+        transform.eulerAngles = carAngles[Rotate(Rotation)];
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -101,191 +219,86 @@ public class Car : MonoBehaviour
         //MapSystem.instance.AddCollision(hitPoint);
     }
 
-    #region [ ��� ]
-
-    public void InitPath()
-    {
-        pathIndex = 0;
-
-        currentProgress = 0;
-        targetProgress = 1;
-
-        //
-        //isTriggerBakcward = false;
-        //isTriggerStop = false;
-        //
-
-        Stopped = false;
-        path = new List<PathData>();
-        path.Add(new PathData((Vector3Int)Position, Rotation, isTriggerBakcward, isTriggerStop));
-    }
-
-    public void GetNextPath() // 문제점: stopped에 언제 멈췄는지에 대한 정보가 없다.
-    {
-        if (isTriggerStop)
-        {
-            Stopped = true;
-            return;
-        }
-        if (Stopped) return;
-
-        PathData tmp = GetFront(path[path.Count - 1]);
-        if (!GameManager.instance.IsValidPosition(tmp.position))
-        {
-            Stopped = true;
-            return;
-        }
-
-        LevelBase.TileData tile = GameManager.instance.CurrentTiles[tmp.position.y][tmp.position.x];
-
-        if (tile.type == LevelBase.TileType.Trigger) {
-            switch ((LevelBase.TriggerType)tile.data)
-            {
-                case LevelBase.TriggerType.TURNLEFT: tmp.rotation = Rotate(tmp.rotation, !tmp.backward ? 1 : -1); break;
-                case LevelBase.TriggerType.TURNRIGHT: tmp.rotation = Rotate(tmp.rotation, !tmp.backward ? -1 : 1); break;
-                case LevelBase.TriggerType.STOP: Stopped = true; break;
-                case LevelBase.TriggerType.BACKWARD: tmp.backward = true; break;
-                default: break;
-            }
-        }
-
-        for (int i = 0; i < GameManager.instance.CurrentCars.Count; i++)
-        {
-            Car dif = GameManager.instance.CurrentCars[i];
-            PathData difPos = dif.path[Mathf.Min(path.Count, dif.path.Count) - 1];
-
-            if (dif == this) continue;
-            if (difPos.position != tmp.position) continue;
-            if (GameManager.instance.IsValidPosition(GetFront(difPos).position) && (path.Count < dif.path.Count || !dif.Stopped)) continue;
-
-            Stopped = true;
-            return;
-        }
-
-        path.Add(tmp);
-        if (path.Count > MAX_COUNT) Stopped = true;
-    }
-
-    private PathData GetFront(PathData bef) => 
-        new PathData(bef.position + direction[Rotate(bef.rotation, back: bef.backward)],
-                     bef.rotation,
-                     bef.backward,
-                     bef.stopped);
-
-    #endregion
-
-    #region [ �̵� ]
-
-    public void PrevMove()
-    {
-        trace.Add(new PathData((Vector3Int)Position, Rotation, isTriggerBakcward, isTriggerStop));
-
-        isTriggerStop = false;
-        isTriggerBakcward = false;
-    }
-
-    public void OnMove()
-    {
-        if (Collided) return;
-
-        transform.localPosition = (Vector3Int)Position;
-        transform.eulerAngles = angles[Rotate(Rotation)];
-    }
-
     public bool MoveTo(float progress)
     {
         if (Collided) return false;
         if (!IsMovable) return false;
 
         Vector3 position;
-        PathData cur, bef;
-
-        LevelBase.TileData tile;
+        PathData current, before;
         float clamp;
 
-        progress /= fixedDuration;
-        if(progress > targetProgress)
-        {
+        progress /= fixedSpeed;
+        if(progress > targetProgress) {
             pathIndex++;
-            if (pathIndex >= path.Count) return false;
+            if(pathIndex >= pathCount) return false;
 
             currentProgress = targetProgress;
-            targetProgress += 1f;
+            targetProgress += timePath[pathIndex];
         }
 
-        clamp = (progress - currentProgress) / (targetProgress - currentProgress);
+        clamp = (progress - currentProgress) / timePath[pathIndex];
 
-        cur = path[pathIndex];
-        tile = GameManager.instance.CurrentTiles[cur.position.y][cur.position.x];
-
-        if (pathIndex == 0)
+        current = path[pathIndex];
+        if (pathIndex == 0) // 출발할 때
         {
-            position = cur.position;
-            position += 0.5f * Mathf.Pow(clamp, 2) * (Vector3)direction[Rotate(cur.rotation, back: cur.backward)];
+            position = current.Position;
+            position += 0.5f * Mathf.Pow(clamp, 2) * (Vector3)carDirection[Rotate(current.Rotation, back: current.IsBackward)];
         }
         else
         {
-            bef = path[pathIndex - 1];
-            position = bef.position + cur.position;
+            before = path[pathIndex - 1];
+            position = before.Position + current.Position;
             position *= 0.5f;
 
-            if (pathIndex == path.Count - 1) // 정지 직전
+            if (pathIndex == pathCount - 1) // 정지 직전
             {
-                position += (clamp - 0.5f * Mathf.Pow(clamp, 2)) * (Vector3)direction[Rotate(bef.rotation, back: bef.backward)];
+                position += (clamp - 0.5f * Mathf.Pow(clamp, 2)) * (Vector3)carDirection[Rotate(before.Rotation, back: before.IsBackward)];
 
-                if (tile.type == LevelBase.TileType.Trigger)
+                switch (GetTriggerType(current))
                 {
-                    switch ((LevelBase.TriggerType)tile.data)
-                    {
-                        case LevelBase.TriggerType.TURNLEFT:
-                        case LevelBase.TriggerType.TURNRIGHT:
-                            Rotation = cur.rotation;
+                    case LevelBase.TriggerType.TURNLEFT:
+                    case LevelBase.TriggerType.TURNRIGHT:
+                        Rotation = current.Rotation;
+                        
+                        int curRot = current.Rotation, befRot = before.Rotation;
+                        if (befRot == 3 && curRot == 0) curRot = 4;
+                        if (befRot == 0 && curRot == 3) befRot = 4;
 
-                            if (bef.rotation == 3 && cur.rotation == 0) cur.rotation = 4;
-                            if (bef.rotation == 0 && cur.rotation == 3) bef.rotation = 4;
+                        transform.eulerAngles = LineAnimation.Lerp(carAngles[befRot], carAngles[curRot], clamp, 0, 0.5f);
+                        break;
+                    case LevelBase.TriggerType.SLOW:
+                    default:
+                        transform.eulerAngles = carAngles[before.Rotation];
 
-                            transform.eulerAngles = LineAnimation.Lerp(angles[bef.rotation], angles[cur.rotation], clamp, 0, 0.5f);
-                            break;
-                        case LevelBase.TriggerType.SLOW:
-                        default:
-                            transform.eulerAngles = angles[bef.rotation];
-
-                            break;
-                    }
-                }else transform.eulerAngles = angles[bef.rotation];
+                        break;
+                }
             }
             else // 평소 움직일 때
             {
-                if (tile.type == LevelBase.TileType.Trigger)
+                switch (GetTriggerType(current))
                 {
-                    switch ((LevelBase.TriggerType)tile.data)
-                    {
-                        case LevelBase.TriggerType.TURNLEFT:
-                            position = GetTurnPosition(bef, cur, position, clamp, !bef.backward ? 1 : -1);
+                    case LevelBase.TriggerType.TURNLEFT:
+                        position = GetTurnPosition(before, current, position, clamp, !before.IsBackward ? 1 : -1);
+                        break;
+                    case LevelBase.TriggerType.TURNRIGHT:
+                        position = GetTurnPosition(before, current, position, clamp, !before.IsBackward ? -1 : 1);
+                        break;
+                    case LevelBase.TriggerType.BACKWARD:
+                        if (before.IsBackward != current.IsBackward)
+                            position += (clamp - Mathf.Pow(clamp, 2)) * (Vector3)carDirection[before.Rotation];
+                        else position += clamp * (Vector3)carDirection[Rotate(before.Rotation, back: before.IsBackward)]; // 이미 후진 중?
 
-                            break;
-                        case LevelBase.TriggerType.TURNRIGHT:
-                            position = GetTurnPosition(bef, cur, position, clamp, !bef.backward ? -1 : 1);
+                        transform.eulerAngles = carAngles[before.Rotation];
+                        break;
+                    case LevelBase.TriggerType.SLOW:
+                        position += Decelerate(clamp) * (Vector3)carDirection[Rotate(before.Rotation, back: before.IsBackward)];
+                        break;
+                    default:
+                        position += clamp * (Vector3)carDirection[Rotate(before.Rotation, back: before.IsBackward)];
+                        transform.eulerAngles = carAngles[before.Rotation];
 
-                            break;
-                        case LevelBase.TriggerType.BACKWARD:
-                            if (bef.backward != cur.backward)
-                                position += (clamp - Mathf.Pow(clamp, 2)) * (Vector3)direction[bef.rotation];
-                            else position += clamp * (Vector3)direction[Rotate(bef.rotation, back: bef.backward)];
-
-                            transform.eulerAngles = angles[bef.rotation];
-                            break;
-                        case LevelBase.TriggerType.SLOW:
-                        default:
-                            position += clamp * (Vector3)direction[Rotate(bef.rotation, back: bef.backward)];
-                            transform.eulerAngles = angles[bef.rotation];
-
-                            break;
-                    }
-                }else
-                {
-                    position += clamp * (Vector3)direction[Rotate(bef.rotation, back: bef.backward)];
-                    transform.eulerAngles = angles[bef.rotation];
+                        break;
                 }
             }
         }
@@ -295,29 +308,35 @@ public class Car : MonoBehaviour
 
         return true;
     }
-    private Vector3 GetTurnPosition(PathData bef, PathData cur, Vector3 position, float clamp, int dir)
+
+    private float Decelerate(float t) {
+        t *= 1.5f;
+        return 2f / 27f * Mathf.Pow(t, 3f) - 1f / 3f * Mathf.Pow(t, 2f) + t;
+    }
+    private Vector3 GetTurnPosition(PathData before, PathData current, Vector3 position, float clamp, int dir)
     {
-        Vector3 nxt = cur.position + (Vector3)direction[Rotate(cur.rotation, back: cur.backward)] * 0.5f;
-        Rotation = cur.rotation;
+        Vector3 next = current.Position + (Vector3)carDirection[Rotate(current.Rotation, back: current.IsBackward)] * 0.5f;
+        Rotation = current.Rotation;
 
-        if (bef.rotation == 3 && cur.rotation == 0) cur.rotation = 4;
-        if (bef.rotation == 0 && cur.rotation == 3) bef.rotation = 4;
+        int curRot = current.Rotation, befRot = before.Rotation;
+        if (befRot == 3 && curRot == 0) curRot = 4;
+        if (befRot == 0 && curRot == 3) befRot = 4;
 
-        transform.eulerAngles = Vector3.Lerp(angles[bef.rotation], angles[cur.rotation], clamp);
+        transform.eulerAngles = LineAnimation.Lerp(carAngles[befRot], carAngles[curRot], clamp);
 
         Vector3 center = new Vector3();
         float A = Mathf.PI;
 
-        if ((position.y - nxt.y) / (position.x - nxt.x) * dir > 0)
+        if ((position.y - next.y) / (position.x - next.x) * dir > 0)
         {
             center.x = position.x;
-            center.y = nxt.y;
+            center.y = next.y;
 
             A *= center.y < position.y ? 0.5f : 1.5f;
         }
         else
         {
-            center.x = nxt.x;
+            center.x = next.x;
             center.y = position.y;
 
             A *= center.x < position.x ? 0f : 1f;
@@ -330,7 +349,12 @@ public class Car : MonoBehaviour
         return position;
     }
 
-    #endregion
+    private LevelBase.TriggerType GetTriggerType(PathData path) {
+        LevelBase.TileData tile = GameManager.instance.CurrentTiles[path.Position.y][path.Position.x];
+
+        if (tile.type != LevelBase.TileType.Trigger) return LevelBase.TriggerType.NONE;
+        else return (LevelBase.TriggerType)tile.data;
+    }
 
     private int Rotate(int rotation, int delta = 0, bool back = false)
     {
@@ -343,33 +367,20 @@ public class Car : MonoBehaviour
         return rotation;
     }
 
-    #region [ Ʈ���� ]
-
     public void SetTrigger(LevelBase.TriggerType triggerType, bool undo = false)
     {
         switch (triggerType)
         {
-            case LevelBase.TriggerType.TURNLEFT:
-                Rotation = Rotate(Rotation, undo ? -1 : 1);
-
-                break;
-            case LevelBase.TriggerType.TURNRIGHT:
-                Rotation = Rotate(Rotation, undo ? 1 : -1);
-
-                break;
-            case LevelBase.TriggerType.STOP:
-                isTriggerStop = !undo;
-
-                break;
-            case LevelBase.TriggerType.BACKWARD:
-                isTriggerBakcward = !undo;
-
-                break;
+            case LevelBase.TriggerType.TURNLEFT: Rotation = Rotate(Rotation, undo ? -1 : 1); break;
+            case LevelBase.TriggerType.TURNRIGHT: Rotation = Rotate(Rotation, undo ? 1 : -1); break;
+            case LevelBase.TriggerType.STOP: isTriggerStop = !undo; break;
+            case LevelBase.TriggerType.BACKWARD: isTriggerBakcward = !undo; break;
+            case LevelBase.TriggerType.SLOW: ISpeed = undo ? 1 : 2; break;
             default: break;
         }
 
         Rotation %= 4;
-        transform.eulerAngles = angles[Rotation];
+        transform.eulerAngles = carAngles[Rotation];
     }
 
     private void PreviewUpdate()
@@ -378,24 +389,22 @@ public class Car : MonoBehaviour
         transform.localScale = Vector3.Lerp(transform.localScale, targetScale, Time.deltaTime * 10f);
     }
 
-    public void PreviewTrigger(float size)
-    {
-        targetScale = Vector3.one * size;
-    }
-
-    #endregion
-
+    public void PreviewTrigger(float size) => targetScale = Vector3.one * size;
 
     public void Undo()
     {
         if (trace.Count == 0) return;
         PathData pathData = trace[trace.Count - 1];
 
-        Position = (Vector2Int)pathData.position;
-        Rotation = pathData.rotation;
+        Position = (Vector2Int)pathData.Position;
+        Rotation = pathData.Rotation;
+        ISpeed = pathData.ISpeed;
+        
+        isTriggerBakcward = pathData.IsBackward;
+        isTriggerStop = pathData.IsStopped;
 
-        transform.localPosition = pathData.position;
-        transform.eulerAngles = angles[Rotate(Rotation)];
+        transform.localPosition = pathData.Position;
+        transform.eulerAngles = carAngles[Rotate(Rotation)];
 
         if(Collided)
         {
@@ -411,8 +420,5 @@ public class Car : MonoBehaviour
 
     private void OnMouseExit() => GameManager.instance.predictCar = null;
 
-    private  void Update()
-    {
-        PreviewUpdate();
-    }
+    private void Update() => PreviewUpdate();
 }

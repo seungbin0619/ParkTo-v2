@@ -9,6 +9,8 @@ public class ThemeBase : ScriptableObject
     public string id;
     public int index;
 
+    public Car car;
+
     public Color[] colors;
     public Color[] cars;
 

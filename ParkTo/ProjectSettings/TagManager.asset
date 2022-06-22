@@ -51,6 +51,9 @@ TagManager:
   - name: Map
     uniqueID: 223352953
     locked: 0
+  - name: Decorate
+    uniqueID: 3762675177
+    locked: 0
   - name: Front
     uniqueID: 857942907
     locked: 0

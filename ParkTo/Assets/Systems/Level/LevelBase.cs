@@ -14,6 +14,7 @@ public class LevelBase : ScriptableObject
 
     public enum TriggerType
     {
+        NONE = -3,
         GOAL = -2,
         NORMAL = -1,
         BAN, // 트리거 설치 금지

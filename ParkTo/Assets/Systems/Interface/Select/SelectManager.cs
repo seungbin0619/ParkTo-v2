@@ -6,8 +6,8 @@ using UnityEngine.UI;
 
 public class SelectManager : MonoBehaviour
 {
-    private const int MAX_COUNT = 8; // ÇÑ ÆäÀÌÁö¿¡ ³ª¿Ã ¼ö ÀÖ´Â ¸Ê °³¼ö
-    private const int RANGE = 15; // ÇÑ ÆäÀÌÁö¿¡ Å¸ÀÏ»óÀ¸·Î Ç¥½ÃµÉ ±æ °³¼ö(Àý¹Ý)
+    private const int MAX_COUNT = 8; // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    private const int RANGE = 15; // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½Ï»ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½Ãµï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)
 
     [SerializeField]
     private Tilemap selectTile;
@@ -39,30 +39,30 @@ public class SelectManager : MonoBehaviour
     private void DrawLevels(int page = 0)
     {
         if (ThemeManager.currentTheme == null) return;
-        Page = page;
-
-        if(page < 0 || ThemeManager.currentTheme.levels.Count < page * MAX_COUNT + 1)
+        if(page < 0 || ThemeManager.currentTheme.levels.Count < page * MAX_COUNT + 1) // íŽ˜ì´ì§€ ì´ë™
         {
-            int sign = (int)Mathf.Sign(page);
+            int sign = (int)Mathf.Sign(page); // íŽ˜ì´ì§€ê°€ 0 ì•„ëž˜ë©´ ì „ìœ¼ë¡œ
             ThemeManager.instance.SetTheme(ThemeManager.index + sign);
 
             return;
         }
 
         Page = page;
+        int clearedLevel = DataManager.GetData("Game", "Theme" + ThemeManager.index, 0);
+
         for(int i = 0; i < MAX_COUNT; i++)
         {
             int levelIndex = page * MAX_COUNT + i;
-            if (ThemeManager.currentTheme.levels.Count > levelIndex) // ÀÌÈÄºÎÅÍ ¾Èº¸¿©ÁÜ.
+            bool flag = clearedLevel >= levelIndex;
+
+            if (ThemeManager.currentTheme.levels.Count > levelIndex) // ë ˆë²¨ ê°œìˆ˜ë§Œí¼ ë³´ì´ê¸°.
             {
                 buttons[i].gameObject.SetActive(true);
                 if(i > 0) lines[i - 1].gameObject.SetActive(true);
-            }
-
-            bool flag = true;
-
+            } else break;
+            
             buttons[i].interactable = flag;
-            if (i > 0) lines[i - 1].enabled = flag;
+            if (i > 0) lines[i - 1].enabled = !flag;
         }
 
         Vector3Int position = new Vector3Int(-RANGE, 0, 0);

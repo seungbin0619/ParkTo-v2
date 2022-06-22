@@ -20,16 +20,16 @@ MonoBehaviour:
     - type: 17
       data: 0
     - type: 17
-      data: 0
+      data: 5
     - type: 16
       data: 5
-    - type: 17
-      data: 0
     - type: 1
+      data: 0
+    - type: 17
       data: 0
   triggers: 
   decorates: []
   cars:
   - position: {x: 0, y: 0}
     rotation: 3
-  seed: 0
+  seed: 355324

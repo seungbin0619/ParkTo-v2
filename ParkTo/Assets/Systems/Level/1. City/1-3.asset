@@ -46,5 +46,4 @@ MonoBehaviour:
     rotation: 3
   - position: {x: 2, y: 0}
     rotation: 0
-  hasHelp: 1
   seed: 0

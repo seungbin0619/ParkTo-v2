@@ -20,10 +20,10 @@ public class Predictor : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    public void Initialize(Car target, float index, Vector3 position, float initialTime, int maxPathCount, bool middle = false)
+    public void Initialize(Car target, float index, Vector3 position, float initialTime, float maxPathProgress, bool middle = false)
     {
         this.initialTime = initialTime;
-        loopDuration = maxPathCount / viewCount + period;
+        loopDuration = maxPathProgress / viewCount + period;
 
         this.target = target;
         color = target.Color;
@@ -50,7 +50,7 @@ public class Predictor : MonoBehaviour
         if (index == -1) return;
 
         float deltaTime = (Time.time - initialTime) % loopDuration;
-        // 1 ~ 4 -> ÃÖ´ë index = 3.5 / 3 = 1.16666... 1.1666.. + period¿¡ ³¡³²?
+        // 1 ~ 4 -> ï¿½Ö´ï¿½ index = 3.5 / 3 = 1.16666... 1.1666.. + periodï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½?
 
         color.a = (deltaTime >= index && deltaTime < index + period) ? Mathf.Cos((deltaTime - index) * Mathf.PI * 2 / period) * -0.5f + 0.5f : 0;
         spriteRenderer.color = color;

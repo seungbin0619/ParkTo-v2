@@ -31,6 +31,14 @@ MonoBehaviour:
   decorates:
   - decorate: {fileID: 5205182621859066405, guid: e7461a33dad86af428ab6b540614c641, type: 3}
     position: {x: 0, y: 0}
+  - decorate: {fileID: 3593689467275820119, guid: 11412fac06def904d881369e719e60ed, type: 3}
+    position: {x: -2, y: 1}
+  - decorate: {fileID: 3330524765356471062, guid: 47084a9803231d74f946d0c1ee992bb3, type: 3}
+    position: {x: 2, y: -1}
+  - decorate: {fileID: 5154779540028454503, guid: 7b1b4df0ab7a03f48b8227348f225c04, type: 3}
+    position: {x: 0, y: 1}
+  - decorate: {fileID: 3192427855307063176, guid: 12efde0300d138a4a921cbaa34f7a75d, type: 3}
+    position: {x: -1, y: -1}
   cars:
   - position: {x: 0, y: 0}
     rotation: 3

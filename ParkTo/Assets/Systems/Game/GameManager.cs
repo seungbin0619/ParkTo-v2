@@ -29,8 +29,8 @@ partial class GameManager : SingleTon<GameManager>
 
     public PlayButton playButton;
 
-    [SerializeField] 
-    private Car carPrefab;
+    //[SerializeField] 
+    //private Car carPrefab;
 
     [SerializeField]
     private Tile goalTilePrefab;
@@ -175,7 +175,7 @@ partial class GameManager // LevelDraw
         {
             LevelBase.CarData carData = CurrentLevel.cars[i];
 
-            Car newCar = Instantiate(carPrefab, carTile);
+            Car newCar = Instantiate(ThemeManager.currentTheme.car, carTile);
             newCar.Initialize(carData.position, carData.rotation, shuffledColor[CurrentCars.Count]);
 
             CurrentCars.Add(newCar);
@@ -638,7 +638,7 @@ partial class GameManager // �̵� �� ��Ÿ UI ���
             yield return YieldDictionary.WaitForEndOfFrame;
             progress += Time.deltaTime;
         }
-
+        
         IsPlaying = false;
         EventManager.instance.OnMove.Raise();
     }
@@ -680,22 +680,16 @@ partial class GameManager // �̵� �� ��Ÿ UI ���
         for (int i = 0; i < CurrentCars.Count; i++)
             CurrentCars[i].InitPath();
 
-        //int time = 0;
         while (true)
         {
-            //time++;
+            bool flag = false;
+            for(int i = 0; i < CurrentCars.Count; i++)
+                flag = CurrentCars[i].GetRelativePath() || flag;
 
-            bool pFlag = false;
-            for (int i = 0; i < CurrentCars.Count; i++)
-            {
-                //_ = CurrentCars[i].GetPath(time);
-                CurrentCars[i].GetNextPath();
-                pFlag = pFlag || !CurrentCars[i].Stopped;
-            }
-
-            if (!pFlag) break;
+            if(!flag) break;
         }
 
+        IsPlayable = false;
         for (int i = 0; i < CurrentCars.Count; i++) // �� �̵� ���� üũ
             IsPlayable = CurrentCars[i].IsMovable || IsPlayable;
 
@@ -707,20 +701,40 @@ partial class GameManager // �̵� �� ��Ÿ UI ���
         foreach (Transform child in predictTile.transform)
             Destroy(child.gameObject);
 
-        int maxPathCount = 0;
-        for (int i = 0; i < CurrentCars.Count; i++)
-            maxPathCount = Mathf.Max(CurrentCars[i].path.Count, maxPathCount);
+        float maxPathProgress = 0;
+        for (int i = 0; i < CurrentCars.Count; i++) {
+            float pathProgress = 0;
+            for(int j = 0; j < CurrentCars[i].timePath.Count; j++)
+                pathProgress += CurrentCars[i].timePath[j];
+            maxPathProgress = Mathf.Max(pathProgress, maxPathProgress);
+        }
 
-        for (int i = 0; i < CurrentCars.Count; i++)
-            for (int j = 1; j < CurrentCars[i].path.Count; j++)
+        for (int i = 0; i < CurrentCars.Count; i++) {
+            float progress = 0;
+            for (int j = 1; j < CurrentCars[i].pathCount; j++)
             {
-                Vector3Int targetPosition = CurrentCars[i].path[j].position;
-                Predictor tmpPredictor = Instantiate(predictor, predictTile.transform).gameObject.GetComponent<Predictor>();
-                tmpPredictor.Initialize(CurrentCars[i], j - 0.5f, targetPosition, lastDrawTime, maxPathCount);
-
-                tmpPredictor = Instantiate(predictor, predictTile.transform).gameObject.GetComponent<Predictor>();
-                tmpPredictor.Initialize(CurrentCars[i], j - 1, (Vector3)(CurrentCars[i].path[j - 1].position + targetPosition) * 0.5f, lastDrawTime, maxPathCount, true);
+                Vector3Int targetPosition = CurrentCars[i].path[j].Position;
+                
+                // 큰 점
+                Predictor tmpPredictor = Instantiate(predictor, predictTile.transform);
+                tmpPredictor.Initialize(CurrentCars[i],
+                                        progress + CurrentCars[i].timePath[j - 1],
+                                        targetPosition,
+                                        lastDrawTime,
+                                        maxPathProgress);
+                
+                // 작은 점
+                tmpPredictor = Instantiate(predictor, predictTile.transform);
+                tmpPredictor.Initialize(CurrentCars[i],
+                                        progress + CurrentCars[i].timePath[j - 1] * 0.5f,
+                                        (Vector3)(CurrentCars[i].path[j - 1].Position + targetPosition) * 0.5f,
+                                        lastDrawTime,
+                                        maxPathProgress,
+                                        true);
+            
+                progress += CurrentCars[i].timePath[j - 1];
             }
+        }
     }
 
     public bool IsValidPosition(Vector3Int position)
