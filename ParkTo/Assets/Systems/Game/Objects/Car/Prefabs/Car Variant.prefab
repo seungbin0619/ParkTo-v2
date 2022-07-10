@@ -1,0 +1,283 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &7038579058709533655
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7491102988823462083, guid: fccfba3987d0f65458026e1f54c5b206, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7491102988823462083, guid: fccfba3987d0f65458026e1f54c5b206, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7491102988823462083, guid: fccfba3987d0f65458026e1f54c5b206, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7491102988823462083, guid: fccfba3987d0f65458026e1f54c5b206, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7491102988823462083, guid: fccfba3987d0f65458026e1f54c5b206, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7491102988823462083, guid: fccfba3987d0f65458026e1f54c5b206, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7491102988823462083, guid: fccfba3987d0f65458026e1f54c5b206, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7491102988823462083, guid: fccfba3987d0f65458026e1f54c5b206, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7491102988823462083, guid: fccfba3987d0f65458026e1f54c5b206, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7491102988823462083, guid: fccfba3987d0f65458026e1f54c5b206, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7491102988823462083, guid: fccfba3987d0f65458026e1f54c5b206, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7491102988823462084, guid: fccfba3987d0f65458026e1f54c5b206, type: 3}
+      propertyPath: m_Name
+      value: Car Variant
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fccfba3987d0f65458026e1f54c5b206, type: 3}
+--- !u!1 &458153465258054419 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7491102988823462084, guid: fccfba3987d0f65458026e1f54c5b206, type: 3}
+  m_PrefabInstance: {fileID: 7038579058709533655}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &458153465258054422 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 7491102988823462081, guid: fccfba3987d0f65458026e1f54c5b206, type: 3}
+  m_PrefabInstance: {fileID: 7038579058709533655}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &458153466211438337 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 7491102989814799574, guid: fccfba3987d0f65458026e1f54c5b206, type: 3}
+  m_PrefabInstance: {fileID: 7038579058709533655}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &7046596568537138144 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 28293055098785847, guid: fccfba3987d0f65458026e1f54c5b206, type: 3}
+  m_PrefabInstance: {fileID: 7038579058709533655}
+  m_PrefabAsset: {fileID: 0}
+--- !u!50 &4345186435560733608
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 458153465258054419}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!60 &557421420891675871
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 458153465258054419}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1.28, y: 1.28}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0, y: 0.405}
+      - {x: -0.1189714, y: 0.3938431}
+      - {x: -0.2011507, y: 0.3695641}
+      - {x: -0.242581, y: 0.3322822}
+      - {x: -0.2530391, y: 0.3053862}
+      - {x: -0.2527638, y: -0.3145818}
+      - {x: -0.2212353, y: -0.3697065}
+      - {x: -0.1574333, y: -0.4044154}
+      - {x: 0.1574333, y: -0.4044154}
+      - {x: 0.2212353, y: -0.3697065}
+      - {x: 0.2527638, y: -0.3145818}
+      - {x: 0.2530391, y: 0.3053862}
+      - {x: 0.242581, y: 0.3322822}
+      - {x: 0.2011507, y: 0.3695641}
+      - {x: 0.1189714, y: 0.3938431}
+--- !u!114 &732894452928564975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 458153465258054419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41c8af3c0a3a32e46a3a28d0ee2f327c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: ec5aac2a107a54c439c449a123863152, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7190440455865632917}
+        m_TargetAssemblyTypeName: TriggerObject, Assembly-CSharp
+        m_MethodName: OnSelectedTriggerStateChanged
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1518906166606092135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 458153465258054419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41c8af3c0a3a32e46a3a28d0ee2f327c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: 7fd05d0eb8e5c794f935dc20c82e962b, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1981476589188607521}
+        m_TargetAssemblyTypeName: Car, Assembly-CSharp
+        m_MethodName: PrevMove
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1981476589188607521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 458153465258054419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eab51e8aa669fff44b2af8f4e511520e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timePath: []
+--- !u!114 &3396755437480051817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 458153465258054419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41c8af3c0a3a32e46a3a28d0ee2f327c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: b6dcd3a9f1739d84baea10f3511ab4a5, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1981476589188607521}
+        m_TargetAssemblyTypeName: Car, Assembly-CSharp
+        m_MethodName: OnMove
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6035652780511144326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 458153465258054419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41c8af3c0a3a32e46a3a28d0ee2f327c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: fa99d392a9c4d794bb3f8a9d5f9157b3, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7190440455865632917}
+        m_TargetAssemblyTypeName: TriggerObject, Assembly-CSharp
+        m_MethodName: OnUnselectTrigger
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &7190440455865632917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 458153465258054419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad55ed5ac37c1024e84b3d800ddbeca7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sprites:
+  - {fileID: 458153465258054422}
+  - {fileID: 458153466211438337}
+  - {fileID: 7046596568537138144}
+  mode: 0
+  gen: 0

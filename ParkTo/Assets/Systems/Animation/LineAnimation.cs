@@ -8,19 +8,22 @@ using UnityEngine;
 public static class LineAnimation
 {
     public static float Lerp(float a, float b, float t, float sStart = 0, float sEnd = 0)
-    {
-        return Mathf.Lerp(a, b, LerpBase(t, sStart, sEnd));
-    }
+        => Mathf.Lerp(a, b, LerpBase(t, sStart, sEnd));
 
     public static Vector3 Lerp(Vector3 a, Vector3 b, float t, float sStart = 0, float sEnd = 0)
-    {
-        return Vector3.Lerp(a, b, LerpBase(t, sStart, sEnd));
-    }
+        => Vector3.Lerp(a, b, LerpBase(t, sStart, sEnd));
 
     public static Vector2 Lerp(Vector2 a, Vector2 b, float t, float sStart = 0, float sEnd = 0)
-    {
-        return Vector2.Lerp(a, b, LerpBase(t, sStart, sEnd));
-    }
+        => Vector2.Lerp(a, b, LerpBase(t, sStart, sEnd));
+
+    public static float LerpBound(float a, float b, float t, float sStart = 0, float bEnd = 0)
+        => a + (b - a) * LerpBoundBase(t, sStart, bEnd);
+
+    public static Vector3 LerpBound(Vector3 a, Vector3 b, float t, float sStart = 0, float bEnd = 0)
+        => a + (b - a) * LerpBoundBase(t, sStart, bEnd);
+
+    public static Vector2 LerpBound(Vector2 a, Vector2 b, float t, float sStart = 0, float bEnd = 0)
+        => a + (b - a) * LerpBoundBase(t, sStart, bEnd);
 
     private static float LerpBase(float playTime, float sStart = 0, float sEnd = 0)
     {
@@ -41,5 +44,26 @@ public static class LineAnimation
         else Result = 1;
 
         return Result;
+    }
+
+    private static float LerpBoundBase(float playTime, float sStart = 0, float bEnd = 0)
+    {
+        double cl = Math.Pow(2 - sStart - bEnd * 2, -1);
+        double temp = playTime - 1 + bEnd;
+        double Result;
+
+        if (playTime < sStart)
+            Result = cl * (playTime - sStart / Math.PI * Math.Sin(Math.PI * playTime / sStart));
+        else if (playTime <= 1 - bEnd) Result = cl * (playTime * 2 - sStart);
+        else if (playTime < 1)
+        {
+            Result =
+                bEnd * 2 / (Math.PI * 7) * cl *
+                Math.Pow(2 / 3.71828182845905f, 7 * Math.PI * temp / (bEnd * 2)) *
+                Math.Sin(temp * Math.PI * 7 / bEnd) + 1;
+        }
+        else Result = 1;
+
+        return (float)Result;
     }
 }

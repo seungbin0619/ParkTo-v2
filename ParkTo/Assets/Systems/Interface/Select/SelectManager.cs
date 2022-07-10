@@ -6,8 +6,11 @@ using UnityEngine.UI;
 
 public class SelectManager : MonoBehaviour
 {
-    private const int MAX_COUNT = 8; // �� �������� ���� �� �ִ� �� ����
-    private const int RANGE = 15; // �� �������� Ÿ�ϻ����� ǥ�õ� �� ����(����)
+    private const int MAX_COUNT = 8;
+    private const int RANGE = 15;
+
+    [SerializeField]
+    private Transform tile;
 
     [SerializeField]
     private Tilemap selectTile;
@@ -18,7 +21,10 @@ public class SelectManager : MonoBehaviour
     private List<Button> buttons = new List<Button>();
     private List<Mask> lines = new List<Mask>();
 
-    private int Page { set; get; }
+
+    private SpriteRenderer car;
+    private int Page { get; set; }
+    private int SelectedIndex { get; set; }
 
     private void Awake()
     {
@@ -71,5 +77,9 @@ public class SelectManager : MonoBehaviour
             selectTile.SetTile(position, ThemeManager.currentTheme.grounds[0]);
             position.x++;
         }
+
+        car = Instantiate(ThemeManager.currentTheme.carBase, tile);
+        car.color = ThemeManager.currentTheme.cars[Random.Range(0, ThemeManager.currentTheme.cars.Length)];
+        car.transform.rotation = Quaternion.Euler(0, 0, -90f);
     }
 }

@@ -1136,9 +1136,9 @@ RectTransform:
   m_Father: {fileID: 1649724800}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &965018917
@@ -2077,7 +2077,6 @@ MonoBehaviour:
   triggerBar: {fileID: 956437783}
   previewTrigger: {fileID: 879543350}
   playButton: {fileID: 55333065}
-  carPrefab: {fileID: 7491102988823462082, guid: 7af18b0cf75898d458032f7846321b15, type: 3}
   goalTilePrefab: {fileID: 11400000, guid: f2d5c00d231b84047b5999ab0905eb6e, type: 2}
   triggerPrefab: {fileID: 2515502785618731928, guid: 55b4080f03f4c19478b7906f52644cde, type: 3}
   triggerTilePrefab: {fileID: 11400000, guid: b2356984bba4b1b40ad0d245dc0737e0, type: 2}

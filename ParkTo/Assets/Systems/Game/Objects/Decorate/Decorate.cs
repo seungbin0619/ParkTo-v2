@@ -4,15 +4,12 @@ using UnityEngine;
 
 public class Decorate : MonoBehaviour
 {
-    // Start is called before the first frame update
+    private const float Delta = 0.1f;
     void Start()
     {
-        
-    }
+        Vector3 position = transform.position;
+        position += new Vector3(Random.Range(-Delta, Delta), Random.Range(-Delta, Delta));
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        transform.position = position;
     }
 }

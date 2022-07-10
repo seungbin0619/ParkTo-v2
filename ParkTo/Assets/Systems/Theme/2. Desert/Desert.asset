@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 
   index: 0
-  car: {fileID: 7491102988823462082, guid: 7af18b0cf75898d458032f7846321b15, type: 3}
+  carBase: {fileID: 7491102988823462081, guid: fccfba3987d0f65458026e1f54c5b206, type: 3}
+  car: {fileID: 1981476589188607521, guid: 55323d96cf1d8834ba0b04300d3acf47, type: 3}
   colors:
   - {r: 0.8627451, g: 0.7490196, b: 0.3372549, a: 1}
   - {r: 0.8392157, g: 0.64705884, b: 0.25882354, a: 1}
