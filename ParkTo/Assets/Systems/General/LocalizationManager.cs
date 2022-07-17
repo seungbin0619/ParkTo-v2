@@ -11,7 +11,7 @@ public class LocalizationManager : SingleTon<LocalizationManager>
     public bool SetLanguage(int index)
     {
         if (index < 0 || index >= locales.Count) index = 0;
-        if (index == Index) return false;
+        //if (index == Index) return false;
 
         UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocale = locales[index];
         Index = index;

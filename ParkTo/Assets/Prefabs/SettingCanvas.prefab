@@ -742,7 +742,7 @@ GameObject:
   - component: {fileID: 1253114010305079820}
   - component: {fileID: 1253114010305079821}
   - component: {fileID: 1253114010305079822}
-  - component: {fileID: 2103210537689354370}
+  - component: {fileID: 6133850915336245021}
   m_Layer: 5
   m_Name: Slider
   m_TagString: Untagged
@@ -859,10 +859,10 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2103210537689354370}
-        m_TargetAssemblyTypeName: VolumeSlider, Assembly-CSharp
+      - m_Target: {fileID: 6133850915336245021}
+        m_TargetAssemblyTypeName: SoundSlider, Assembly-CSharp
         m_MethodName: SetSoundVolume
-        m_Mode: 0
+        m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -884,7 +884,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
---- !u!114 &2103210537689354370
+--- !u!114 &6133850915336245021
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -893,9 +893,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1253114010305079792}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a32fd0758921c8a4dbb89261cbac8c14, type: 3}
+  m_Script: {fileID: 11500000, guid: 1edc1fc9d868ab849b446b4984d302cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slider: {fileID: 1253114010305079821}
 --- !u!1 &1253114010387847224
 GameObject:
   m_ObjectHideFlags: 0
@@ -1023,7 +1024,7 @@ GameObject:
   - component: {fileID: 1253114010450937595}
   - component: {fileID: 1253114010450937596}
   - component: {fileID: 1253114010450937597}
-  - component: {fileID: 2538851904709240626}
+  - component: {fileID: 4607979757991894140}
   m_Layer: 5
   m_Name: SelectLevel
   m_TagString: Untagged
@@ -1160,7 +1161,7 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.2}
   m_EffectDistance: {x: 0, y: -8}
   m_UseGraphicAlpha: 1
---- !u!114 &2538851904709240626
+--- !u!114 &4607979757991894140
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1169,10 +1170,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1253114010450937569}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca49abf99db077c41844d3104751ef89, type: 3}
+  m_Script: {fileID: 11500000, guid: 9e5d562be72be004291f5decfd2603ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   index: 0
+  targetScene: Select
 --- !u!1 &1253114010588168301
 GameObject:
   m_ObjectHideFlags: 0
@@ -1186,7 +1188,7 @@ GameObject:
   - component: {fileID: 1253114010588168297}
   - component: {fileID: 1253114010588168298}
   - component: {fileID: 1253114010588168299}
-  - component: {fileID: 8276124964108361514}
+  - component: {fileID: 7161324993823253522}
   m_Layer: 5
   m_Name: Slider
   m_TagString: Untagged
@@ -1303,10 +1305,10 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8276124964108361514}
-        m_TargetAssemblyTypeName: VolumeSlider, Assembly-CSharp
+      - m_Target: {fileID: 7161324993823253522}
+        m_TargetAssemblyTypeName: MusicSlider, Assembly-CSharp
         m_MethodName: SetMusicVolume
-        m_Mode: 0
+        m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1328,7 +1330,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
---- !u!114 &8276124964108361514
+--- !u!114 &7161324993823253522
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1337,9 +1339,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1253114010588168301}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a32fd0758921c8a4dbb89261cbac8c14, type: 3}
+  m_Script: {fileID: 11500000, guid: 9513aaea69c9b954dab7e922766e0ad5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slider: {fileID: 1253114010588168298}
 --- !u!1 &1253114010793834581
 GameObject:
   m_ObjectHideFlags: 0
@@ -2671,7 +2674,7 @@ GameObject:
   - component: {fileID: 1253114011771202260}
   - component: {fileID: 1253114011771202261}
   - component: {fileID: 1253114011771202262}
-  - component: {fileID: 5060902932781476707}
+  - component: {fileID: 8800133413547259545}
   m_Layer: 5
   m_Name: ToTitle
   m_TagString: Untagged
@@ -2808,7 +2811,7 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.2}
   m_EffectDistance: {x: 0, y: -8}
   m_UseGraphicAlpha: 1
---- !u!114 &5060902932781476707
+--- !u!114 &8800133413547259545
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2817,10 +2820,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1253114011771202266}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca49abf99db077c41844d3104751ef89, type: 3}
+  m_Script: {fileID: 11500000, guid: 9e5d562be72be004291f5decfd2603ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   index: 0
+  targetScene: Title
 --- !u!1 &1253114011846854995
 GameObject:
   m_ObjectHideFlags: 0

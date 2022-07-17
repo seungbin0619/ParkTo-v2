@@ -12,7 +12,7 @@ public class ThemeObject : MonoBehaviour
     protected virtual void Awake() => graphic = GetComponent<MaskableGraphic>();
     protected virtual void Start() => FollowTheme();
 
-    private void FollowTheme()
+    protected virtual void FollowTheme()
     {
         graphic.color = ThemeManager.currentTheme.colors[index];
     }

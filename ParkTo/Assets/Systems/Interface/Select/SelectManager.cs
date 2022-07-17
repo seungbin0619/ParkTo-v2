@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class SelectManager : MonoBehaviour
 {
+    private static int delta = 1; // 어디서 왔는지?
     private const int MAX_COUNT = 8;
     private const int RANGE = 15;
 
@@ -21,10 +22,15 @@ public class SelectManager : MonoBehaviour
     private List<Button> buttons = new List<Button>();
     private List<Mask> lines = new List<Mask>();
 
-
+    // 그래픽적 요소?
     private SpriteRenderer car;
+    private float carVelocity = 0;
+    private float MAX_VELOCITY = 10f;
+    private float ACCELARATE = 15f;
+
     private int Page { get; set; }
     private int SelectedIndex { get; set; }
+    private int LevelCount { get; set; }
 
     private void Awake()
     {
@@ -40,6 +46,45 @@ public class SelectManager : MonoBehaviour
     private void Start()
     {
         DrawLevels(0);
+
+        Vector3 targetPosition = buttons[SelectedIndex].transform.position;
+        targetPosition.x -= delta;
+        //carVelocity = MAX_VELOCITY * delta;
+
+        car.transform.position = targetPosition;
+        SelectIndex(delta == 1 ? 0 : LevelCount - 1);
+    }
+
+    private void SelectIndex(int position) {
+        if(position < 0) position = 0;
+        else if(position >= LevelCount) position = LevelCount - 1;
+
+        SelectedIndex = position;
+    }
+
+    private void Update() {
+        if(Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) 
+            SelectIndex(SelectedIndex - 1);
+        else if(Input.GetKeyDown(KeyCode.RightArrow)|| Input.GetKeyDown(KeyCode.D)) 
+            SelectIndex(SelectedIndex + 1);
+
+        Vector3 currentPosition = car.transform.position;
+        Vector3 targetPosition = buttons[SelectedIndex].transform.position;
+        int direction = (int)Mathf.Sign(targetPosition.x - car.transform.position.x);
+
+        // 가까워지면 느려진다. (부드럽게 멈추기)
+        if(Mathf.Abs((currentPosition - targetPosition).x) <= carVelocity * carVelocity / ACCELARATE * 0.5f) {
+            if(carVelocity * direction < 0) carVelocity *= 0.5f;
+            else carVelocity -= ACCELARATE * direction * Time.deltaTime;
+        } 
+        else if(carVelocity * direction < 0 && Mathf.Abs((currentPosition - targetPosition).x) < 0.05f) carVelocity *= 0.5f;
+        else carVelocity += ACCELARATE * direction * Time.deltaTime;
+            
+        // 최대 속도
+        if(Mathf.Abs(carVelocity) > MAX_VELOCITY) carVelocity = MAX_VELOCITY * direction;
+        
+        currentPosition.x += carVelocity * Time.deltaTime;
+        car.transform.position = currentPosition;
     }
 
     private void DrawLevels(int page = 0)
@@ -48,7 +93,10 @@ public class SelectManager : MonoBehaviour
         if(page < 0 || ThemeManager.currentTheme.levels.Count < page * MAX_COUNT + 1) // 페이지 이동
         {
             int sign = (int)Mathf.Sign(page); // 페이지가 0 아래면 전으로
+            delta = sign;
+
             ThemeManager.instance.SetTheme(ThemeManager.index + sign);
+            // 페이지 리로드?
 
             return;
         }
@@ -60,6 +108,7 @@ public class SelectManager : MonoBehaviour
         {
             int levelIndex = page * MAX_COUNT + i;
             bool flag = clearedLevel >= levelIndex;
+            if(flag) LevelCount = i + 1;
 
             if (ThemeManager.currentTheme.levels.Count > levelIndex) // 레벨 개수만큼 보이기.
             {
@@ -78,7 +127,7 @@ public class SelectManager : MonoBehaviour
             position.x++;
         }
 
-        car = Instantiate(ThemeManager.currentTheme.carBase, tile);
+        car = Instantiate(ThemeManager.currentTheme.carBase);
         car.color = ThemeManager.currentTheme.cars[Random.Range(0, ThemeManager.currentTheme.cars.Length)];
         car.transform.rotation = Quaternion.Euler(0, 0, -90f);
     }

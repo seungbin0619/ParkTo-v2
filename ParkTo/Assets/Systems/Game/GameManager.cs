@@ -660,9 +660,12 @@ partial class GameManager // �̵� �� ��Ÿ UI ���
 
     public void OnChange()
     {
+        // 클리어 체크
         if (CurrentGoals.FindAll(p => p.IsArrived).Count == CurrentGoals.Count)
         {
             IsPlayable = false;
+            DataManager.SetData("Game", "Theme" + ThemeManager.index, LevelIndex);
+            DataManager.SaveData();
 
             StartCoroutine(PrevSetLevel(LevelIndex + 1, delay: 1f));
             return;
@@ -671,7 +674,7 @@ partial class GameManager // �̵� �� ��Ÿ UI ���
         GetNextPath();
         DrawPredictors();
 
-        BarHide = triggerBar.Hide = CurrentTriggers.Count == 0; // �� �� ������ �� �ö����
+        BarHide = triggerBar.Hide = CurrentTriggers.Count == 0;
         UpdatePlayButton();
     }
 

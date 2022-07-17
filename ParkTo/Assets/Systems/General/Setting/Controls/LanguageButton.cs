@@ -36,10 +36,8 @@ public class LanguageButton : ThemeObject
         IsInitialized = false;
     }
 
-    protected override void Start()
-    {
-        LocalizationSettings_SelectedLocaleChanged(UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocale);
-    }
+    protected override void Start() => LocalizationSettings_SelectedLocaleChanged(UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocale);
+    //private void OnEnable() => Start();
 
     private void LocalizationSettings_SelectedLocaleChanged(UnityEngine.Localization.Locale obj)
     {
