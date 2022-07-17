@@ -19,6 +19,7 @@ partial class GameManager : SingleTon<GameManager>
     private Tilemap groundTile;
     private Transform predictTile;
     private Transform decorateTile;
+    private Transform particleTile;
 
     public TriggerBar triggerBar;
     private ScrollRect triggerScrollRect;
@@ -85,6 +86,7 @@ partial class GameManager : SingleTon<GameManager>
         groundTile = levelGrid.GetChild(2).GetComponent<Tilemap>();
         predictTile = levelGrid.GetChild(3);
         decorateTile = levelGrid.GetChild(4);
+        particleTile = levelGrid.GetChild(5);
 
         triggerScrollRect = triggerBar.GetComponent<ScrollRect>();
         noTrigger = triggerScrollRect.content.GetChild(0).gameObject;
@@ -99,17 +101,19 @@ partial class GameManager : SingleTon<GameManager>
 
 partial class GameManager // LevelDraw
 {
+    public static int SelectedLevel { get; set; } = 0;
+
     private void Start()
     {
 #if UNITY_EDITOR
         if (ThemeManager.index == -1)
         {
-            StartCoroutine(PrevSetLevel(0, false));
+            StartCoroutine(PrevSetLevel(SelectedLevel, false));
             return;
         }
 #endif
 
-        StartCoroutine(PrevSetLevel(0, true));
+        StartCoroutine(PrevSetLevel(SelectedLevel, true));
     }
 
     private bool SetLevel(int index)
@@ -133,6 +137,10 @@ partial class GameManager // LevelDraw
 
         CurrentLevel = ThemeManager.currentTheme.levels[index];
         LevelIndex = index;
+
+        SelectManager.lastSelectedLevel = LevelIndex % SelectManager.MAX_COUNT;
+        SelectManager.delta = 0;
+
         return true;
     }
 
@@ -157,8 +165,6 @@ partial class GameManager // LevelDraw
         Random.InitState(CurrentLevel.seed);
         levelGrid.transform.position = new Vector3(-CurrentLevel.size.x * 0.5f, -CurrentLevel.size.y * 0.5f);
 
-        #region [ �÷� ���� ]
-
         Color[] shuffledColor = ThemeManager.currentTheme.cars.Clone() as Color[];
         for (int i = 0; i < 10; i++)
         {
@@ -168,8 +174,6 @@ partial class GameManager // LevelDraw
             shuffledColor[p1] = shuffledColor[p2];
             shuffledColor[p2] = tmp;
         }
-
-        #endregion
 
         for (int i = 0; i < CurrentLevel.cars.Length; i++)
         {
@@ -306,6 +310,7 @@ partial class GameManager // LevelDraw
                 Destroy(trigger.gameObject);
 
         foreach (Transform child in decorateTile) Destroy(child.gameObject);
+        foreach (Transform child in particleTile) Destroy(child.gameObject);
 
         IsDrew = false;
     }
@@ -421,6 +426,10 @@ partial class GameManager // Undo
 
         behaviors.RemoveAt(behaviors.Count - 1);
         EventManager.instance.OnChange.Raise();
+
+        // 파티클 지우기.
+        foreach (Transform child in particleTile) Destroy(child.gameObject);
+        SFXManager.instance.PlaySound(3);
     }
 }
 
@@ -540,6 +549,8 @@ partial class GameManager // Trigger
             {
                 previewTrigger.transform.position = mousePosition;
                 tileValid = false;
+
+                if (mb0Click) SFXManager.instance.PlaySound(9);
             }
             else
             {
@@ -551,6 +562,7 @@ partial class GameManager // Trigger
                 }
                 else
                 {
+                    SFXManager.instance.PlaySound(8);
                     car.SetTrigger(SelectedTrigger.Type);
 
                     AddBehavior(BehaviorType.TRIGGER, SelectedTrigger.Type, SelectedTrigger.transform.GetSiblingIndex(), car);
@@ -566,6 +578,8 @@ partial class GameManager // Trigger
             {
                 previewTrigger.transform.position = mousePosition;
                 tileValid = false;
+
+                if (mb0Click) SFXManager.instance.PlaySound(9);
             }
             else
             {
@@ -576,6 +590,7 @@ partial class GameManager // Trigger
                 }
                 else if (tileValid)
                 {
+                    SFXManager.instance.PlaySound(8);
                     SetTrigger(tilePosition, SelectedTrigger.Type);
 
                     AddBehavior(BehaviorType.TRIGGER, SelectedTrigger.Type, SelectedTrigger.transform.GetSiblingIndex(), tilePosition);
@@ -607,7 +622,7 @@ partial class GameManager // Trigger
     }
 }
 
-partial class GameManager // �̵� �� ��Ÿ UI ���
+partial class GameManager
 {
     [SerializeField]
     private Predictor predictor;
@@ -615,6 +630,9 @@ partial class GameManager // �̵� �� ��Ÿ UI ���
 
     public void Move()
     {
+        // 출발음
+        SFXManager.instance.PlaySound(5);
+
         IsPlaying = true;
         UpdatePlayButton();
 
@@ -666,6 +684,9 @@ partial class GameManager // �̵� �� ��Ÿ UI ���
             IsPlayable = false;
             DataManager.SetData("Game", "Theme" + ThemeManager.index, LevelIndex);
             DataManager.SaveData();
+            
+            SFXManager.instance.PlaySound(7);
+            for(int i = 0; i < 5; i++) AddClear();
 
             StartCoroutine(PrevSetLevel(LevelIndex + 1, delay: 1f));
             return;
@@ -753,6 +774,8 @@ partial class GameManager // �̵� �� ��Ÿ UI ���
     public void Reload()
     {
         if (IsAnimate || IsPlaying) return;
+
+        SFXManager.instance.PlaySound(4);
         StartCoroutine(PrevSetLevel(LevelIndex));
     }
 
@@ -784,5 +807,39 @@ partial class GameManager // �̵� �� ��Ÿ UI ���
                 UpdatePlayButton();
             }
         }
+    }
+}
+
+partial class GameManager {
+    [SerializeField]
+    ParticleSystem gameOverParticle;
+
+    [SerializeField]
+    ParticleSystem gameClearParticle;
+
+    public void AddCollision(Vector2 position)
+    {
+        ParticleSystem p = Instantiate(gameOverParticle, particleTile);
+        p.transform.position = position;
+    }
+
+    private readonly Color32[] colors = new Color32[]
+    {
+        new Color32(212, 75, 152, 255),
+        new Color32(124, 99, 215, 255),
+        new Color32(234, 215, 76, 255),
+        new Color32(98, 216, 126, 255),
+        new Color32(92, 125, 218, 255)
+    };
+
+    public void AddClear()
+    {
+        ParticleSystem p = Instantiate(gameClearParticle, particleTile);
+        float rx = Random.Range(-1.5f, 1.5f), ry = Random.Range(-1.5f, 1.5f);
+
+        p.transform.position = new Vector2(rx, ry);
+        ParticleSystem.MainModule main = p.main;
+
+        main.startColor = new ParticleSystem.MinMaxGradient(colors[Random.Range(0, colors.Length)]);
     }
 }

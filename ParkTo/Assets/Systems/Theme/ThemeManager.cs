@@ -22,6 +22,7 @@ public class ThemeManager : SingleTon<ThemeManager>
         if (index < 0 || index >= themes.Count) return;
         if (ThemeManager.index == index) return;
 
+        SFXManager.instance.PlayBgm(index, replay: true);
         ThemeManager.index = index;
         currentTheme = themes[index];
     }

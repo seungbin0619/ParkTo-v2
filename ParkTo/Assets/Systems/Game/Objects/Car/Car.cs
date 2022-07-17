@@ -216,7 +216,7 @@ public class Car : MonoBehaviour
     {
         Collided = true;
         Vector2 hitPoint = collision.contacts[0].point;
-        //MapSystem.instance.AddCollision(hitPoint);
+        GameManager.instance.AddCollision(hitPoint);
     }
 
     public bool MoveTo(float progress)

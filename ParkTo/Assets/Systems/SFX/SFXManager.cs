@@ -4,17 +4,11 @@ using UnityEngine;
 
 public class SFXManager : SingleTon<SFXManager>
 {
-    #region [ 오브젝트 ]
-
     [SerializeField]
     private AudioSource soundPrefab;
 
     private AudioSource bgm;
     private List<AudioSource> sounds = new List<AudioSource>();
-
-    #endregion
-
-    #region [ SFX 데이터 ]
 
     [System.Serializable]
     private class SoundData
@@ -30,8 +24,6 @@ public class SFXManager : SingleTon<SFXManager>
 
     [SerializeField]
     private List<SoundData> soundSources = new List<SoundData>();
-
-    #endregion
 
     public delegate void SFXEventHandler(float value);
     //public event SFXEventHandler OnMusicVolumeChanged = delegate { };
@@ -81,7 +73,7 @@ public class SFXManager : SingleTon<SFXManager>
         IEnumerator CoPlayBgm()
         {
             float progress = 0;
-            while (currentBgm.clip != null && progress < duration)
+            while (currentBgm?.clip != null && progress < duration)
             {
                 bgm.volume = (1 - progress / duration) *
                     currentBgm.volume *
@@ -113,11 +105,12 @@ public class SFXManager : SingleTon<SFXManager>
             }
 
             bgm.volume = currentBgm.volume * BgmVolume;
+            bgm.Play();
         }
         bgmCoroutine = StartCoroutine(CoPlayBgm());
     }
 
-    public void PlaySound(int index = -1)
+    public void PlaySound(int index = -1, float delay = 0)
     {
         if (index < 0 || index >= soundSources.Count) return;
 
@@ -142,6 +135,6 @@ public class SFXManager : SingleTon<SFXManager>
         if (sound.trim[1] > sound.trim[0])
             medium.SetScheduledEndTime(sound.trim[1]);
 
-        medium.Play();
+        medium.PlayDelayed(delay);
     }
 }

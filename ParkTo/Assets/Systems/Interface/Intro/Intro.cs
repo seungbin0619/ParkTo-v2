@@ -6,7 +6,7 @@ public class Intro : MonoBehaviour
 {
     void Start()
     {
-        ActionManager.AddAction("Move", "Game");
+        ActionManager.AddAction("Move", "Title");
         ActionManager.AddAction("FadeOut", 0.5f);
 
         ActionManager.Play();

@@ -4,10 +4,12 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 
-public class SelectManager : MonoBehaviour
+public class SelectManager : SingleTon<SelectManager>
 {
-    private static int delta = 1; // 어디서 왔는지?
-    private const int MAX_COUNT = 8;
+    public static int delta = 1; // 어디서 왔는지?
+    public static int lastSelectedLevel = -1;
+
+    public const int MAX_COUNT = 8;
     private const int RANGE = 15;
 
     [SerializeField]
@@ -28,12 +30,14 @@ public class SelectManager : MonoBehaviour
     private float MAX_VELOCITY = 10f;
     private float ACCELARATE = 15f;
 
+    private bool entered = false;
     private int Page { get; set; }
     private int SelectedIndex { get; set; }
     private int LevelCount { get; set; }
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         for (int i = 0; i < linePanel.childCount; i++)
         {
             Transform child = linePanel.GetChild(i);
@@ -47,19 +51,32 @@ public class SelectManager : MonoBehaviour
     {
         DrawLevels(0);
 
+        if(lastSelectedLevel == -1) SelectIndex(delta == 1 ? 0 : LevelCount - 1);
+        else SelectIndex(lastSelectedLevel);
+
         Vector3 targetPosition = buttons[SelectedIndex].transform.position;
         targetPosition.x -= delta;
         //carVelocity = MAX_VELOCITY * delta;
 
         car.transform.position = targetPosition;
-        SelectIndex(delta == 1 ? 0 : LevelCount - 1);
+
+        lastSelectedLevel = -1;
     }
 
-    private void SelectIndex(int position) {
+    public void SelectIndex(int position) {
+        if(entered) return;
         if(position < 0) position = 0;
         else if(position >= LevelCount) position = LevelCount - 1;
 
         SelectedIndex = position;
+    }
+
+    public void EnterGame() {
+        if(entered) return;
+
+        entered = true;
+        GameManager.SelectedLevel = SelectedIndex + Page * MAX_COUNT;
+        SettingManager.instance.Goto("Game");
     }
 
     private void Update() {
@@ -67,6 +84,9 @@ public class SelectManager : MonoBehaviour
             SelectIndex(SelectedIndex - 1);
         else if(Input.GetKeyDown(KeyCode.RightArrow)|| Input.GetKeyDown(KeyCode.D)) 
             SelectIndex(SelectedIndex + 1);
+        
+        if(Input.GetKeyDown(KeyCode.Space) ||Input.GetKeyDown(KeyCode.Return) ||Input.GetKeyDown(KeyCode.KeypadEnter))
+            EnterGame();
 
         Vector3 currentPosition = car.transform.position;
         Vector3 targetPosition = buttons[SelectedIndex].transform.position;
@@ -130,5 +150,7 @@ public class SelectManager : MonoBehaviour
         car = Instantiate(ThemeManager.currentTheme.carBase);
         car.color = ThemeManager.currentTheme.cars[Random.Range(0, ThemeManager.currentTheme.cars.Length)];
         car.transform.rotation = Quaternion.Euler(0, 0, -90f);
+
+        car.gameObject.AddComponent<CarSelect>();
     }
 }

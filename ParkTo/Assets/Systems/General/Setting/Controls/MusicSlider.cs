@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class MusicSlider : VolumeSlider
 {
-    private void OnEnable() => slider.value = SettingManager.instance.GetMusicVolume();
+    private void OnEnable() => slider.value = SettingManager.instance?.GetMusicVolume() ?? 0.5f;
     public void SetMusicVolume(float value) => SettingManager.instance.SetMusicVolume(slider.value);
 }

@@ -56,8 +56,78 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dontDestroy: 1
   soundPrefab: {fileID: 1143492280380357874, guid: c4e5b62680d43c247a9f7f2084afc9cd, type: 3}
-  bgmSources: []
-  soundSources: []
+  bgmSources:
+  - clip: {fileID: 8300000, guid: f84d4baaa8bad9b4b9434190628db819, type: 3}
+    volume: 1
+    trim:
+    - 0
+    - -1
+  - clip: {fileID: 8300000, guid: 5c86d2a0c63202a4a81c954d1d9ed20d, type: 3}
+    volume: 1
+    trim:
+    - 0
+    - -1
+  - clip: {fileID: 8300000, guid: 34fcd00c2816ba14faddb83bf3855ead, type: 3}
+    volume: 1
+    trim:
+    - 0
+    - -1
+  soundSources:
+  - clip: {fileID: 8300000, guid: 8d802f37f332a5d4d9f534ca0cec555f, type: 3}
+    volume: 1
+    trim:
+    - 0
+    - -1
+  - clip: {fileID: 8300000, guid: 502dbeb1057192c448ad28b75c107987, type: 3}
+    volume: 1
+    trim:
+    - 0
+    - -1
+  - clip: {fileID: 8300000, guid: d24b55db24fb4094d8423ce73e3fdc89, type: 3}
+    volume: 1
+    trim:
+    - 0
+    - -1
+  - clip: {fileID: 8300000, guid: 06ab2becb90698444bb74ae9f003b5c9, type: 3}
+    volume: 1
+    trim:
+    - 0
+    - -1
+  - clip: {fileID: 8300000, guid: 3e25c911f7ef8e14dbdfee8ed3449a42, type: 3}
+    volume: 1
+    trim:
+    - 0
+    - -1
+  - clip: {fileID: 8300000, guid: 84195a70de891554692977a93b4dea4e, type: 3}
+    volume: 1
+    trim:
+    - 0
+    - -1
+  - clip: {fileID: 8300000, guid: dc77d12e881428f4391db37d20ff39b6, type: 3}
+    volume: 1
+    trim:
+    - 0
+    - -1
+  - clip: {fileID: 8300000, guid: 91350ec41d133294d820936f9fb37ba4, type: 3}
+    volume: 1
+    trim:
+    - 0
+    - -1
+  - clip: {fileID: 8300000, guid: 2ef8a56742f50ee46aae3f0e974845de, type: 3}
+    volume: 1
+    trim:
+    - 0
+    - -1
+  - clip: {fileID: 8300000, guid: 2532993bf58d471438c2253a8d5a9928, type: 3}
+    volume: 1
+    trim:
+    - 0
+    - -1
+  - clip: {fileID: 8300000, guid: 100b098c7a5f24945b4f4be4035e8b02, type: 3}
+    volume: 1
+    trim:
+    - 0
+    - -1
 --- !u!82 &7330437068442102299
 AudioSource:
   m_ObjectHideFlags: 0
