@@ -48,7 +48,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1403934130036736
-    m_Key: setting_window_maximized
+    m_Key: setting_window_full
     m_Metadata:
       m_Items: []
   - m_Id: 1404048168968192
@@ -57,6 +57,22 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 1404052656873472
     m_Key: setting_window_exclusive
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45614892595273728
+    m_Key: setting_window_display
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45616954175381504
+    m_Key: setting_window_resolution
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45616985922068480
+    m_Key: setting_window_mode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45621276523094016
+    m_Key: setting_button_apply
     m_Metadata:
       m_Items: []
   m_Metadata:

@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: BorderShow
+  m_Name: ScreenBorderHide
   serializedVersion: 6
   m_Legacy: 1
   m_Compressed: 0
@@ -22,21 +22,21 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: -560
-        inSlope: 3113.4436
-        outSlope: 3113.4436
+        value: 50
+        inSlope: -68.38182
+        outSlope: -68.38182
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.080838986
+        outWeight: 0.08715743
       - serializedVersion: 3
         time: 0.5
-        value: 50
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
+        value: -385
+        inSlope: -2304.862
+        outSlope: -2304.862
+        tangentMode: 0
         weightedMode: 0
-        inWeight: 0.33333334
+        inWeight: 0.08663094
         outWeight: 0.33333334
       m_PreInfinity: 2
       m_PostInfinity: 2
@@ -80,21 +80,21 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: -560
-        inSlope: 3113.4436
-        outSlope: 3113.4436
+        value: 50
+        inSlope: -68.38182
+        outSlope: -68.38182
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.080838986
+        outWeight: 0.08715743
       - serializedVersion: 3
         time: 0.5
-        value: 50
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
+        value: -385
+        inSlope: -2304.862
+        outSlope: -2304.862
+        tangentMode: 0
         weightedMode: 0
-        inWeight: 0.33333334
+        inWeight: 0.08663094
         outWeight: 0.33333334
       m_PreInfinity: 2
       m_PostInfinity: 2
@@ -108,7 +108,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.5
-    functionName: OnAnimateExit
+    functionName: OnScreenBorderAnimateExit
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

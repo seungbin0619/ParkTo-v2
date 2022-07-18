@@ -631,7 +631,7 @@ partial class GameManager
     public void Move()
     {
         // 출발음
-        SFXManager.instance.PlaySound(5);
+        //SFXManager.instance.PlaySound(5);
 
         IsPlaying = true;
         UpdatePlayButton();

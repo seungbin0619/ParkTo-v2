@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: BorderShow
+  m_Name: ScreenBorderShow
   serializedVersion: 6
   m_Legacy: 1
   m_Compressed: 0
@@ -22,13 +22,13 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: -560
-        inSlope: 3113.4436
-        outSlope: 3113.4436
+        value: -385
+        inSlope: 2238.913
+        outSlope: 2238.913
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.080838986
+        outWeight: 0.0802544
       - serializedVersion: 3
         time: 0.5
         value: 50
@@ -80,13 +80,13 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: -560
-        inSlope: 3113.4436
-        outSlope: 3113.4436
+        value: -385
+        inSlope: 2238.913
+        outSlope: 2238.913
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.080838986
+        outWeight: 0.0802544
       - serializedVersion: 3
         time: 0.5
         value: 50
@@ -108,7 +108,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.5
-    functionName: OnAnimateExit
+    functionName: OnScreenBorderAnimateExit
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

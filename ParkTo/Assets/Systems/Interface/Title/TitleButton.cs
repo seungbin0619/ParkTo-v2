@@ -5,7 +5,7 @@ using UnityEngine;
 public class TitleButton : MonoBehaviour
 {
     public void StartGame() {
-        SFXManager.instance.PlaySound(1);
+        //SFXManager.instance.PlaySound(1);
 
         SelectManager.delta = 1;
         SelectManager.lastSelectedLevel = SelectManager.MAX_COUNT;

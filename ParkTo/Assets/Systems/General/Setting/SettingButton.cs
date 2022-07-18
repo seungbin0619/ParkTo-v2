@@ -11,7 +11,7 @@ public class SettingButton : MonoBehaviour
 
     private void Update() {
         if(Input.GetKeyDown(KeyCode.Escape)) {
-            if(SettingManager.instance.IsOpen) OpenSetting();
+            if(!SettingManager.instance.IsOpen) OpenSetting();
             else SettingManager.instance.CloseSetting();
         }
     }

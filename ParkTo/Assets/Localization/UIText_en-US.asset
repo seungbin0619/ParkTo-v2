@@ -62,5 +62,21 @@ MonoBehaviour:
     m_Localized: Borderless
     m_Metadata:
       m_Items: []
+  - m_Id: 45614892595273728
+    m_Localized: Display
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45616954175381504
+    m_Localized: Scale
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45616985922068480
+    m_Localized: Mode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45621276523094016
+    m_Localized: Apply
+    m_Metadata:
+      m_Items: []
   references:
     version: 1
