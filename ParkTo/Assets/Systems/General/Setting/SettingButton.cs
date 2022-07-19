@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class SettingButton : MonoBehaviour
 {
-    public virtual void OpenSetting()
-    {
-        SettingManager.instance.OpenSetting();
-    }
+    public virtual void OpenSetting() => SettingManager.instance.OpenSetting();
 
     private void Update() {
+        if(ActionManager.IsPlaying) return;
+
         if(Input.GetKeyDown(KeyCode.Escape)) {
             if(!SettingManager.instance.IsOpen) OpenSetting();
             else SettingManager.instance.CloseSetting();

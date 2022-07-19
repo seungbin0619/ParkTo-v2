@@ -9,6 +9,7 @@ public class LevelEditor : Editor
     public override void OnInspectorGUI()
     {
         DrawScriptField();
+
         LevelBase level = (LevelBase)target;
         SerializedObject serializedObject = new SerializedObject(target);
 
@@ -20,7 +21,7 @@ public class LevelEditor : Editor
         level.size.x = Mathf.Clamp(level.size.x, 0, int.MaxValue);
         level.size.y = Mathf.Clamp(level.size.y, 0, int.MaxValue);
 
-        if (GUI.changed || level.tiles == null)
+        if (level.tiles == null || level.tiles.GetLength(0) != level.size.y || level.tiles[0].tile.GetLength(0) != level.size.x)
         {
             level.tiles = new LevelBase.TileList[level.size.y];
             for (int y = 0; y < level.size.y; y++)
@@ -30,7 +31,7 @@ public class LevelEditor : Editor
                     level.tiles[y].tile[x] = new LevelBase.TileData() { type = LevelBase.TileType.Normal };
             }
         }
-        
+
         EditorGUILayout.BeginVertical();
         for (int y = level.size.y - 1; y >= 0; y--)
         {

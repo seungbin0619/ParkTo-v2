@@ -138,8 +138,8 @@ partial class GameManager // LevelDraw
         CurrentLevel = ThemeManager.currentTheme.levels[index];
         LevelIndex = index;
 
-        SelectManager.lastSelectedLevel = LevelIndex % SelectManager.MAX_COUNT;
-        SelectManager.delta = 0;
+        SelectManager.LastSelectedLevel = LevelIndex;
+        SelectManager.Delta = 0;
 
         return true;
     }
@@ -317,6 +317,8 @@ partial class GameManager // LevelDraw
 
     private IEnumerator PrevSetLevel(int index, bool animate = true, float delay = 0f)
     {
+        IsAnimate = true;
+
         if (delay > 0) yield return YieldDictionary.WaitForSeconds(delay);
         if (CurrentLevel != null)
         {
@@ -661,7 +663,7 @@ partial class GameManager
         EventManager.instance.OnMove.Raise();
     }
 
-    public void OnMove() // �̵� ����
+    public void OnMove()
     {
         AddBehavior(BehaviorType.MOVE);
 
@@ -682,8 +684,12 @@ partial class GameManager
         if (CurrentGoals.FindAll(p => p.IsArrived).Count == CurrentGoals.Count)
         {
             IsPlayable = false;
-            DataManager.SetData("Game", "Theme" + ThemeManager.index, LevelIndex);
-            DataManager.SaveData();
+
+            int currentClearedLevel = DataManager.GetData("Game", "Theme" + ThemeManager.index, 0);
+            if(currentClearedLevel < LevelIndex + 1) {
+                DataManager.SetData("Game", "Theme" + ThemeManager.index, LevelIndex + 1);
+                DataManager.SaveData();
+            }
             
             SFXManager.instance.PlaySound(7);
             for(int i = 0; i < 5; i++) AddClear();

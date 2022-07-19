@@ -201,11 +201,4 @@ public class SettingManager : SingleTon<SettingManager>
 
         return LocaleText(target);
     }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-            if (!IsOpen) OpenSetting();
-            else CloseSetting();
-    }
 }

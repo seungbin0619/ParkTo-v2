@@ -7,8 +7,9 @@ public class TitleButton : MonoBehaviour
     public void StartGame() {
         //SFXManager.instance.PlaySound(1);
 
-        SelectManager.delta = 1;
-        SelectManager.lastSelectedLevel = SelectManager.MAX_COUNT;
+        SelectManager.Delta = 1;
+        //SelectManager.LastSelectedLevel = SelectManager.MAX_COUNT - 1;
+        SelectManager.IsFirstEnter = true;
         
         SettingManager.instance.Goto("Select");
     } 

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4eed06a8138e63449604bb66b169823, type: 3}
   m_Name: 1-11
   m_EditorClassIdentifier: 
-  id: 
+  id: 1-11
   description: 
   size: {x: 4, y: 4}
   tiles:
