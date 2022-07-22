@@ -9,7 +9,7 @@ public class Help1 : HelpBase
         HelpManager.instance.screenImage.enabled = false;
 
         yield return YieldDictionary.WaitForSeconds(0.5f);
-        yield return Focusing(GameManager.instance.triggerBar.transform.position + Vector3.down, new Vector2(300f, 300f), "1.0", new Vector2(100f, 50f), wait:false);
+        yield return Focusing(GameManager.instance.triggerBar.transform.position + Vector3.down, new Vector2(250f, 250f), "1.0", new Vector2(100f, 50f), wait:false);
         yield return new WaitWhile(() => GameManager.instance.SelectedTrigger == null && GameManager.instance.CurrentTriggers.Count == 1);
         yield return SetText("", new Vector2(100f, 50f));
 

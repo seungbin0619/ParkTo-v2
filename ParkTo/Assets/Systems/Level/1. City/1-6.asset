@@ -22,14 +22,14 @@ MonoBehaviour:
     - type: 0
       data: 0
     - type: 1
-      data: 0
+      data: 1
     - type: 0
       data: 0
     - type: 0
       data: 0
   - tile:
     - type: 1
-      data: 1
+      data: 0
     - type: 17
       data: 0
     - type: 17

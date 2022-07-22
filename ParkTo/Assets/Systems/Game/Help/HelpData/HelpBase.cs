@@ -5,9 +5,11 @@ using UnityEngine.Localization.Settings;
 
 public class HelpBase : MonoBehaviour
 {
-    private Coroutine current;
+    public Coroutine current;
     protected static readonly Vector2 Auto = Vector2.one * 160f;
     protected static bool InputFlag { private set; get; }
+    protected bool Skipped = false;
+
     protected WaitWhile Wait = new WaitWhile(() => !InputFlag);
 
     [SerializeField]
@@ -16,7 +18,7 @@ public class HelpBase : MonoBehaviour
     private void Awake()
     {
         if (!CheckCondition()) return;
-        HelpManager.instance.Initialize();
+        HelpManager.instance.Initialize(this);
         current = StartCoroutine(Content());
     }
 

@@ -10,12 +10,23 @@ public class HelpManager : SingleTon<HelpManager>
     public Coffee.UIExtensions.UnmaskRaycastFilter screenImage { get; private set; }
     public Image Focus;
 
+    [SerializeField]
+    private RectTransform skipPanel;
+
+    [SerializeField]
+    private UnityEngine.UI.Image skipProgressBar;
+
     List<AnimationClip> fadeClips;
     public static bool IsInitialize { private set; get; }
 
     public TMPro.TMP_Text content;
     public RectTransform Mask;
     public RectTransform Descript;
+
+    private HelpBase help;
+    private float skipProgress;
+    private bool skipped = false;
+    private const float SKIP_TIME = 1f;
 
     private bool Focused { get; set; }
     public bool Focusing { get; set; }
@@ -33,7 +44,7 @@ public class HelpManager : SingleTon<HelpManager>
         fadeClips.Add(screen["FadeOut80"].clip);
     }
 
-    public void Initialize()
+    public void Initialize(HelpBase help)
     {
         if (IsInitialize) return;
         IsInitialize = true;
@@ -45,6 +56,9 @@ public class HelpManager : SingleTon<HelpManager>
 
         screen.clip = fadeClips[0];
         screen.Play();
+
+        this.help = help;
+        skipped = false;
     }
 
     private void OnApplicationQuit() => appQuit = true;
@@ -61,6 +75,10 @@ public class HelpManager : SingleTon<HelpManager>
 
         screen.clip = fadeClips[1];
         screen.Play();
+
+        Focusing = false;
+
+        help = null;
     }
 
     public IEnumerator SetFocus(Vector3 position, Vector2 size, bool notFocus = false)
@@ -136,5 +154,33 @@ public class HelpManager : SingleTon<HelpManager>
         yield return SetFocus(Vector3.zero, Vector2.zero, true);
 
         Dispose();
+    }
+    
+    private void Update() {
+        skipPanel.anchoredPosition = Vector2.Lerp(
+            skipPanel.anchoredPosition, 
+            Vector2.up * 72f * (IsInitialize && !skipped ? -1 : 1), 
+            Time.deltaTime * 5f);
+
+        if(!IsInitialize) return;
+        if(skipped) return;
+        
+        if(!Input.GetKey(KeyCode.S)) {
+            skipProgress = 0;
+            skipProgressBar.fillAmount = 0;
+            
+            return;
+        }
+
+        skipProgress += Time.deltaTime;
+        skipProgressBar.fillAmount = skipProgress / SKIP_TIME;
+
+        if(skipProgress < SKIP_TIME) return;
+
+        skipProgress = 0;
+        skipped = true;
+        // 스킵
+        StopCoroutine(help.current);
+        StartCoroutine(PrevDispose());
     }
 }

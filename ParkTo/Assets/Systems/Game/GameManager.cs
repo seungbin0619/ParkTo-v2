@@ -102,6 +102,8 @@ partial class GameManager : SingleTon<GameManager>
 partial class GameManager // LevelDraw
 {
     public static int SelectedLevel { get; set; } = 0;
+    [SerializeField]
+    private TMPro.TMP_Text levelText;
 
     private void Start()
     {
@@ -136,6 +138,7 @@ partial class GameManager // LevelDraw
         }
 
         CurrentLevel = ThemeManager.currentTheme.levels[index];
+        levelText.text = CurrentLevel.name;
         LevelIndex = index;
 
         SelectManager.LastSelectedLevel = LevelIndex;
