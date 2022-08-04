@@ -6,8 +6,10 @@ using UnityEngine.UI;
 
 public partial class SelectManager : SingleTon<SelectManager>
 {
+    private bool IsInitialize = false;
     public static int Delta { get; set; } = 1; // 어디서 왔는지?
-    public static int LastSelectedLevel {get; set; } = -1;
+    public static int LastPlayedLevel {get; set; } = -1;
+    public static int LastSelectedLevel { get; set; } = -1;
     public static int NextPage {get; set; } = 0;
     public static bool IsFirstEnter { get; set; } = false;
 
@@ -49,25 +51,30 @@ public partial class SelectManager : SingleTon<SelectManager>
     private void Start()
     {
         if(IsFirstEnter) { // 시작 버튼으로 진입한 경우
-            int clearedLevel = DataManager.GetData("Game", "Theme" + ThemeManager.index, 0);
+            if(LastSelectedLevel == -1) {
+                int clearedLevel = DataManager.GetData("Game", "Theme" + ThemeManager.index, 0);
 
-            DrawLevels(clearedLevel / MAX_COUNT);
-            SelectIndex(MAX_COUNT - 1); // 클리어 한 가장 마지막 레벨로 이동
+                if(DrawLevels(clearedLevel / MAX_COUNT))
+                    SelectIndex(MAX_COUNT - 1); // 클리어 한 가장 마지막 레벨로 이동
+            } else {
+                if(DrawLevels(LastSelectedLevel / MAX_COUNT))
+                    SelectIndex(LastSelectedLevel % MAX_COUNT); // 클리어 한 가장 마지막 레벨로 이동
+            }
         }
-        else if(LastSelectedLevel == -1) { // 좌우 버튼으로 온 경우
-            DrawLevels(NextPage);
-            SelectIndex(Delta == 1 ? 0 : LevelCount - 1);
+        else if(LastPlayedLevel == -1) { // 좌우 버튼으로 온 경우
+            if(DrawLevels(NextPage))
+                SelectIndex(Delta == 1 ? 0 : LevelCount - 1);
         }
         else { // 레벨 진행 도중에 나온 경우
-            DrawLevels(LastSelectedLevel / MAX_COUNT);
-            SelectIndex(LastSelectedLevel % MAX_COUNT);
+            if(DrawLevels(LastPlayedLevel / MAX_COUNT))
+                SelectIndex(LastPlayedLevel % MAX_COUNT);
         }
 
         Vector3 targetPosition = buttons[SelectedIndex].transform.position;
         targetPosition.x -= Delta;
         car.transform.position = targetPosition;
 
-        LastSelectedLevel = -1;
+        LastPlayedLevel = -1;
         IsFirstEnter = false;
     }
 
@@ -78,6 +85,7 @@ public partial class SelectManager : SingleTon<SelectManager>
         else if(position >= LevelCount) position = LevelCount - 1;
 
         SelectedIndex = position;
+        LastSelectedLevel = SelectedIndex + Page * MAX_COUNT;
     }
 
     public void SelectIndexDelta(bool delta) {
@@ -96,13 +104,23 @@ public partial class SelectManager : SingleTon<SelectManager>
         if(entered) return;
 
         entered = true;
-        GameManager.SelectedLevel = SelectedIndex + Page * MAX_COUNT;
+        GameManager.SelectedLevel = LastSelectedLevel;
         SettingManager.instance.Goto("Game");
     }
 
     public void ChangePageDelta(bool delta) { // 페이지 바뀔 때
         if(entered) return;
         if(!pageButton[delta ? 1 : 0].interactable) return;
+        if(delta && (ThemeManager.index == ThemeManager.instance.themes.Count - 1 && 
+            Page == (ThemeManager.currentTheme.levels.Count - 1) / MAX_COUNT)) 
+        {
+            Delta = -1;
+            NextPage = Page;
+            SelectedIndex = LevelCount;
+            
+            SettingManager.instance.Goto("Under Construction");
+            return;
+        }
 
         Delta = delta ? 1 : -1;
         NextPage = Page + Delta;
@@ -111,10 +129,10 @@ public partial class SelectManager : SingleTon<SelectManager>
         SettingManager.instance.Goto("Select");
     }
 
-    private void DrawLevels(int page = 0)
+    private bool DrawLevels(int page = 0)
     {
-        if(entered) return;
-        if (ThemeManager.currentTheme == null) return;
+        if(entered) return false;
+        if (ThemeManager.currentTheme == null) return false;
 
         //Debug.Log((ThemeManager.currentTheme.levels.Count - 1) / MAX_COUNT + " " + page);
         if(page < 0 || (ThemeManager.currentTheme.levels.Count - 1) / MAX_COUNT < page) // 페이지 이동
@@ -163,14 +181,20 @@ public partial class SelectManager : SingleTon<SelectManager>
         pageButton[0].interactable = ThemeManager.index > 0 || page > 0;
         bool interactable = true;
         // 마지막 페이지가 아니면 true
+
+        /*
         interactable &= 
             !(ThemeManager.index == ThemeManager.instance.themes.Count - 1 && 
-            page == ThemeManager.currentTheme.levels.Count / MAX_COUNT);
+            page == (ThemeManager.currentTheme.levels.Count - 1) / MAX_COUNT);
+        */
 
         // 현재 테마의 레벨을 8개 이상 클리어
         interactable &= clearedLevel >= 8;
 
         pageButton[1].interactable = interactable;
+
+        IsInitialize = true;
+        return true;
     }
 
     private void ReadKey() {
@@ -192,6 +216,8 @@ public partial class SelectManager { // 차 관련
     private float ACCELARATE = 15f;
 
     private void Update() {
+        if(!IsInitialize) return;
+
         ReadKey();
 
         Vector3 currentPosition = car.transform.position;

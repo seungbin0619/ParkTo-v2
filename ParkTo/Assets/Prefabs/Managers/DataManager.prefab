@@ -46,5 +46,5 @@ MonoBehaviour:
   dontDestroy: 1
   parts:
   - Game
-  crypto: 0
+  crypto: 1
   password: ParkTo

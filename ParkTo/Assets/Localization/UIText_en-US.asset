@@ -78,5 +78,15 @@ MonoBehaviour:
     m_Localized: Apply
     m_Metadata:
       m_Items: []
+  - m_Id: 47709519053840384
+    m_Localized: Skip tutorial [S]
+    m_Metadata:
+      m_Items: []
+  - m_Id: 47711084837855232
+    m_Localized: '<size=50>Under Construction...</size>
+
+      To be updated!'
+    m_Metadata:
+      m_Items: []
   references:
     version: 1

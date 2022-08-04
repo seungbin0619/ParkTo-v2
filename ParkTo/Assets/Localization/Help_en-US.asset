@@ -20,7 +20,7 @@ MonoBehaviour:
     - id: 0
   m_TableData:
   - m_Id: 1041720139776
-    m_Localized: This is a car.
+    m_Localized: There is a car.
     m_Metadata:
       m_Items:
       - id: 0
@@ -39,28 +39,44 @@ MonoBehaviour:
       m_Items:
       - id: 0
   - m_Id: 580712417452032
-    m_Localized: 
+    m_Localized: 'Set the TRIGGER
+
+      on the tile!'
     m_Metadata:
       m_Items:
       - id: 0
   - m_Id: 490763408105472
-    m_Localized: 
+    m_Localized: 'Here is a TRIGGER.
+
+      Press this.'
     m_Metadata:
       m_Items:
       - id: 0
   - m_Id: 5860185018720256
-    m_Localized: 
+    m_Localized: Press RIGHT TRIGGER.
     m_Metadata:
       m_Items:
       - id: 0
   - m_Id: 5860264454643712
-    m_Localized: 
+    m_Localized: "Now press the \nright mouse button."
     m_Metadata:
       m_Items:
-      - id: 0
+      - id: 1
+  - m_Id: 5863354901716992
+    m_Localized: Select this car!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 50075363310297088
+    m_Localized: "You can't set TRIGGER \non this tile."
+    m_Metadata:
+      m_Items: []
   references:
     version: 1
     00000000:
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 00e09b3ef706000000e09bc2ba03000000e05b8bf200000000e05ba52710020000e09bc258be010000e0dba4b111020000e05ba6ced1140000e01b25e1d11400
+    00000001:
       type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
         m_Entries: 00e09b3ef706000000e09bc2ba03000000e05b8bf200000000e05ba52710020000e09bc258be010000e0dba4b111020000e05ba6ced1140000e01b25e1d11400

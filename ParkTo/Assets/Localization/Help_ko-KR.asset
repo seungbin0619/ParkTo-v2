@@ -20,7 +20,7 @@ MonoBehaviour:
     - id: 0
   m_TableData:
   - m_Id: 1041720139776
-    m_Localized: "\uC774\uAC74 \uCC28 \uC785\uB2C8\uB2E4."
+    m_Localized: "\uC5EC\uAE30 \uCC28\uAC00 \uC788\uC2B5\uB2C8\uB2E4."
     m_Metadata:
       m_Items:
       - id: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
     m_Localized: "\uD2B8\uB9AC\uAC70\uB97C \uBC14\uB2E5\uC5D0 \uC124\uCE58\uD574\uBCF4\uC138\uC694!"
     m_Metadata:
       m_Items:
-      - id: 0
+      - id: 1
   - m_Id: 5860185018720256
     m_Localized: "\uC6B0\uD68C\uC804 \uD2B8\uB9AC\uAC70\uB97C \uC120\uD0DD\uD558\uC138\uC694."
     m_Metadata:
@@ -55,14 +55,27 @@ MonoBehaviour:
       \n\uB20C\uB7EC\uBCF4\uC138\uC694"
     m_Metadata:
       m_Items:
-      - id: 0
+      - id: 2
   - m_Id: 5863354901716992
     m_Localized: "\uC774 \uCC28\uB97C \uC120\uD0DD\uD574\uBCF4\uC138\uC694!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 50075363310297088
+    m_Localized: "\uC774 \uBD80\uBD84\uC5D0\uB294 \uD2B8\uB9AC\uAC70\uB97C\n\uC124\uCE58\uD560
+      \uC218 \uC5C6\uC2B5\uB2C8\uB2E4."
     m_Metadata:
       m_Items: []
   references:
     version: 1
     00000000:
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 00e09bc2ba03000000e09b3ef706000000e05b8bf200000000e09bc258be010000e05ba52710020000e0dba4b111020000e01b25e1d11400
+    00000001:
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 00e09bc2ba03000000e09b3ef706000000e05b8bf200000000e09bc258be010000e05ba52710020000e0dba4b111020000e01b25e1d11400
+    00000002:
       type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
         m_Entries: 00e09bc2ba03000000e09b3ef706000000e05b8bf200000000e09bc258be010000e05ba52710020000e0dba4b111020000e01b25e1d11400

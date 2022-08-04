@@ -126,11 +126,17 @@ partial class GameManager // LevelDraw
             int theme = ThemeManager.index;
             theme += (int)Mathf.Sign(index - ThemeManager.currentTheme.levels.Count);
 
-            ThemeManager.instance.SetTheme(theme);
+            if(theme >= ThemeManager.instance.themes.Count) {
+                SelectManager.Delta = -1;
+                SelectManager.NextPage = SelectedLevel / SelectManager.MAX_COUNT;
+                
+                SettingManager.instance.Goto("Under Construction");
 
-            ActionManager.AddAction("FadeIn", 0.5f);
-            ActionManager.AddAction("Move", "Game");
-            ActionManager.AddAction("FadeOut", 0.5f);
+                return false;
+            }
+
+            ThemeManager.instance.SetTheme(theme);
+            SettingManager.instance.Goto("Game");
 
             ActionManager.Play();
 
@@ -141,7 +147,7 @@ partial class GameManager // LevelDraw
         levelText.text = CurrentLevel.name;
         LevelIndex = index;
 
-        SelectManager.LastSelectedLevel = LevelIndex;
+        SelectManager.LastPlayedLevel = LevelIndex;
         SelectManager.Delta = 0;
 
         return true;
