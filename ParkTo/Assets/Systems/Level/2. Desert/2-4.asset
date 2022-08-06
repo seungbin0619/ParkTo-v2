@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4eed06a8138e63449604bb66b169823, type: 3}
-  m_Name: 2-2
+  m_Name: 2-4
   m_EditorClassIdentifier: 
-  id: 2-2
+  id: 2-4
   description: 
-  size: {x: 3, y: 3}
+  size: {x: 4, y: 3}
   tiles:
   - tile:
     - type: 17
@@ -23,25 +23,31 @@ MonoBehaviour:
       data: 0
     - type: 17
       data: 0
-  - tile:
-    - type: 17
-      data: 0
-    - type: 0
-      data: 0
-    - type: 16
+    - type: 1
       data: 0
   - tile:
-    - type: 17
-      data: 0
     - type: 17
       data: 0
     - type: 1
       data: 1
-  triggers: 03000000
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+  - tile:
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+  triggers: 010000000300000003000000
   decorates: []
   cars:
-  - position: {x: 2, y: 0}
-    rotation: 0
   - position: {x: 0, y: 2}
-    rotation: 3
-  seed: 6234623
+    rotation: 2
+  - position: {x: 3, y: 1}
+    rotation: 1
+  seed: 854642

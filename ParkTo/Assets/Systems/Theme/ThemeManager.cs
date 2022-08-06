@@ -13,6 +13,12 @@ public class ThemeManager : SingleTon<ThemeManager>
     {
         base.Awake();
 
+        for(int i = themes.Count - 1; i >= 0; i--)
+            if(DataManager.GetData("Game", "Theme" + i, 0) > 0) {
+                SetTheme(i);
+                break;
+            }
+            
         if(index == -1)
             SetTheme(DataManager.GetData("Game", "CurrentTheme", 0));
     }

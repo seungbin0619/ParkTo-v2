@@ -24,6 +24,26 @@ public class TitleButton : MonoBehaviour
         
         SettingManager.instance.Goto("Select");
     } 
+
+    private float cheatProgress = 0;
+    private bool cheated = false;
+
+    private void Update() {
+        if(cheated) return;
+        if(!Input.GetKey(KeyCode.S)) {
+            cheatProgress = 0;
+            return;
+        }   
+
+        cheatProgress += Time.deltaTime;
+        if(cheatProgress < 3) return;
+
+        cheated = true;
+        for(int i = 0; i < ThemeManager.instance.themes.Count; i++)
+            DataManager.SetData("Game", "Theme" + i, ThemeManager.instance.themes[i].levels.Count);
+
+        DataManager.SaveData();
+    }
     
 #if UNITY_EDITOR
     public void ExitGame() => UnityEditor.EditorApplication.isPlaying = false;

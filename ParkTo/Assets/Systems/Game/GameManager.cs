@@ -701,7 +701,7 @@ partial class GameManager
             }
             
             SFXManager.instance.PlaySound(7);
-            for(int i = 0; i < 5; i++) AddClear();
+            for(int i = 0; i < Random.Range(5, 9); i++) AddClear();
 
             StartCoroutine(PrevSetLevel(LevelIndex + 1, delay: 1f));
             return;

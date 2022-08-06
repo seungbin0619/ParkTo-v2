@@ -24,6 +24,9 @@ public class DataManager : SingleTon<DataManager>
     [SerializeField]
     private string password;
 
+    [SerializeField]
+    private bool dontSave = false;
+
     protected override void Awake()
     {
         base.Awake();
@@ -45,6 +48,7 @@ public class DataManager : SingleTon<DataManager>
 
     public static void SaveData()
     {
+        if(instance.dontSave) return;
 #if UNITY_EDITOR
         //return;
 #endif
