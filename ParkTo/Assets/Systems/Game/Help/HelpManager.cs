@@ -181,6 +181,8 @@ public class HelpManager : SingleTon<HelpManager>
         skipped = true;
         // 스킵
         StopCoroutine(help.current);
+        help.Save();
+        
         StartCoroutine(PrevDispose());
     }
 }

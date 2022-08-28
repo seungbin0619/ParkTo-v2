@@ -15,13 +15,13 @@ public class ThemeManager : SingleTon<ThemeManager>
         if(!isInstance) return;
 
         for(int i = themes.Count - 1; i >= 0; i--)
-            if(DataManager.GetData("Game", "Theme" + i, 0) > 0) {
+            if(SteamDataManager.GetData("Game", "Theme" + i, 0) > 0) {
                 SetTheme(i);
                 break;
             }
             
         if(index == -1)
-            SetTheme(DataManager.GetData("Game", "CurrentTheme", 0));
+            SetTheme(SteamDataManager.GetData("Game", "CurrentTheme", 0));
     }
 
     public void SetTheme(int index)

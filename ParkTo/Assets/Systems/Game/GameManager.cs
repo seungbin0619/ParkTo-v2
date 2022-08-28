@@ -694,10 +694,10 @@ partial class GameManager
         {
             IsPlayable = false;
 
-            int currentClearedLevel = DataManager.GetData("Game", "Theme" + ThemeManager.index, 0);
+            int currentClearedLevel = SteamDataManager.GetData("Game", "Theme" + ThemeManager.index, 0);
             if(currentClearedLevel < LevelIndex + 1) {
-                DataManager.SetData("Game", "Theme" + ThemeManager.index, LevelIndex + 1);
-                DataManager.SaveData();
+                SteamDataManager.SetData("Game", "Theme" + ThemeManager.index, LevelIndex + 1);
+                SteamDataManager.SaveData();
             }
             
             SFXManager.instance.PlaySound(7);
