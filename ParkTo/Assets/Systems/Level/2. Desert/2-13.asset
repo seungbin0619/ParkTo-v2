@@ -37,8 +37,8 @@ MonoBehaviour:
   - tile:
     - type: 17
       data: 0
-    - type: 17
-      data: 0
+    - type: 16
+      data: 2
     - type: 17
       data: 0
     - type: 17

@@ -542,6 +542,9 @@ partial class GameManager // Trigger
 
         bool mb0Click = Input.GetMouseButtonDown(0) && !HelpManager.instance.Focusing;
 
+        foreach (Car tmp in CurrentCars)
+            tmp.PreviewTrigger(0.8f);
+            
         if (TriggerSelectedMode)
         {
             Car car = null;
@@ -552,9 +555,6 @@ partial class GameManager // Trigger
                 car = tmp;
                 break;
             }
-
-            foreach (Car tmp in CurrentCars)
-                tmp.PreviewTrigger(0.8f);
 
             if (car == null)
             {

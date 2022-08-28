@@ -141,14 +141,19 @@ public class Car : MonoBehaviour
         }
 
         pathCount = path.Count;
+
+        // string s = "";
+        // for(int i = 0; i < path.Count;i ++) {
+        //     s += path[i].Position + " ";
+        // }
+        // Debug.Log(s);
     }
 
     // 다른 차와의 관계로 Path 갱신
     public bool GetRelativePath() {
         bool changed = false;
-        bool d = Color == ThemeManager.currentTheme.cars[1];
-
         float progress = 0;
+
         for(int i = 1; i < path.Count; i++) {
             progress += timePath[i - 1]; // progress = 다음 위치에 도달하는 시간
             PathData current = path[i - 1], next = path[i]; // 현재 위치, 다음 위치
@@ -385,7 +390,7 @@ public class Car : MonoBehaviour
 
     private void PreviewUpdate()
     {
-        if (GameManager.instance.IsPlaying) return;
+        //if (GameManager.instance.IsPlaying) return;
         transform.localScale = Vector3.Lerp(transform.localScale, targetScale, Time.deltaTime * 10f);
     }
 

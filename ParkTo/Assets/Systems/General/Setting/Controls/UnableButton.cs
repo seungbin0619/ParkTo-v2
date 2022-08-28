@@ -18,10 +18,10 @@ public class UnableButton : ThemeObject
         graphic = GetComponent<UnityEngine.UI.Image>();
     }
 
-    private void OnEnable() {
+    protected override void OnEnable() {
         button.interactable = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != targetScene;
 
-        FollowTheme();
+        base.OnEnable();
     }
 
     protected override void FollowTheme()

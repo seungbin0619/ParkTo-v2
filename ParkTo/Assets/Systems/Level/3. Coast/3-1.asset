@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4eed06a8138e63449604bb66b169823, type: 3}
+  m_Name: 3-1
+  m_EditorClassIdentifier: 
+  id: 
+  description: 
+  size: {x: 5, y: 1}
+  tiles:
+  - tile:
+    - type: 16
+      data: 4
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+    - type: 16
+      data: 4
+    - type: 1
+      data: 0
+  triggers: 
+  decorates:
+  - decorate: {fileID: 7587679458751137067, guid: 65aff52ec8d2ccb49aa44cf9936430fa, type: 3}
+    position: {x: 0, y: 0}
+  cars:
+  - position: {x: 2, y: 0}
+    rotation: 1
+  seed: 235233

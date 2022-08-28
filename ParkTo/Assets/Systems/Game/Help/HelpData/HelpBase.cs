@@ -15,12 +15,7 @@ public class HelpBase : MonoBehaviour
     [SerializeField]
     protected string id;
 
-    private void Awake()
-    {
-        if (!CheckCondition()) return;
-        HelpManager.instance.Initialize(this);
-        current = StartCoroutine(Content());
-    }
+    protected virtual void Awake() => Play();
 
     private void OnDestroy()
     {
@@ -28,8 +23,14 @@ public class HelpBase : MonoBehaviour
         StopCoroutine(current);
     }
 
-    protected bool CheckCondition() =>DataManager.GetData("Game", id, 0) == 0;
+    protected bool CheckCondition() => DataManager.GetData("Game", id, 0) == 0;
     public void Reset() => DataManager.SetData("Game", id, 0);
+
+    protected void Play() {
+        if (!CheckCondition()) return;
+        HelpManager.instance.Initialize(this);
+        current = StartCoroutine(Content());
+    }
 
     protected virtual IEnumerator Content()
     {

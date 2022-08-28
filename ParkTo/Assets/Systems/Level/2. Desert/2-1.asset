@@ -28,7 +28,9 @@ MonoBehaviour:
     - type: 1
       data: 0
   triggers: 
-  decorates: []
+  decorates:
+  - decorate: {fileID: 1865408116746205828, guid: 0d1f8d2c5cbf1ff409f3f02eea072ebf, type: 3}
+    position: {x: 0, y: 0}
   cars:
   - position: {x: 0, y: 0}
     rotation: 3

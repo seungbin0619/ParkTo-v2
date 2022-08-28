@@ -31,6 +31,9 @@ public partial class SelectManager : SingleTon<SelectManager>
     [SerializeField]
     private List<Button> pageButton;
 
+    [SerializeField]
+    private TMPro.TMP_Text levelText;
+
     private bool entered = false;
     private int Page { get; set; }
     private int SelectedIndex { get; set; }
@@ -80,12 +83,15 @@ public partial class SelectManager : SingleTon<SelectManager>
 
     public void SelectIndex(int position) {
         if(entered) return;
+        if(HelpManager.IsInitialize) return;
 
         if(position < 0) position = 0;
         else if(position >= LevelCount) position = LevelCount - 1;
 
         SelectedIndex = position;
         LastSelectedLevel = SelectedIndex + Page * MAX_COUNT;
+
+        levelText.text = ThemeManager.currentTheme.levels[LastSelectedLevel].name;
     }
 
     public void SelectIndexDelta(bool delta) {
@@ -102,6 +108,7 @@ public partial class SelectManager : SingleTon<SelectManager>
 
     public void EnterGame() {
         if(entered) return;
+        if(HelpManager.IsInitialize) return;
 
         entered = true;
         GameManager.SelectedLevel = LastSelectedLevel;
@@ -110,6 +117,8 @@ public partial class SelectManager : SingleTon<SelectManager>
 
     public void ChangePageDelta(bool delta) { // 페이지 바뀔 때
         if(entered) return;
+        if(HelpManager.IsInitialize) return;
+
         if(!pageButton[delta ? 1 : 0].interactable) return;
         if(delta && (ThemeManager.index == ThemeManager.instance.themes.Count - 1 && 
             Page == (ThemeManager.currentTheme.levels.Count - 1) / MAX_COUNT)) 
@@ -122,6 +131,7 @@ public partial class SelectManager : SingleTon<SelectManager>
             return;
         }
 
+        entered = true;
         Delta = delta ? 1 : -1;
         NextPage = Page + Delta;
         SelectedIndex = Delta * LevelCount;
@@ -199,6 +209,7 @@ public partial class SelectManager : SingleTon<SelectManager>
 
     private void ReadKey() {
         if(ActionManager.IsPlaying) return;
+        if(HelpManager.IsInitialize) return;
         
         if(Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) SelectIndexDelta(false);
         else if(Input.GetKeyDown(KeyCode.RightArrow)|| Input.GetKeyDown(KeyCode.D)) SelectIndexDelta(true);
@@ -210,7 +221,8 @@ public partial class SelectManager : SingleTon<SelectManager>
 
 public partial class SelectManager { // 차 관련
     // 그래픽적 요소?
-    private SpriteRenderer car;
+    [System.NonSerialized]
+    public SpriteRenderer car;
     private float carVelocity = 0;
     private float MAX_VELOCITY = 10f;
     private float ACCELARATE = 15f;

@@ -17,21 +17,12 @@ MonoBehaviour:
   size: {x: 4, y: 4}
   tiles:
   - tile:
+    - type: 1
+      data: 2
     - type: 17
       data: 0
     - type: 16
-      data: 1
-    - type: 17
-      data: 0
-    - type: 17
-      data: 0
-  - tile:
-    - type: 17
-      data: 0
-    - type: 17
-      data: 0
-    - type: 0
-      data: 0
+      data: 2
     - type: 17
       data: 0
   - tile:
@@ -47,16 +38,27 @@ MonoBehaviour:
     - type: 17
       data: 0
     - type: 1
+      data: 1
+    - type: 17
+      data: 0
+    - type: 17
+      data: 0
+  - tile:
+    - type: 17
       data: 0
     - type: 17
       data: 0
     - type: 1
-      data: 1
-  triggers: 01000000020000000200000003000000
+      data: 0
+    - type: 17
+      data: 0
+  triggers: 0100000002000000030000000300000003000000
   decorates: []
   cars:
-  - position: {x: 1, y: 2}
+  - position: {x: 3, y: 0}
+    rotation: 1
+  - position: {x: 2, y: 2}
     rotation: 2
-  - position: {x: 0, y: 1}
-    rotation: 3
-  seed: 9545324
+  - position: {x: 3, y: 3}
+    rotation: 1
+  seed: 1234523

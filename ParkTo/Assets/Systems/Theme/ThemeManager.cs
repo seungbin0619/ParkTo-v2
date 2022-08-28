@@ -12,6 +12,7 @@ public class ThemeManager : SingleTon<ThemeManager>
     protected override void Awake()
     {
         base.Awake();
+        if(!isInstance) return;
 
         for(int i = themes.Count - 1; i >= 0; i--)
             if(DataManager.GetData("Game", "Theme" + i, 0) > 0) {

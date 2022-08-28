@@ -7,6 +7,7 @@ public class SingleTon<T>: MonoBehaviour where T : MonoBehaviour
     public static T instance;
     [SerializeField]
     private bool dontDestroy;
+    protected bool isInstance = false;
 
     protected virtual void Awake()
     {
@@ -18,5 +19,6 @@ public class SingleTon<T>: MonoBehaviour where T : MonoBehaviour
         }
 
         if (dontDestroy) DontDestroyOnLoad(gameObject);
+        isInstance = true;
     }
 }

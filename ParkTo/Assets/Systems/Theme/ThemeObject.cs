@@ -7,9 +7,10 @@ public class ThemeObject : MonoBehaviour
 {
     [SerializeField]
     protected int index;
-    protected MaskableGraphic graphic;
+    protected MaskableGraphic graphic = null;
 
-    protected virtual void Awake() => graphic = GetComponent<MaskableGraphic>();
+    protected virtual void Awake() => graphic ??= GetComponent<MaskableGraphic>();
+    protected virtual void OnEnable() => FollowTheme();
     protected virtual void Start() => FollowTheme();
 
     protected virtual void FollowTheme()

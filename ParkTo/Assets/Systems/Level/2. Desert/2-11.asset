@@ -21,7 +21,7 @@ MonoBehaviour:
       data: 0
     - type: 17
       data: 0
-    - type: 17
+    - type: 16
       data: 0
     - type: 17
       data: 0
@@ -48,7 +48,7 @@ MonoBehaviour:
       data: 0
     - type: 17
       data: 0
-    - type: 17
+    - type: 0
       data: 0
     - type: 0
       data: 0

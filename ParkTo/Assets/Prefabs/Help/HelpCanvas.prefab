@@ -344,7 +344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed803d9772782004d81ea64856d56f55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dontDestroy: 1
+  dontDestroy: 0
   screen: {fileID: 2577468268845540136}
   Focus: {fileID: 6322092423228031982}
   skipPanel: {fileID: 755644931865893600}

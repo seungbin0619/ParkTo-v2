@@ -51,6 +51,34 @@ MonoBehaviour:
     m_Key: 3.0
     m_Metadata:
       m_Items: []
+  - m_Id: 58703864292696064
+    m_Key: s.0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58703883624243200
+    m_Key: s.1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58703895661895680
+    m_Key: s.3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58704624757760000
+    m_Key: s.2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58705668594196480
+    m_Key: 4.0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58705839348506624
+    m_Key: 5.0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58706976126525440
+    m_Key: 5.1
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

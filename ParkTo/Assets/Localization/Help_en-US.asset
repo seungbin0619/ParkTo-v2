@@ -70,6 +70,40 @@ MonoBehaviour:
     m_Localized: "You can't set TRIGGER \non this tile."
     m_Metadata:
       m_Items: []
+  - m_Id: 58703864292696064
+    m_Localized: This is the level selection screen.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58704624757760000
+    m_Localized: "Currently selected level is \ndisplayed here."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58703883624243200
+    m_Localized: "You can select a level\nthrough the left, right keys \nor the mouse."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58703895661895680
+    m_Localized: 'Press the space bar
+
+      or the car to start'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58705668594196480
+    m_Localized: STOP TRIGGER stops the car.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58705839348506624
+    m_Localized: 'BACKWARD TRIGGER causes the car
+
+      to move backward.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58706976126525440
+    m_Localized: 'This trigger is not applied
+
+      in duplicate.'
+    m_Metadata:
+      m_Items: []
   references:
     version: 1
     00000000:

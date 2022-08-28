@@ -51,7 +51,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1403934130036736
-    m_Localized: Full Screen
+    m_Localized: Borderless
     m_Metadata:
       m_Items: []
   - m_Id: 1404048168968192
@@ -59,7 +59,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1404052656873472
-    m_Localized: Borderless
+    m_Localized: Full Screen
     m_Metadata:
       m_Items: []
   - m_Id: 45614892595273728

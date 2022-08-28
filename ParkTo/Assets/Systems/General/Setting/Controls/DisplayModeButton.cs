@@ -7,7 +7,9 @@ public class DisplayModeButton : ThemeObject
 {
     TMPro.TMP_Text textBox;
 
-    private void OnEnable() {
+    protected override void OnEnable() {
+        base.OnEnable();
+        
         textBox ??= GetComponentInChildren<TMPro.TMP_Text>();
         LocalizationSettings.SelectedLocaleChanged
             += LocalizationSettings_SelectedLocaleChanged;
