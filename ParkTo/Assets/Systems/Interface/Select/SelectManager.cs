@@ -83,6 +83,7 @@ public partial class SelectManager : SingleTon<SelectManager>
 
     public void SelectIndex(int position) {
         if(entered) return;
+        if(SettingManager.instance.IsOpen) return;
         if(HelpManager.IsInitialize) return;
 
         if(position < 0) position = 0;
@@ -96,7 +97,7 @@ public partial class SelectManager : SingleTon<SelectManager>
 
     public void SelectIndexDelta(bool delta) {
         if(entered) return;
-        
+
         int position = SelectedIndex + (delta ? 1 : -1);
         if(position < 0 || position >= LevelCount) {
             ChangePageDelta(delta);
@@ -108,6 +109,7 @@ public partial class SelectManager : SingleTon<SelectManager>
 
     public void EnterGame() {
         if(entered) return;
+        if(SettingManager.instance.IsOpen) return;
         if(HelpManager.IsInitialize) return;
 
         entered = true;
@@ -117,6 +119,7 @@ public partial class SelectManager : SingleTon<SelectManager>
 
     public void ChangePageDelta(bool delta) { // 페이지 바뀔 때
         if(entered) return;
+        if(SettingManager.instance.IsOpen) return;
         if(HelpManager.IsInitialize) return;
 
         if(!pageButton[delta ? 1 : 0].interactable) return;
@@ -187,8 +190,11 @@ public partial class SelectManager : SingleTon<SelectManager>
         car.transform.rotation = Quaternion.Euler(0, 0, -90f);
 
         car.gameObject.AddComponent<CarSelect>();
+        car.gameObject.GetComponent<PolygonCollider2D>().enabled = false;
+        car.gameObject.AddComponent<CircleCollider2D>();
 
         pageButton[0].interactable = ThemeManager.index > 0 || page > 0;
+        pageButton[2].gameObject.SetActive(!pageButton[0].interactable);
         bool interactable = true;
         // 마지막 페이지가 아니면 true
 
@@ -202,9 +208,18 @@ public partial class SelectManager : SingleTon<SelectManager>
         interactable &= clearedLevel >= 8;
 
         pageButton[1].interactable = interactable;
+        pageButton[3].gameObject.SetActive(!interactable);
 
         IsInitialize = true;
         return true;
+    }
+
+    public void NoticeButton(string id) {
+        if(NoticeManager.instance.IsPlaying) return;
+
+        NoticeManager.instance.NoticeString(
+            LocalizationManager.instance.LocaleText("UIText", id)
+        );
     }
 
     private void ReadKey() {

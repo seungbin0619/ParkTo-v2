@@ -188,9 +188,6 @@ public class SettingManager : SingleTon<SettingManager>
     public FullScreenMode GetWindowMode() => Screen.fullScreenMode;
 
     public string WindowModeToString(FullScreenMode mode) {
-        string LocaleText(string data) 
-            => LocalizationSettings.StringDatabase.GetLocalizedString("UIText", data);
-
         string target = "setting_window_";
         switch(mode) {
             case FullScreenMode.FullScreenWindow: target += "full"; break; // 1
@@ -199,6 +196,6 @@ public class SettingManager : SingleTon<SettingManager>
             default: target += "full"; break;
         }
 
-        return LocaleText(target);
+        return LocalizationManager.instance.LocaleText("UIText", target);
     }
 }

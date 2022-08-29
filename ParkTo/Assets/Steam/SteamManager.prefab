@@ -46,10 +46,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroy: 1
-  m_GameID:
-    m_GameID: 0
-  appId:
-    m_AppId: 0
 --- !u!114 &6056340860777157492
 MonoBehaviour:
   m_ObjectHideFlags: 0

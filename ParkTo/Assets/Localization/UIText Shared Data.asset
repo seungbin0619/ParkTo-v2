@@ -83,6 +83,26 @@ MonoBehaviour:
     m_Key: under_construction
     m_Metadata:
       m_Items: []
+  - m_Id: 61166533511733248
+    m_Key: notice_data_load_error
+    m_Metadata:
+      m_Items: []
+  - m_Id: 61166907391991808
+    m_Key: notice_steam_init_error
+    m_Metadata:
+      m_Items: []
+  - m_Id: 61167330643402752
+    m_Key: notice_unlock_level
+    m_Metadata:
+      m_Items: []
+  - m_Id: 61167577432055808
+    m_Key: notice_cant_go_next
+    m_Metadata:
+      m_Items: []
+  - m_Id: 61168064231366656
+    m_Key: notice_cant_go_back
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

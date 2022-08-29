@@ -22,16 +22,26 @@ public class SteamApiManager : SingleTon<SteamApiManager> {
 #endif
 
     public void ClearAchievement(string achID) {
-#if UNITY_EDITOR
-        return;
-#endif
+#if !UNITY_EDITOR
         if (SteamManager.Initialized)
 
         SteamUserStats.SetAchievement(achID);
         SteamUserStats.StoreStats();
+#endif
     }
 
-    public void SteamCloudSave() {
-        
+    public void CheckClearAchievements() {
+        for(int i = 0; i < ThemeManager.instance.themes.Count; i++) {
+            ThemeBase theme = ThemeManager.instance.themes[i];
+
+            for(int j = 0; j < theme.levels.Count / SelectManager.MAX_COUNT; j++) {
+                string aName = $"COMPLETE_{i}_{j}";
+
+                if(!SteamUserStats.GetAchievement(aName, out bool achieved) || achieved) continue;
+                if(SteamDataManager.GetData("Game", "Theme" + i, 0) < (j + 1) * SelectManager.MAX_COUNT) continue;
+
+                ClearAchievement(aName);
+            }
+        }
     }
 }

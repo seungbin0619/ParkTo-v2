@@ -39,7 +39,6 @@ public class HelpBase : MonoBehaviour
 
     protected IEnumerator SetFocus(Vector3 position, Vector2 size, bool flag = false) => HelpManager.instance.SetFocus(position, size, flag);
     protected IEnumerator SetText(string text, Vector2 delta) => HelpManager.instance.SetText(text, delta);
-    protected string LocaleText(string data) => LocalizationSettings.StringDatabase.GetLocalizedString("Help", data);
 
     protected IEnumerator Focusing(Vector3 position, Vector2 size, string data, Vector3 delta, bool wait = true)
     {
@@ -47,7 +46,7 @@ public class HelpBase : MonoBehaviour
         HelpManager.instance.screenImage.enabled = false;
 
         yield return SetFocus(position, size);
-        yield return SetText(LocaleText(data), delta);
+        yield return SetText(LocalizationManager.instance.LocaleText("Help", data), delta);
         HelpManager.instance.Focusing = false;
 
         HelpManager.instance.screenImage.enabled = true;

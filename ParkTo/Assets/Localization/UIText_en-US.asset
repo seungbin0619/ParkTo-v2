@@ -88,5 +88,35 @@ MonoBehaviour:
       To be updated!'
     m_Metadata:
       m_Items: []
+  - m_Id: 61166533511733248
+    m_Localized: 'Error retrieving data.
+
+      Subsequent progress will not be
+      saved.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 61166907391991808
+    m_Localized: 'Failed to load Steam account.
+
+      Use existing local data.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 61167330643402752
+    m_Localized: 'New themes and levels have been unlocked.
+
+      Check out the
+      level selection screen!'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 61168064231366656
+    m_Localized: You can no longer go back.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 61167577432055808
+    m_Localized: 'At least 8 levels must be cleared
+
+      to proceed further.'
+    m_Metadata:
+      m_Items: []
   references:
     version: 1

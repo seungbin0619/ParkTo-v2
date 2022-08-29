@@ -94,8 +94,21 @@ partial class GameManager : SingleTon<GameManager>
 
     private void Update()
     {
+        ReadKey();
         InteractBar();
         FollowSelectedTrigger();
+    }
+
+    private void ReadKey() {
+        if(SettingManager.instance.IsOpen) return;
+        if(HelpManager.IsInitialize) return;
+        
+        if(Input.GetKeyDown(KeyCode.Z)) Undo();
+        else if(Input.GetKeyDown(KeyCode.R)) Reload();
+        else if(Input.GetKeyDown(KeyCode.Space)) Move();
+        #if UNITY_EDITOR
+        else if(Input.GetKeyDown(KeyCode.C)) ClearLevel();
+        #endif
     }
 }
 
@@ -124,7 +137,7 @@ partial class GameManager // LevelDraw
         if (index < 0 || index >= ThemeManager.currentTheme.levels.Count)
         {
             int theme = ThemeManager.index;
-            theme += (int)Mathf.Sign(index - ThemeManager.currentTheme.levels.Count);
+            theme += index < 0 ? -1 : 1;
 
             if(theme >= ThemeManager.instance.themes.Count) {
                 SelectManager.Delta = -1;
@@ -136,9 +149,11 @@ partial class GameManager // LevelDraw
             }
 
             ThemeManager.instance.SetTheme(theme);
-            SettingManager.instance.Goto("Game");
+            SelectedLevel = ThemeManager.currentTheme.levels.Count - index + 16;
+            SelectedLevel %= ThemeManager.currentTheme.levels.Count;
 
-            ActionManager.Play();
+            SettingManager.instance.Goto("Game");
+            //ActionManager.Play();
 
             return false;
         }
@@ -327,6 +342,7 @@ partial class GameManager // LevelDraw
     private IEnumerator PrevSetLevel(int index, bool animate = true, float delay = 0f)
     {
         IsAnimate = true;
+        BarHide = triggerBar.Hide = true;
 
         if (delay > 0) yield return YieldDictionary.WaitForSeconds(delay);
         if (CurrentLevel != null)
@@ -641,10 +657,15 @@ partial class GameManager
 
     public void Move()
     {
+        if(IsPlaying) return;
+        if(!IsPlayable) return;
+        
         // 출발음
-        //SFXManager.instance.PlaySound(5);
+        SFXManager.instance.PlaySound(5);
 
+        BarHide = triggerBar.Hide = true;
         IsPlaying = true;
+
         UpdatePlayButton();
 
         StartCoroutine(MoveCoroutine());
@@ -681,6 +702,13 @@ partial class GameManager
             IsPlayable = false;
             IsGameOver = true;
 
+            if(SteamManager.Initialized) {
+                Steamworks.SteamUserStats.GetStat("CRASH", out int crash);
+                Steamworks.SteamUserStats.SetStat("CRASH", crash + 1);
+
+                Steamworks.SteamUserStats.StoreStats();
+            }
+
             return;
         }
 
@@ -694,16 +722,7 @@ partial class GameManager
         {
             IsPlayable = false;
 
-            int currentClearedLevel = SteamDataManager.GetData("Game", "Theme" + ThemeManager.index, 0);
-            if(currentClearedLevel < LevelIndex + 1) {
-                SteamDataManager.SetData("Game", "Theme" + ThemeManager.index, LevelIndex + 1);
-                SteamDataManager.SaveData();
-            }
-            
-            SFXManager.instance.PlaySound(7);
-            for(int i = 0; i < Random.Range(5, 9); i++) AddClear();
-
-            StartCoroutine(PrevSetLevel(LevelIndex + 1, delay: 1f));
+            ClearLevel();
             return;
         }
 
@@ -712,6 +731,25 @@ partial class GameManager
 
         BarHide = triggerBar.Hide = CurrentTriggers.Count == 0;
         UpdatePlayButton();
+    }
+
+    private void ClearLevel() {
+        int currentClearedLevel = SteamDataManager.GetData("Game", "Theme" + ThemeManager.index, 0);
+        if(currentClearedLevel < LevelIndex + 1) {
+            if(LevelIndex + 1 == SelectManager.MAX_COUNT && ThemeManager.index < ThemeManager.instance.themes.Count - 1) {
+                NoticeManager.instance.NoticeString(LocalizationManager.instance.LocaleText("UIText", "notice_unlock_level"));
+            }
+
+            SteamDataManager.SetData("Game", "Theme" + ThemeManager.index, LevelIndex + 1);
+            SteamDataManager.SaveData();
+        }
+
+        SteamApiManager.instance.CheckClearAchievements();
+        
+        SFXManager.instance.PlaySound(7);
+        for(int i = 0; i < Random.Range(5, 9); i++) AddClear();
+
+        StartCoroutine(PrevSetLevel(LevelIndex + 1, delay: 1f));
     }
 
     private void GetNextPath()

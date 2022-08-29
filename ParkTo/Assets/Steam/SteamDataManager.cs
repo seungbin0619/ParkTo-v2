@@ -24,11 +24,22 @@ public class SteamDataManager : SingleTon<SteamDataManager>
     protected override void Awake()
     {
         base.Awake();
+        
+        if(!SteamManager.Initialized) {
+            NoticeManager.instance.NoticeString(LocalizationManager.instance.LocaleText("UIText", "notice_steam_init_error"));
+            // 스팀 연동 오류
+            data = LoadData(true);
+            DataManager.instance.data = data;
+
+            return;
+        }
 
         data = LoadData();
 
         uint steamid = (uint)Steamworks.SteamUser.GetSteamID().GetAccountID();
         SetData("Game", "steamid", (int)steamid);
+
+        //SetData("Game", "Theme0", 15);
     }
 
     public static void Load(bool flag = false) => instance.data = LoadData(flag);
@@ -47,6 +58,11 @@ public class SteamDataManager : SingleTon<SteamDataManager>
     {
         if(instance.dontSave) return;
         Dictionary<string, string> data = GetSaveData();
+
+        if(!SteamManager.Initialized) {
+            DataManager.SaveData();
+            return;
+        }
 
         Steamworks.SteamRemoteStorage.BeginFileWriteBatch(); 
 
@@ -78,19 +94,18 @@ public class SteamDataManager : SingleTon<SteamDataManager>
     }
 
     public static Dictionary<string, Dictionary<string, int>> LoadData(bool flag = false) {
-        var data = GetLoadData();
+        var data = GetLoadData(flag);
 
         if(data == null) {
-            // 오류 발생
+            // 데이터를 불러오는 중 오류 발생
+            NoticeManager.instance.NoticeString(LocalizationManager.instance.LocaleText("UIText", "notice_data_load_error"));
+            
+            instance.dontSave = true;
             return GetLoadData(true);
         }
 
-        foreach(var d in data) {
-            if(instance.parts.Contains(d.Key)) continue;
-            return GetLoadData(true);
-        }
-
-        if(!data["Game"].TryGetValue("steamid", out int steamid) || (uint)steamid != (uint)Steamworks.SteamUser.GetSteamID().GetAccountID()) 
+        if(SteamManager.Initialized && (!data["Game"].TryGetValue("steamid", out int steamid) || 
+           (uint)steamid != (uint)Steamworks.SteamUser.GetSteamID().GetAccountID()))
             return GetLoadData(true);
 
         return data;
@@ -105,7 +120,7 @@ public class SteamDataManager : SingleTon<SteamDataManager>
             data[part] = new Dictionary<string, int>();
 
             if(flag) continue;
-            Debug.Log(partPath + " " + Steamworks.SteamRemoteStorage.FileExists(partPath));
+            //Debug.Log(partPath + " " + Steamworks.SteamRemoteStorage.FileExists(partPath));
             if (Steamworks.SteamRemoteStorage.FileExists(partPath))
             {
                 try
@@ -117,7 +132,7 @@ public class SteamDataManager : SingleTon<SteamDataManager>
                     string decryptData = System.Text.Encoding.Default.GetString(readData);
                     if (instance.crypto) decryptData = AESCrypto.Decrypt(decryptData, instance.password);
 
-                    Debug.Log(decryptData);
+                    //Debug.Log(decryptData);
 
                     XElement root = XElement.Parse(decryptData);
 
@@ -126,13 +141,11 @@ public class SteamDataManager : SingleTon<SteamDataManager>
                     }
                 }catch
                 {
-                    Debug.Log("TEST!?");
                     return null;
                 }
             } else return null;
         }
 
-        Debug.Log("TEST!??");
         return data;
     }
 }

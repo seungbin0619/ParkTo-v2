@@ -13,7 +13,8 @@ public class DataManager : SingleTon<DataManager>
     private static readonly string path = Application.persistentDataPath + @"\";
 #endif
 
-    private Dictionary<string, Dictionary<string, int>> data;
+    [System.NonSerialized]
+    public Dictionary<string, Dictionary<string, int>> data;
 
     [SerializeField]
     private string[] parts;

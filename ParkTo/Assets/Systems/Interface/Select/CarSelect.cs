@@ -8,13 +8,9 @@ public class CarSelect : MonoBehaviour
 
     private void Awake() => targetScale = Vector3.one * 0.8f;
 
-    //private void OnMouseEnter() => targetScale = Vector3.one;
+    private void OnMouseEnter() => targetScale = Vector3.one;
 
-    //private void OnMouseExit() => targetScale = Vector3.one * 0.8f;
-
-    private void OnMouseOver() {
-        targetScale = Vector3.one;
-    }
+    private void OnMouseExit() => targetScale = Vector3.one * 0.8f;
 
     private void Update() {
         transform.localScale = Vector3.Lerp(
@@ -23,11 +19,7 @@ public class CarSelect : MonoBehaviour
             Time.deltaTime * 10f);
     }
 
-    private void LateUpdate() {
-        targetScale = Vector3.one * 0.8f;
-    }
-
     private void OnMouseDown() {
-        //SelectManager.instance.EnterGame();
+        SelectManager.instance.EnterGame();
     }
 }

@@ -57,3 +57,6 @@ TagManager:
   - name: Front
     uniqueID: 857942907
     locked: 0
+  - name: Fade
+    uniqueID: 268077409
+    locked: 0

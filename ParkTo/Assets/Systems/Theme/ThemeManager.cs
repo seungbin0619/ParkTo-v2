@@ -15,7 +15,8 @@ public class ThemeManager : SingleTon<ThemeManager>
         if(!isInstance) return;
 
         for(int i = themes.Count - 1; i >= 0; i--)
-            if(SteamDataManager.GetData("Game", "Theme" + i, 0) > 0) {
+            if(SteamDataManager.GetData("Game", "Theme" + i, 0) > 0 ||
+             (i > 0 && SteamDataManager.GetData("Game", "Theme" + (i - 1), 0) == themes[i - 1].levels.Count)) {
                 SetTheme(i);
                 break;
             }
