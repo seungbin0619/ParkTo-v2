@@ -77,6 +77,18 @@ partial class GameManager : SingleTon<GameManager>
 
     #endregion
 
+    int _playCount = 0;
+    int PlayCount {
+        get { return _playCount; }
+        set {
+            if(_playCount == value) return;
+            _playCount = value;
+
+            if(_playCount < 10) return;
+            SteamApiManager.instance.ClearAchievement("PLAY_0");
+        }
+    }
+
     protected override void Awake()
     {
         base.Awake();
@@ -164,6 +176,8 @@ partial class GameManager // LevelDraw
 
         SelectManager.LastPlayedLevel = LevelIndex;
         SelectManager.Delta = 0;
+
+        PlayCount = 0;
 
         return true;
     }
@@ -420,6 +434,7 @@ partial class GameManager // Undo
     public void Undo()
     {
         if (IsAnimate || !IsDrew || IsPlaying) return;
+        if (SelectedTrigger) return;
         if (behaviors.Count == 0) return;
 
         Behavior behavior = behaviors[behaviors.Count - 1];
@@ -435,7 +450,7 @@ partial class GameManager // Undo
                 LevelBase.TriggerType trigger = (LevelBase.TriggerType)behavior.args[0];
                 int index = int.Parse(behavior.args[1].ToString());
 
-                if (behavior.args[2].GetType() == typeof(Car)) // ���� ����ߴٸ�.
+                if (behavior.args[2].GetType() == typeof(Car))
                 {
                     Car car = behavior.args[2] as Car;
                     car.SetTrigger(trigger, true);
@@ -457,6 +472,8 @@ partial class GameManager // Undo
         // 파티클 지우기.
         foreach (Transform child in particleTile) Destroy(child.gameObject);
         SFXManager.instance.PlaySound(3);
+
+        PlayCount = 0;
     }
 }
 
@@ -510,6 +527,7 @@ partial class GameManager // Trigger
     public void UseTrigger()
     {
         if (SelectedTrigger == null) return;
+        PlayCount = 0;
 
         CurrentTriggers.Remove(SelectedTrigger);
         Destroy(SelectedTrigger.gameObject);
@@ -659,6 +677,7 @@ partial class GameManager
     {
         if(IsPlaying) return;
         if(!IsPlayable) return;
+        if (SelectedTrigger) return;
         
         // 출발음
         SFXManager.instance.PlaySound(5);
@@ -666,8 +685,9 @@ partial class GameManager
         BarHide = triggerBar.Hide = true;
         IsPlaying = true;
 
-        UpdatePlayButton();
+        PlayCount++;
 
+        UpdatePlayButton();
         StartCoroutine(MoveCoroutine());
     }
 
@@ -827,9 +847,12 @@ partial class GameManager
     public void Reload()
     {
         if (IsAnimate || IsPlaying) return;
+        if (SelectedTrigger) return;
 
         SFXManager.instance.PlaySound(4);
         StartCoroutine(PrevSetLevel(LevelIndex));
+
+        PlayCount = 0;
     }
 
     public void ReHelp() {

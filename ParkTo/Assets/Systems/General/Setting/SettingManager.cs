@@ -106,8 +106,8 @@ public class SettingManager : SingleTon<SettingManager>
     }
 
     public void ApplyScreenSetting() {
-        SetWindowMode(SelectedWindowMode);
         SetResolution(SelectedResolution);
+        SetWindowMode(SelectedWindowMode);
     }
 
     private IEnumerator DelayedAnimation(float delay, Func<bool> function) {

@@ -24,7 +24,8 @@ public class SteamApiManager : SingleTon<SteamApiManager> {
     public void ClearAchievement(string achID) {
 #if !UNITY_EDITOR
         if (SteamManager.Initialized)
-
+        if(!SteamUserStats.GetAchievement(achID, out bool achieved) || achieved) return;
+        
         SteamUserStats.SetAchievement(achID);
         SteamUserStats.StoreStats();
 #endif
@@ -36,8 +37,6 @@ public class SteamApiManager : SingleTon<SteamApiManager> {
 
             for(int j = 0; j < theme.levels.Count / SelectManager.MAX_COUNT; j++) {
                 string aName = $"COMPLETE_{i}_{j}";
-
-                if(!SteamUserStats.GetAchievement(aName, out bool achieved) || achieved) continue;
                 if(SteamDataManager.GetData("Game", "Theme" + i, 0) < (j + 1) * SelectManager.MAX_COUNT) continue;
 
                 ClearAchievement(aName);
