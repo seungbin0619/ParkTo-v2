@@ -55,7 +55,7 @@ public partial class SelectManager : SingleTon<SelectManager>
     {
         if(IsFirstEnter) { // 시작 버튼으로 진입한 경우
             if(LastSelectedLevel == -1) {
-                int clearedLevel = DataManager.GetData("Game", "Theme" + ThemeManager.index, 0);
+                int clearedLevel = SteamDataManager.GetData("Game", "Theme" + ThemeManager.index, 0);
 
                 if(DrawLevels(clearedLevel / MAX_COUNT))
                     SelectIndex(MAX_COUNT - 1); // 클리어 한 가장 마지막 레벨로 이동
@@ -158,7 +158,7 @@ public partial class SelectManager : SingleTon<SelectManager>
         }
 
         Page = page;
-        int clearedLevel = DataManager.GetData("Game", "Theme" + ThemeManager.index, 0);
+        int clearedLevel = SteamDataManager.GetData("Game", "Theme" + ThemeManager.index, 0);
 
         for(int i = 0; i < MAX_COUNT; i++)
         {

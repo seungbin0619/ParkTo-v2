@@ -62,7 +62,7 @@ public class SettingManager : SingleTon<SettingManager>
         hidePanel.Play("FadeOut");
         Border.Play("BorderHide");
 
-        DataManager.SaveData();
+        SteamDataManager.SaveData();
         SFXManager.instance.PlaySound(1);
     }
 
@@ -120,26 +120,26 @@ public class SettingManager : SingleTon<SettingManager>
         if (!LocalizationManager.instance.SetLanguage(index)) return;
 
         index = LocalizationManager.Index;
-        DataManager.SetData("Game", "Language", index);
+        SteamDataManager.SetData("Game", "Language", index);
     }
 
-    public int GetLanguage() => DataManager.GetData("Game", "Language", 0);
+    public int GetLanguage() => SteamDataManager.GetData("Game", "Language", 0);
 
     public void SetMusicVolume(float value)
     {
         SFXManager.instance.SetBgmVolume(value);
-        DataManager.SetData("Game", "Music", (int)(SFXManager.instance.BgmVolume * 100));
+        SteamDataManager.SetData("Game", "Music", (int)(SFXManager.instance.BgmVolume * 100));
     }
 
-    public float GetMusicVolume() => DataManager.GetData("Game", "Music", 50) * 0.01f;
+    public float GetMusicVolume() => SteamDataManager.GetData("Game", "Music", 50) * 0.01f;
 
     public void SetSoundVolume(float value)
     {
         SFXManager.instance.SetSoundVolume(value);
-        DataManager.SetData("Game", "Sound", (int)(SFXManager.instance.SoundVolume * 100));
+        SteamDataManager.SetData("Game", "Sound", (int)(SFXManager.instance.SoundVolume * 100));
     }
 
-    public float GetSoundVolume() => DataManager.GetData("Game", "Sound", 50) * 0.01f;
+    public float GetSoundVolume() => SteamDataManager.GetData("Game", "Sound", 50) * 0.01f;
 
     public void Goto(string name)
     {

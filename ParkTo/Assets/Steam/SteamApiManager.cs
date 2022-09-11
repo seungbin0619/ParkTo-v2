@@ -37,7 +37,7 @@ public class SteamApiManager : SingleTon<SteamApiManager> {
 
             for(int j = 0; j < theme.levels.Count / SelectManager.MAX_COUNT; j++) {
                 string aName = $"COMPLETE_{i}_{j}";
-                if(DataManager.GetData("Game", "Theme" + i, 0) < (j + 1) * SelectManager.MAX_COUNT) continue;
+                if(SteamDataManager.GetData("Game", "Theme" + i, 0) < (j + 1) * SelectManager.MAX_COUNT) continue;
 
                 ClearAchievement(aName);
             }

@@ -754,14 +754,14 @@ partial class GameManager
     }
 
     private void ClearLevel() {
-        int currentClearedLevel = DataManager.GetData("Game", "Theme" + ThemeManager.index, 0);
+        int currentClearedLevel = SteamDataManager.GetData("Game", "Theme" + ThemeManager.index, 0);
         if(currentClearedLevel < LevelIndex + 1) {
             if(LevelIndex + 1 == SelectManager.MAX_COUNT && ThemeManager.index < ThemeManager.instance.themes.Count - 1) {
                 NoticeManager.instance.NoticeString(LocalizationManager.instance.LocaleText("UIText", "notice_unlock_level"));
             }
 
-            DataManager.SetData("Game", "Theme" + ThemeManager.index, LevelIndex + 1);
-            DataManager.SaveData();
+            SteamDataManager.SetData("Game", "Theme" + ThemeManager.index, LevelIndex + 1);
+            SteamDataManager.SaveData();
         }
 
         SteamApiManager.instance.CheckClearAchievements();

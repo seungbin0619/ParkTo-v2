@@ -23,8 +23,8 @@ public class HelpBase : MonoBehaviour
         StopCoroutine(current);
     }
 
-    protected bool CheckCondition() => DataManager.GetData("Game", id, 0) == 0;
-    public void Reset() => DataManager.SetData("Game", id, 0);
+    protected bool CheckCondition() => SteamDataManager.GetData("Game", id, 0) == 0;
+    public void Reset() => SteamDataManager.SetData("Game", id, 0);
 
     protected void Play() {
         if (!CheckCondition()) return;
@@ -66,8 +66,8 @@ public class HelpBase : MonoBehaviour
     }
 
     public void Save() {
-        DataManager.SetData("Game", id, 1);
-        DataManager.SaveData();
+        SteamDataManager.SetData("Game", id, 1);
+        SteamDataManager.SaveData();
     }
 
     private void Update()

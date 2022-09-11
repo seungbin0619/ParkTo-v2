@@ -33,9 +33,6 @@ public class DataManager : SingleTon<DataManager>
         base.Awake();
 
         data = LoadData();
-        SetData("Game", "Theme0", 16);
-        SetData("Game", "Theme1", 16);
-        SetData("Game", "Theme2", 16);
     }
 
     public static void Load(bool flag = false) => instance.data = LoadData(flag);
