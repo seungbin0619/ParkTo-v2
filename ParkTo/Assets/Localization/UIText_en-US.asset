@@ -89,10 +89,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 61166533511733248
-    m_Localized: 'Error retrieving data.
-
-      Subsequent progress will not be
-      saved.'
+    m_Localized: "An error occurred while loading data, \nand the progress was initialized."
     m_Metadata:
       m_Items: []
   - m_Id: 61166907391991808

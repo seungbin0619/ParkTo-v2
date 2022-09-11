@@ -40,6 +40,8 @@ public class SteamDataManager : SingleTon<SteamDataManager>
         SetData("Game", "steamid", (int)steamid);
 
         //SetData("Game", "Theme0", 15);
+
+        SaveData();
     }
 
     public static void Load(bool flag = false) => instance.data = LoadData(flag);
@@ -98,13 +100,9 @@ public class SteamDataManager : SingleTon<SteamDataManager>
 
         if(data == null) {
             // 데이터를 불러오는 중 오류 발생
-            NoticeManager.instance.NoticeString(LocalizationManager.instance.LocaleText("UIText", "notice_data_load_error"));
-            
-            instance.dontSave = true;
             return GetLoadData(true);
-        }
-
-        if(SteamManager.Initialized && (!data["Game"].TryGetValue("steamid", out int steamid) || 
+        } 
+        else if(SteamManager.Initialized && (!data["Game"].TryGetValue("steamid", out int steamid) || 
            (uint)steamid != (uint)Steamworks.SteamUser.GetSteamID().GetAccountID()))
             return GetLoadData(true);
 
@@ -141,6 +139,9 @@ public class SteamDataManager : SingleTon<SteamDataManager>
                     }
                 }catch
                 {
+                    NoticeManager.instance.NoticeString(LocalizationManager.instance.LocaleText("UIText", "notice_data_load_error"));
+                    //instance.dontSave = true;
+
                     return null;
                 }
             } else return null;
